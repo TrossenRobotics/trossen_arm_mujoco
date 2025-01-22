@@ -1,0 +1,114 @@
+<mujoco model="WidowX AI Follower Camera.SLDASM">
+  <option iterations="50" timestep="0.001" solver="PGS" gravity="0 0 -9.81" />
+
+  <compiler angle="radian" meshdir="meshes" eulerseq="zyx" autolimits="true" />
+
+
+
+  <default>
+    <default class="wxai">
+      <mesh scale="1.0 1.0 1.0"/>
+      <joint axis="0 1 0" frictionloss="0.1" armature="0.1"/>
+      <position kp="450" inheritrange="1" dampratio="0.95" forcerange="-55 55"/>
+      <default class="visual">
+        <geom type="mesh" contype="0" conaffinity="0" density="0" group="2" />
+      </default>
+      <default class="collision">
+        <geom group="3" type="mesh"/>
+        <default class="sphere_collision">
+          <geom type="sphere" size="0.0006" rgba="1 0 0 1"/>
+        </default>
+      </default>
+    </default>
+  </default>
+
+
+  <asset>
+    <mesh name="base_link" file="base_link.STL" />
+    <mesh name="link_1" file="link_1.STL" />
+    <mesh name="link_2" file="link_2.STL" />
+    <mesh name="link_3" file="link_3.STL" />
+    <mesh name="link_4" file="link_4.STL" />
+    <mesh name="link_5" file="link_5.STL" />
+    <mesh name="link_6_follower_cam" file="link_6_follower_cam.STL" />
+    <mesh name="gripper_follower_left" file="gripper_follower_left.STL" />
+    <mesh name="gripper_follower_right" file="gripper_follower_right.STL" />
+    <texture name="texplane" type="2d" builtin="checker" rgb1=".0 .0 .0" rgb2=".8 .8 .8" width="100" height="100" />
+    <material name="matplane" reflectance="0." texture="texplane" texrepeat="1 1" texuniform="true" />
+    <material name="visual" rgba="0.5 0.9 0.2 1" />
+  </asset>
+
+  <worldbody>
+    <light directional="true" diffuse="0.4 0.4 0.4" specular="0.1 0.1 0.1" pos="0 0 5.0" dir="0 0 -1" castshadow="false" />
+    <light directional="true" diffuse="0.6 0.6 0.6" specular="0.2 0.2 0.2" pos="0 0 4" dir="0 0 -1" />
+    <geom name="ground" type="plane" pos="0 0 0" size="100 100 0.001" quat="1 0 0 0" material="matplane" condim="3" conaffinity="15" />
+    <camera name="fixed" pos="0 -3.0 0.5582609713743308" xyaxes="1 0 0 0 0 1" />
+    <camera name="track" mode="trackcom" pos="0 -3.0 0.5582609713743308" xyaxes="1 0 0 0 0 1" />
+    <body name="root" pos="0 0 0.0582609713743308" quat="1 0 0 0">
+      <!-- <freejoint name="root" /> -->
+      <site name="imu" size="0.01" pos="0 0 0" />
+      <geom type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="base_link" class="visual" />
+      <geom type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="base_link" />
+      <body name="link_1" pos="0 0 0.05725">
+        <inertial pos="0.00021239 0.00381558 0.020726" quat="0.642807 0.631464 -0.284711 0.327097" mass="0.158434" diaginertia="0.000215366 0.000183488 8.58359e-05" />
+        <joint name="joint_0" pos="0 0 0" axis="0 0 1" range="-3.14 3.14"/>
+        <geom type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="link_1" class="visual" />
+        <geom type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="link_1" />
+        <body name="link_2" pos="0.02 0 0.04625">
+          <inertial pos="-0.130132 -0.00289256 0.00043205" quat="0.00127718 0.708369 0.00108393 0.70584" mass="1.18619" diaginertia="0.0181431 0.017578 0.00105907" />
+          <joint name="joint_1" pos="0 0 0" axis="0 -1 0" range="-3.14 3.14"/>
+          <geom type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="link_2" class="visual" />
+          <geom type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="link_2" />
+          <body name="link_3" pos="-0.264 0 0">
+            <inertial pos="0.200811 -0.00148559 0.057159" quat="-0.0297784 0.739272 -0.0191812 0.672475" mass="1.08255" diaginertia="0.00723274 0.00690368 0.000904768" />
+            <joint name="joint_2" pos="0 0 0" axis="0 -1 0" range="-3.14 3.14"/>
+            <geom type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="link_3" class="visual" />
+            <geom type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="link_3" />
+            <body name="link_4" pos="0.245 0 0.06">
+              <inertial pos="0.0571539 0.00034278 0.0571493" quat="0.920074 0.0752569 -0.302437 -0.237345" mass="0.437351" diaginertia="0.000646157 0.000620046 0.000277587" />
+              <joint name="joint_3" pos="0 0 0" axis="0 -1 0" range="-3.14 3.14"/>
+              <geom type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="link_4" class="visual" />
+              <geom type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="link_4" />
+              <body name="link_5" pos="0.06775 0 0.0455">
+                <inertial pos="0.00386239 -1.131e-05 -0.0431805" quat="0.493361 0.508191 0.506704 0.491516" mass="0.369824" diaginertia="0.000323392 0.000269994 0.000188325" />
+                <joint name="joint_4" pos="0 0 0" axis="0 0 -1" range="-3.14 3.14"/>
+                <geom type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="link_5" class="visual" />
+                <geom type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="link_5" />
+                <body name="link_6_follower_cam" pos="0.02895 0 -0.0455">
+                  <inertial pos="0.04551 0.00051 0.00947" quat="0.695176 0.581833 -0.296682 0.300301" mass="0.63463" diaginertia="0.926645 0.828608 0.751508" />
+                  <joint name="joint_5" pos="0 0 0" axis="1 0 0" range="-3.14 3.14"/>
+                  <geom type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="link_6_follower_cam" class="visual" />
+                  <geom type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="link_6_follower_cam" />
+                  <body name="gripper_follower_left" pos="0.078 0.021375 0">
+                    <inertial pos="0.00780825 -0.00528697 -0.00368479" quat="-0.015766 0.620047 0.409642 0.668944" mass="0.0761848" diaginertia="3.99422e-05 3.32818e-05 2.4216e-05" />
+                    <joint name="joint_gl" pos="0 0 0" axis="0 1 0" type="slide" range="0 0.05" />
+                    <geom type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="gripper_follower_left" class="visual" />
+                    <geom type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="gripper_follower_left" class="collision"/>
+                  </body>
+                  <body name="gripper_follower_right" pos="0.078 -0.021375 0">
+                    <inertial pos="0.00780824 0.00528691 0.0022109" quat="0.244995 0.59838 -0.162294 0.745372" mass="0.0761848" diaginertia="3.8731e-05 3.51617e-05 2.35473e-05" />
+                    <joint name="joint_gr" pos="0 0 0" axis="0 -1 0" type="slide" range="0 0.05" />
+                    <geom type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="gripper_follower_right" class="visual" />
+                    <geom type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="gripper_follower_right" class="collision"/>
+                  </body>
+                </body>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+
+  <actuator>
+    <position name="joint_0" joint="joint_0" class="wxai"/>
+    <position name="joint_1" joint="joint_1" class="wxai"/>
+    <position name="joint_2" joint="joint_2" class="wxai"/>
+    <position name="joint_3" joint="joint_3" class="wxai"/>
+    <position name="joint_4" joint="joint_4" class="wxai"/>
+    <position name="joint_5" joint="joint_5" class="wxai"/>
+    <position name="joint_gl" joint="joint_gl" class="wxai"/>
+    <position name="joint_gr" joint="joint_gr" class="wxai"/>
+  </actuator>
+
+</mujoco>

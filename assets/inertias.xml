@@ -1,0 +1,103 @@
+<!-- base_link -->
+<inertial>
+  <origin xyz="0.00052268 -0.00005365 0.03202305" rpy="0 0 0"/>
+  <mass value="0.45362020"/>
+  <inertia ixx="0.00041296" ixy="-1.8e-7" ixz="-1.8e-6" 
+           iyy="0.00043677" iyz="3.8e-7" izz="0.00020350"/>
+</inertial>
+
+<!-- link_1 -->
+<inertial>
+  <origin xyz="0.00021239 0.00381558 0.02072601" rpy="0 0 0"/>
+  <mass value="0.15843428"/>
+  <inertia ixx="0.00019568" ixy="5.8e-6" ixz="1.531e-5" 
+           iyy="0.00008633" iyz="5.45e-6" izz="0.00020268"/>
+</inertial>
+
+<!-- link_2 -->
+<inertial>
+  <origin xyz="-0.13013162 -0.00289256 0.00043205" rpy="0 0 0"/>
+  <mass value="1.18618542"/>
+  <inertia ixx="0.00105929" ixy="4.62e-6" ixz="6.11e-5" 
+           iyy="0.01757805" iyz="1.87e-6" izz="0.01814288"/>
+</inertial>
+
+<!-- link_3 -->
+<inertial>
+  <origin xyz="0.20081085 -0.00148559 0.05715902" rpy="0 0 0"/>
+  <mass value="1.08254926"/>
+  <inertia ixx="0.00096248" ixy="-1.11e-4" ixz="5.91e-4" 
+           iyy="0.00690323" iyz="-1.21e-5" izz="0.00717548"/>
+</inertial>
+
+<!-- link_4 -->
+<inertial>
+  <origin xyz="0.05715387 0.00034278 0.05714934" rpy="0 0 0"/>
+  <mass value="0.43735051"/>
+  <inertia ixx="0.00051288" ixy="-7.84e-6" ixz="1.73e-4" 
+           iyy="0.00062611" iyz="-7.96e-6" izz="0.00040480"/>
+</inertial>
+
+<!-- link_5 -->
+<inertial>
+  <origin xyz="0.00386239 -0.00001131 -0.04318054" rpy="0 0 0"/>
+  <mass value="0.36982410"/>
+  <inertia ixx="0.00018840" ixy="4.5e-7" ixz="2.45e-6" 
+           iyy="0.00032339" iyz="-3e-8" izz="0.00026992"/>
+</inertial>
+
+<!-- link_6_leader -->
+<inertial>
+  <origin xyz="0.04260435 -0.00000564 -0.00961530" rpy="0 0 0"/>
+  <mass value="0.58782068"/>
+  <inertia ixx="0.00106679" ixy="4.9e-7" ixz="6.518e-5" 
+           iyy="0.00096664" iyz="-1.5e-7" izz="0.00084059"/>
+</inertial>
+
+<!-- link_6_follower_cam -->
+<inertial>
+  <origin xyz="0.04551 0.00051 0.00947" rpy="0 0 0"/>
+  <mass value="0.63463"/>
+  <inertia ixx="0.86891" ixy="-0.00023699" ixz="0.04879" 
+           iyy="0.75399" iyz="0.01658" izz="0.88386"/>
+</inertial>
+
+<!-- link_6_follower_no_cam -->
+<inertial>
+  <origin xyz="0.04399695 -0.00000761 0.00001510" rpy="0 0 0"/>
+  <mass value="0.51498747"/>
+  <inertia ixx="0.00056037" ixy="5.1e-7" ixz="-9e-8" 
+           iyy="0.00045167" iyz="-4e-8" izz="0.00081937"/>
+</inertial>
+
+<!-- gripper_leader_left -->
+<inertial>
+  <origin xyz="0.00203592 -0.00158698 -0.01124986" rpy="0 0 0"/>
+  <mass value="0.07230515"/>
+  <inertia ixx="0.00004429" ixy="2.1e-6" ixz="8.6e-7" 
+           iyy="0.00003181" iyz="-3.39e-6" izz="0.00001895"/>
+</inertial>
+
+<!-- gripper_leader_right -->
+<inertial>
+  <origin xyz="0.00203592 0.00158689 -0.00503780" rpy="0 0 0"/>
+  <mass value="0.07230515"/>
+  <inertia ixx="0.00005161" ixy="-2.1e-6" ixz="-2.28e-6" 
+           iyy="0.00003913" iyz="7.97e-6" izz="0.00001895"/>
+</inertial>
+
+<!-- gripper_follower_left -->
+<inertial>
+  <origin xyz="0.00780825 -0.00528697 -0.00368479" rpy="0 0 0"/>
+  <mass value="0.07618477"/>
+  <inertia ixx="0.00002759" ixy="-0.00000495" ixz="-0.00000052" 
+           iyy="0.00003194" iyz="0.00000327" izz="0.00003791"/>
+</inertial>
+
+<!-- gripper_follower_right -->
+<inertial>
+  <origin xyz="0.00780824 0.00528691 0.00221090" rpy="0 0 0"/>
+  <mass value="0.07618477"/>
+  <inertia ixx="0.00002759" ixy="0.00000495" ixz="-0.00000275" 
+           iyy="0.00003194" iyz="0.00000203" izz="0.00003791"/>
+</inertial>
