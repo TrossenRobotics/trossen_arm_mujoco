@@ -7,7 +7,7 @@ pip install dm_control
 ```
 
 ```bash
-    python3 scripts/sim_env.py
+python3 scripts/sim_env.py
 ```
 
 # Set the environment variable
