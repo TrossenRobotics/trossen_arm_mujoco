@@ -83,15 +83,15 @@
                   <geom type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="link_6_follower_cam" class="collision"/>
                   <body name="left/gripper_follower_left" pos="0.078 0.021375 0">
                     <inertial pos="0.00780825 -0.00528697 -0.00368479" quat="-0.015766 0.620047 0.409642 0.668944" mass="0.0761848" diaginertia="3.99422e-05 3.32818e-05 2.4216e-05" />
-                    <joint name="left/joint_gl" pos="0 0 0" axis="0 1 0" type="slide" range="0 0.05" />
+                    <joint name="left/joint_gl" pos="0 0 0" axis="0 1 0" type="slide" range="0 0.07" />
                     <geom type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="gripper_follower_left" class="visual" />
-                    <geom condim="4" solimp="2 1 0.01" solref="0.01 1" friction="3 0.03 0.001" type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="gripper_follower_left" class="collision"/>
+                    <geom name="left/gripper_follower_left" condim="4" solimp="2 1 0.01" solref="0.01 1" friction="1 0.005 0.0001" type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="gripper_follower_left" class="collision"/>
                   </body>
                   <body name="left/gripper_follower_right" pos="0.078 -0.021375 0">
                     <inertial pos="0.00780824 0.00528691 0.0022109" quat="0.244995 0.59838 -0.162294 0.745372" mass="0.0761848" diaginertia="3.8731e-05 3.51617e-05 2.35473e-05" />
-                    <joint name="left/joint_gr" pos="0 0 0" axis="0 -1 0" type="slide" range="0 0.05"/>
+                    <joint name="left/joint_gr" pos="0 0 0" axis="0 -1 0" type="slide" range="0 0.07"/>
                     <geom type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="gripper_follower_right" class="visual" />
-                    <geom condim="4" solimp="2 1 0.01" solref="0.01 1" friction="3 0.03 0.001" type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="gripper_follower_right" class="collision"/>
+                    <geom name="left/gripper_follower_right" condim="4" solimp="2 1 0.01" solref="0.01 1" friction="1 0.005 0.0001" type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="gripper_follower_right" class="collision"/>
                   </body>
                 </body>
               </body>
@@ -138,16 +138,16 @@
                   <geom type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="link_6_follower_cam" class="collision"/>
                   <body name="right/gripper_follower_left" pos="0.078 0.021375 0">
                     <inertial pos="0.00780825 -0.00528697 -0.00368479" quat="-0.015766 0.620047 0.409642 0.668944" mass="0.0761848" diaginertia="3.99422e-05 3.32818e-05 2.4216e-05" />
-                    <joint name="right/joint_gl" pos="0 0 0" axis="0 1 0" type="slide" range="0 0.05" />
+                    <joint name="right/joint_gl" pos="0 0 0" axis="0 1 0" type="slide" range="0 0.07" />
                     <geom type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="gripper_follower_left" class="visual" />
-                    <geom condim="4" solimp="2 1 0.01" solref="0.01 1" friction="3 0.03 0.001" type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="gripper_follower_left" class="collision"/>
+                    <geom name="right/gripper_follower_left" condim="4" solimp="2 1 0.01" solref="0.01 1" friction="1 0.005 0.0001" type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="gripper_follower_left" class="collision"/>
                   </body>
                   <body name="right/gripper_follower_right" pos="0.078 -0.021375 0">
                     <inertial pos="0.00780824 0.00528691 0.0022109" quat="0.244995 0.59838 -0.162294 0.745372" mass="0.0761848" diaginertia="3.8731e-05 3.51617e-05 2.35473e-05" />
-                    <joint name="right/joint_gr" pos="0 0 0" axis="0 -1 0" type="slide" range="0 0.05" />
+                    <joint name="right/joint_gr" pos="0 0 0" axis="0 -1 0" type="slide" range="0 0.07" />
 
                     <geom type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="gripper_follower_right" class="visual" />
-                    <geom condim="4" solimp="2 1 0.01" solref="0.01 1" friction="3 0.03 0.001" type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="gripper_follower_right" class="collision"/>
+                    <geom name="right/gripper_follower_right" condim="4" solimp="2 1 0.01" solref="0.01 1" friction="1 0.005 0.0001" type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="gripper_follower_right" class="collision"/>
                   </body>
                 </body>
               </body>

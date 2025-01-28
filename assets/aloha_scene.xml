@@ -66,10 +66,10 @@
     </body>
 
 
-    <body name="box" pos="0.0 0.0 0.05">
-            <joint name="red_box_joint" type="free" frictionloss="0.01" />
-            <inertial pos="0 0 0" mass="0.05" diaginertia="0.002 0.002 0.002" />
-            <geom condim="4" solimp="0.95 0.98 0.01" solref="0.02 1" friction="2 0.02 0.001" pos="0 0 0" size="0.02 0.02 0.02" type="box" name="red_box" rgba="1 0 0 1"/>
+    <body name="box" pos="0.0 0.0 0.02">
+        <joint name="red_box_joint" type="free" frictionloss="0.01" />
+        <inertial pos="0 0 0" mass="0.05" diaginertia="0.002 0.002 0.002" />
+        <geom condim="4" solimp="2 1 0.01" solref="0.01 1" friction="1 0.005 0.0001" pos="0 0 0" size="0.02 0.02 0.02" type="box" name="red_box" rgba="1 0 0 1" />
     </body>
 
     <geom name="floor" size="2 2 0.05" type="plane" material="groundplane" pos="0 0 -.75"/>
@@ -80,7 +80,7 @@
 
     <geom mesh="tabletop" material="table" class="visual" pos="0 0 -0.75" quat="1 0 0 1"/>
     <geom mesh="tablelegs" material="table" class="visual" pos="0 0 -0.75" quat="1 0 0 1"/>
-    <geom name="table" pos="0 0 -0.1009" size="0.61 0.37 0.1" type="box" class="collision"/>
+    <geom name="table" pos="0 0 -0.1009" size="0.61 0.37 0.1" type="box" conaffinity="1" contype="1"/>
     <geom class="frame" pos="0.44 -0.361 1.03" quat="0 1 0 1" mesh="extrusion_2040_880"/>
     <geom class="frame" pos="0.44 -0.371 0.61" quat="1 0 -1 0" mesh="extrusion_150"/>
     <geom class="frame" pos="0 -0.303794 1.02524" quat="0 0 0.976296 0.21644" mesh="d405_solid"/>

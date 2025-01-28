@@ -10,9 +10,9 @@ import numpy as np
 XML_DIR="assets"
 DT = 0.02
 BOX_POSE = [None] # to be changed from outside
-START_ARM_POSE = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+START_ARM_POSE = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ,0.0])
 
-def make_sim_env(task_name: str):
+def make_sim_env():
     """
     Environment for simulated robot bi-manual manipulation, with joint position control
 
@@ -40,9 +40,9 @@ def make_sim_env(task_name: str):
     }
     """
     
-    xml_path = os.path.join(XML_DIR, 'aloha_scene.xml')
+    xml_path = os.path.join(XML_DIR, 'aloha_scene_joint.xml')
     physics = mujoco.Physics.from_xml_path(xml_path)
-    task = BimanualViperXTask(random=False)
+    task = TransferCubeTask(random=False)
 
     env = control.Environment(
         physics,
@@ -60,7 +60,28 @@ class BimanualViperXTask(base.Task):
         super().__init__(random=random)
 
 
+    # def before_step(self, action, physics):
+    #     print("Action: ", action)
+    #     # left_arm_action = action[:6]
+    #     # right_arm_action = action[7:7 + 6]
+    #     # normalized_left_gripper_action = action[6]
+    #     # normalized_right_gripper_action = action[7 + 6]
 
+    #     # left_gripper_action = FOLLOWER_GRIPPER_POSITION_UNNORMALIZE_FN(normalized_left_gripper_action)
+    #     # right_gripper_action = FOLLOWER_GRIPPER_POSITION_UNNORMALIZE_FN(normalized_right_gripper_action)
+
+    #     # full_left_gripper_action = [left_gripper_action, -left_gripper_action]
+    #     # full_right_gripper_action = [right_gripper_action, -right_gripper_action]
+
+    #     # env_action = np.concatenate([
+    #     #     left_arm_action,
+    #     #     full_left_gripper_action,
+    #     #     right_arm_action,
+    #     #     full_right_gripper_action,
+    #     # ])
+    #     super().before_step(action, physics)
+    #     return
+    
     def initialize_episode(self, physics):
         """Sets the state of the environment at the start of each episode."""
         super().initialize_episode(physics)
@@ -70,11 +91,20 @@ class BimanualViperXTask(base.Task):
     def get_env_state(physics):
         env_state = physics.data.qpos.copy()
         return env_state
+    
+    def get_position(self, physics):
+        position = physics.data.qpos.copy()
+        return position[:16]
+    
+    def get_velocity(self, physics):
+        velocity = physics.data.qvel.copy()
+        return velocity[:16]
+    
 
     def get_observation(self, physics) -> collections.OrderedDict:
         obs = collections.OrderedDict()
-        obs['qpos'] = physics.data.qpos.copy()
-        obs['qvel'] = physics.data.qvel.copy()
+        obs['qpos'] = self.get_position(physics)
+        obs['qvel'] = self.get_velocity(physics)
         obs['env_state'] = self.get_env_state(physics)
         obs['images'] = dict()
         obs['images']['camera_high'] = physics.render(height=480, width=640, camera_id='camera_high')
@@ -89,16 +119,63 @@ class BimanualViperXTask(base.Task):
 
     def get_reward(self, physics):
         # return whether left gripper is holding the box
-        return 0.0
+        raise NotImplementedError
 
 
 
+class TransferCubeTask(BimanualViperXTask):
+    def __init__(self, random=None):
+        super().__init__(random=random)
+        self.max_reward = 4
+
+    def initialize_episode(self, physics):
+        """Sets the state of the environment at the start of each episode."""
+        # TODO Notice: this function does not randomize the env configuration. Instead, set
+        # BOX_POSE from outside reset qpos, control and box position
+        with physics.reset_context():
+            physics.named.data.qpos[:16] = START_ARM_POSE
+            # np.copyto(physics.data.ctrl, START_ARM_POSE)
+            assert BOX_POSE[0] is not None
+            physics.named.data.qpos[-7:] = BOX_POSE[0]
+        super().initialize_episode(physics)
+
+    @staticmethod
+    def get_env_state(physics):
+        env_state = physics.data.qpos.copy()[16:]
+        return env_state
+
+    def get_reward(self, physics):
+        # return whether left gripper is holding the box
+        all_contact_pairs = []
+        for i_contact in range(physics.data.ncon):
+            id_geom_1 = physics.data.contact[i_contact].geom1
+            id_geom_2 = physics.data.contact[i_contact].geom2
+            name_geom_1 = physics.model.id2name(id_geom_1, 'geom')
+            name_geom_2 = physics.model.id2name(id_geom_2, 'geom')
+            contact_pair = (name_geom_1, name_geom_2)
+            all_contact_pairs.append(contact_pair)
+
+        touch_left_gripper = ("red_box", "left/gripper_follower_left") in all_contact_pairs
+        touch_right_gripper = ("red_box", "right/gripper_follower_left") in all_contact_pairs
+        touch_table = ("red_box", "table") in all_contact_pairs
+
+        reward = 0
+        if touch_right_gripper:
+            reward = 1
+        if touch_right_gripper and not touch_table: # lifted
+            reward = 2
+        if touch_left_gripper: # attempted transfer
+            reward = 3
+        if touch_left_gripper and not touch_table: # successful transfer
+            reward = 4
+        return reward
+    
 def test_sim_teleop():
     """ Testing teleoperation in sim with ALOHA. Requires hardware and ALOHA repo to work. """
     
 
     # setup the environment
-    env = make_sim_env('sim_transfer_cube')
+    env = make_sim_env()
     ts = env.reset()
     episode = [ts]
     # setup plotting
@@ -129,7 +206,7 @@ def test_sim_teleop():
     plt.ion()
 
     for t in range(1000):
-        action = np.random.uniform(-np.pi, np.pi, 14)
+        action = np.random.uniform(-np.pi, np.pi, 16)
         ts = env.step(action)
         episode.append(ts)
 

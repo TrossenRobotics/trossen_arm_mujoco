@@ -72,6 +72,7 @@ class PickAndTransferPolicy(BasePolicy):
 
         box_info = np.array(ts_first.observation['env_state'])
         box_xyz = box_info[:3]
+        print(f"Generate trajectory for {box_xyz=}")
         box_quat = box_info[3:]
         # print(f"Generate trajectory for {box_xyz=}")
 
@@ -84,24 +85,25 @@ class PickAndTransferPolicy(BasePolicy):
 
         self.left_trajectory = [
             {"t": 0, "xyz": init_mocap_pose_left[:3], "quat": init_mocap_pose_left[3:], "gripper": 0}, # sleep
-            {"t": 100, "xyz": meet_xyz + np.array([-0.4, 0, -0.02]), "quat": meet_left_quat.elements, "gripper": 0.05}, # approach meet position
-            {"t": 260, "xyz": meet_xyz + np.array([-0.4, 0, -0.02]), "quat": meet_left_quat.elements, "gripper": 0.05}, # move to meet position
-            {"t": 310, "xyz": meet_xyz + np.array([0.02, 0, -0.02]), "quat": meet_left_quat.elements, "gripper": 0.011}, # close gripper
-            {"t": 360, "xyz": meet_xyz + np.array([-0.1, 0, -0.02]), "quat": np.array([1, 0, 0, 0]), "gripper": 0.011}, # move left
-            {"t": 400, "xyz": meet_xyz + np.array([-0.1, 0, -0.02]), "quat": np.array([1, 0, 0, 0]), "gripper": 0.011}, # stay
+            {"t": 100, "xyz": meet_xyz + np.array([-0.4, 0, -0.02]), "quat": meet_left_quat.elements, "gripper": 0.06}, # approach meet position
+            {"t": 210, "xyz": meet_xyz + np.array([-0.2, 0, -0.02]), "quat": meet_left_quat.elements, "gripper": 0.065}, # move to meet position
+            {"t": 250, "xyz": meet_xyz + np.array([-0.13, 0, -0.02]), "quat": meet_left_quat.elements, "gripper": 0.065}, # move to meet position
+            {"t": 310, "xyz": meet_xyz + np.array([-0.12, 0, -0.02]), "quat": meet_left_quat.elements, "gripper": 0.02}, # close gripper
+            {"t": 360, "xyz": meet_xyz + np.array([-0.2, 0, -0.02]), "quat": meet_left_quat.elements, "gripper": 0.02}, # move left
+            {"t": 400, "xyz": meet_xyz + np.array([-0.2, 0, -0.02]), "quat": np.array([1, 0, 0, 0]), "gripper": 0.02}, # stay
         ]
 
         self.right_trajectory = [
             {"t": 0, "xyz": init_mocap_pose_right[:3], "quat": init_mocap_pose_right[3:], "gripper": 0}, # sleep
             {"t": 5, "xyz": init_mocap_pose_right[:3], "quat": init_mocap_pose_right[3:], "gripper": 0.05}, # open gripper
-            {"t": 90, "xyz": box_xyz + np.array([0.1, 0, 0.2]), "quat": gripper_pick_quat.elements, "gripper": 0.05}, # approach the cube
-            {"t": 130, "xyz": box_xyz + np.array([0.06, 0, 0.12]), "quat": gripper_pick_quat.elements, "gripper": 0.05}, # go down
-            {"t": 170, "xyz": box_xyz + np.array([0.06, 0, 0.12]), "quat": gripper_pick_quat.elements, "gripper": 0.011}, # close gripper
-            {"t": 200, "xyz": meet_xyz + np.array([0.1, 0, 0]), "quat": gripper_pick_quat.elements, "gripper": 0.011}, # approach meet position
-            {"t": 220, "xyz": meet_xyz + np.array([0.1, 0, 0]),  "quat": gripper_pick_quat.elements, "gripper": 0.011}, # move to meet position
-            {"t": 310, "xyz": meet_xyz + np.array([0.1, 0, 0]), "quat": gripper_pick_quat.elements, "gripper": 0.05}, # open gripper
-            {"t": 360, "xyz": meet_xyz + np.array([0.1, 0, 0]), "quat": gripper_pick_quat.elements, "gripper": 0.05}, # move to right
-            {"t": 400, "xyz": meet_xyz + np.array([0.1, 0, 0]), "quat": gripper_pick_quat.elements, "gripper": 0.05}, # stay
+            {"t": 90, "xyz": box_xyz + np.array([0.1, 0, 0.2]), "quat": gripper_pick_quat.elements, "gripper": 0.055}, # approach the cube
+            {"t": 130, "xyz": box_xyz + np.array([0.06, 0, 0.12]), "quat": gripper_pick_quat.elements, "gripper": 0.055}, # go down
+            {"t": 140, "xyz": box_xyz + np.array([0.06, 0, 0.12]), "quat": gripper_pick_quat.elements, "gripper": 0.02}, # close gripper
+            {"t": 200, "xyz": meet_xyz + np.array([0.08, 0, 0.1]), "quat": gripper_pick_quat.elements, "gripper": 0.02}, # approach meet position
+            {"t": 320, "xyz": meet_xyz + np.array([0.08, 0, 0.1]),  "quat": gripper_pick_quat.elements, "gripper": 0.02}, # move to meet position
+            {"t": 350, "xyz": meet_xyz + np.array([0.2, 0, 0.15]), "quat": gripper_pick_quat.elements, "gripper": 0.065}, # open gripper
+            {"t": 360, "xyz": meet_xyz + np.array([0.2, 0, 0.1]), "quat": gripper_pick_quat.elements, "gripper": 0.065}, # move to right
+            {"t": 400, "xyz": meet_xyz + np.array([0.2, 0, 0.1]), "quat": gripper_pick_quat.elements, "gripper": 0.065}, # stay
         ]
 
 
@@ -109,10 +111,10 @@ class PickAndTransferPolicy(BasePolicy):
 def test_policy(task_name):
     # example rolling out pick_and_transfer policy
     onscreen_render = True
-    inject_noise = False
+    inject_noise = True
 
     # setup the environment
-    episode_len = 500
+    episode_len = 400
     env = make_ee_sim_env('sim_transfer_cube')
     print(f"Action space: {env.action_spec().shape}")
    
@@ -121,8 +123,26 @@ def test_policy(task_name):
         ts = env.reset()
         episode = [ts]
         if onscreen_render:
-            ax = plt.subplot()
-            plt_img = ax.imshow(ts.observation['images']['camera_low'])
+            fig, axs = plt.subplots(2, 2, figsize=(10, 10))
+            plt_imgs = [
+                axs[0, 0].imshow(ts.observation['images']['camera_high']),
+                axs[0, 1].imshow(ts.observation['images']['camera_low']),
+                axs[1, 0].imshow(ts.observation['images']['camera_left_wrist']),
+                axs[1, 1].imshow(ts.observation['images']['camera_right_wrist']),
+            ]
+
+            # Optionally, add titles for better clarity
+            axs[0, 0].set_title("Camera High")
+            axs[0, 1].set_title("Camera Low")
+            axs[1, 0].set_title("Left Wrist Camera")
+            axs[1, 1].set_title("Right Wrist Camera")
+
+
+            # Remove axis ticks for better visualization
+            for ax in axs.flat:
+                ax.axis('off')
+
+            # plt.tight_layout()
             plt.ion()
 
         policy = PickAndTransferPolicy(inject_noise)
@@ -131,7 +151,10 @@ def test_policy(task_name):
             ts = env.step(action)
             episode.append(ts)
             if onscreen_render:
-                plt_img.set_data(ts.observation['images']['camera_low'])
+                plt_imgs[0].set_data(ts.observation['images']['camera_high'])
+                plt_imgs[1].set_data(ts.observation['images']['camera_low'])
+                plt_imgs[2].set_data(ts.observation['images']['camera_left_wrist'])
+                plt_imgs[3].set_data(ts.observation['images']['camera_right_wrist'])
                 plt.pause(0.02)
         plt.close()
 

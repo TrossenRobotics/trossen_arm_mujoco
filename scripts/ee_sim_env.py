@@ -9,11 +9,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
+from utils import sample_box_pose
+
 XML_DIR="assets"
 DT = 0.02
 BOX_POSE = [None] # to be changed from outside
-START_ARM_POSE = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
-
+START_ARM_POSE = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])  # Change to 16 for bimanual
 
 def make_ee_sim_env(task_name: str):
     """
@@ -83,15 +84,12 @@ class BimanualViperXEETask(base.Task):
         #     physics.data.ctrl,
         #     np.array([g_left_ctrl, -g_left_ctrl, g_right_ctrl, -g_right_ctrl])
         # )
-        print("Left Gripper: ", action_left[7])
-        print("Right Gripper: ", action_right[7])
+
         physics.data.qpos[6] = action_left[7]
         physics.data.qpos[7] = action_left[7]
         physics.data.qpos[14] = action_right[7]
         physics.data.qpos[15] = action_right[7]
 
-        print("Left Arm Pose: ", physics.data.qpos)
-        print("Qpos Length: ", len(physics.data.qpos))
 
     def initialize_robots(self, physics):
         # reset joint position
@@ -127,11 +125,19 @@ class BimanualViperXEETask(base.Task):
     def get_env_state(physics):
         raise NotImplementedError
 
+    def get_position(self, physics):
+        positions = physics.data.qpos.copy()
+        return positions[:16]
+    
+    def get_velocity(self, physics):
+        velocities = physics.data.qvel.copy()
+        return velocities[:16]
+    
     def get_observation(self, physics):
         # note: it is important to do .copy()
         obs = collections.OrderedDict()
-        obs['qpos'] = physics.data.qpos.copy()
-        obs['qvel'] = physics.data.qvel.copy()
+        obs['qpos'] = self.get_position(physics)
+        obs['qvel'] = self.get_velocity(physics)
         obs['env_state'] = self.get_env_state(physics)
         obs['images'] = dict()
         obs['images']['camera_high'] = physics.render(height=480, width=640, camera_id='camera_high')
@@ -165,7 +171,7 @@ class TransferCubeEETask(BimanualViperXEETask):
         """Sets the state of the environment at the start of each episode."""
         self.initialize_robots(physics)
         # randomize box position
-        cube_pose = [0.0, 0.0, 0.02, 1.0, 0.0, 0.0, 0.0]
+        cube_pose = sample_box_pose()
         box_start_idx = physics.model.name2id('red_box_joint', 'joint')
         np.copyto(physics.data.qpos[box_start_idx : box_start_idx + 7], cube_pose)
 
@@ -186,9 +192,8 @@ class TransferCubeEETask(BimanualViperXEETask):
             name_geom_2 = physics.model.id2name(id_geom_2, 'geom')
             contact_pair = (name_geom_1, name_geom_2)
             all_contact_pairs.append(contact_pair)
-
-        touch_left_gripper = ("red_box", "vx300s_left/10_left_gripper_finger") in all_contact_pairs
-        touch_right_gripper = ("red_box", "vx300s_right/10_right_gripper_finger") in all_contact_pairs
+        touch_left_gripper = ("red_box", "left/gripper_follower_left") in all_contact_pairs
+        touch_right_gripper = ("red_box", "right/gripper_follower_left") in all_contact_pairs
         touch_table = ("red_box", "table") in all_contact_pairs
 
         reward = 0

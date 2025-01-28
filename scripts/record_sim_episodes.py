@@ -5,10 +5,9 @@ import argparse
 import matplotlib.pyplot as plt
 import h5py
 
-from constants import FOLLOWER_GRIPPER_POSITION_NORMALIZE_FN, SIM_TASK_CONFIGS
 from ee_sim_env import make_ee_sim_env
 from sim_env import make_sim_env, BOX_POSE
-from scripted_policy import PickAndTransferPolicy, InsertionPolicy
+from scripted_policy import PickAndTransferPolicy
 
 import IPython
 e = IPython.embed
@@ -23,24 +22,19 @@ def main(args):
     Save this episode of data, and continue to next episode of data collection.
     """
 
-    task_name = args['task_name']
-    dataset_dir = args['dataset_dir']
-    num_episodes = args['num_episodes']
-    onscreen_render = args['onscreen_render']
+    task_name = "sim_transfer_cube"
+    dataset_dir = "aloha_data/ee_sim_episodes"
+    num_episodes = 5
+    onscreen_render = True
     inject_noise = False
     render_cam_name = 'angle'
 
     if not os.path.isdir(dataset_dir):
         os.makedirs(dataset_dir, exist_ok=True)
 
-    episode_len = SIM_TASK_CONFIGS[task_name]['episode_len']
-    camera_names = SIM_TASK_CONFIGS[task_name]['camera_names']
-    if task_name == 'sim_transfer_cube_scripted':
-        policy_cls = PickAndTransferPolicy
-    elif task_name == 'sim_insertion_scripted':
-        policy_cls = InsertionPolicy
-    else:
-        raise NotImplementedError
+    episode_len = 10
+    camera_names = ['camera_right_wrist', 'camera_left_wrist', 'camera_high', 'camera_low']
+    policy_cls = PickAndTransferPolicy
 
     success = []
     for episode_idx in range(num_episodes):
@@ -53,16 +47,39 @@ def main(args):
         policy = policy_cls(inject_noise)
         # setup plotting
         if onscreen_render:
-            ax = plt.subplot()
-            plt_img = ax.imshow(ts.observation['images'][render_cam_name])
+            fig, axs = plt.subplots(2, 2, figsize=(10, 10))
+            plt_imgs = [
+                axs[0, 0].imshow(ts.observation['images']['camera_high']),
+                axs[0, 1].imshow(ts.observation['images']['camera_low']),
+                axs[1, 0].imshow(ts.observation['images']['camera_left_wrist']),
+                axs[1, 1].imshow(ts.observation['images']['camera_right_wrist']),
+            ]
+
+            # Optionally, add titles for better clarity
+            axs[0, 0].set_title("Camera High")
+            axs[0, 1].set_title("Camera Low")
+            axs[1, 0].set_title("Left Wrist Camera")
+            axs[1, 1].set_title("Right Wrist Camera")
+
+
+            # Remove axis ticks for better visualization
+            for ax in axs.flat:
+                ax.axis('off')
+
+            # plt.tight_layout()
             plt.ion()
         for step in range(episode_len):
             action = policy(ts)
             ts = env.step(action)
             episode.append(ts)
+            # print(f"{step=}, {ts.observation['qpos']=}")
             if onscreen_render:
-                plt_img.set_data(ts.observation['images'][render_cam_name])
-                plt.pause(0.002)
+                if onscreen_render:
+                    plt_imgs[0].set_data(ts.observation['images']['camera_high'])
+                    plt_imgs[1].set_data(ts.observation['images']['camera_low'])
+                    plt_imgs[2].set_data(ts.observation['images']['camera_left_wrist'])
+                    plt_imgs[3].set_data(ts.observation['images']['camera_right_wrist'])
+                    plt.pause(0.02)
         plt.close()
 
         episode_return = np.sum([ts.reward for ts in episode[1:]])
@@ -74,38 +91,71 @@ def main(args):
 
         joint_traj = [ts.observation['qpos'] for ts in episode]
         # replace gripper pose with gripper control
-        gripper_ctrl_traj = [ts.observation['gripper_ctrl'] for ts in episode]
-        for joint, ctrl in zip(joint_traj, gripper_ctrl_traj):
-            left_ctrl = FOLLOWER_GRIPPER_POSITION_NORMALIZE_FN(ctrl[0])
-            right_ctrl = FOLLOWER_GRIPPER_POSITION_NORMALIZE_FN(ctrl[2])
-            joint[6] = left_ctrl
-            joint[6+7] = right_ctrl
+        # gripper_ctrl_traj = [ts.observation['gripper_ctrl'] for ts in episode]
+        # for joint, ctrl in zip(joint_traj, gripper_ctrl_traj):
+        #     left_ctrl = FOLLOWER_GRIPPER_POSITION_NORMALIZE_FN(ctrl[0])
+        #     right_ctrl = FOLLOWER_GRIPPER_POSITION_NORMALIZE_FN(ctrl[2])
+        #     joint[6] = left_ctrl
+        #     joint[6+7] = right_ctrl
 
         subtask_info = episode[0].observation['env_state'].copy() # box pose at step 0
-
+        print(f"Box Pose at step 0: {subtask_info}, Box Pose at step 1: {episode[1].observation['env_state']}")
         # clear unused variables
         del env
         del episode
         del policy
+        del axs
+        del plt_imgs
+
 
         # setup the environment
         print('Replaying joint commands')
-        env = make_sim_env(task_name)
+        env = make_sim_env()
         BOX_POSE[0] = subtask_info # make sure the sim_env has the same object configurations as ee_sim_env
         ts = env.reset()
-
         episode_replay = [ts]
         # setup plotting
         if onscreen_render:
-            ax = plt.subplot()
-            plt_img = ax.imshow(ts.observation['images'][render_cam_name])
+            fig, axs = plt.subplots(2, 3, figsize=(10, 10))
+            plt_imgs = [
+                axs[0, 0].imshow(ts.observation['images']['camera_high']),
+                axs[0, 1].imshow(ts.observation['images']['camera_low']),
+                axs[0, 2].imshow(ts.observation['images']['camera_teleop']),
+                axs[1, 0].imshow(ts.observation['images']['camera_left_wrist']),
+                axs[1, 1].imshow(ts.observation['images']['camera_right_wrist']),
+                axs[1, 2].imshow(ts.observation['images']['camera_collaborate']),
+            ]
+
+            # Optionally, add titles for better clarity
+            axs[0, 0].set_title("Camera High")
+            axs[0, 1].set_title("Camera Low")
+            axs[0, 2].set_title("Teleoperator POV")
+            axs[1, 0].set_title("Left Wrist Camera")
+            axs[1, 1].set_title("Right Wrist Camera")
+            axs[1, 2].set_title("Collaborator POV")
+
+
+            # Remove axis ticks for better visualization
+            for ax in axs.flat:
+                ax.axis('off')
+
+            # plt.tight_layout()
             plt.ion()
+
         for t in range(len(joint_traj)): # note: this will increase episode length by 1
             action = joint_traj[t]
+            # print(f"{t=}, {action=}")
             ts = env.step(action)
+            # print(f"{ts.observation['qpos']=}")
+
             episode_replay.append(ts)
             if onscreen_render:
-                plt_img.set_data(ts.observation['images'][render_cam_name])
+                plt_imgs[0].set_data(ts.observation['images']['camera_high'])
+                plt_imgs[1].set_data(ts.observation['images']['camera_low'])
+                plt_imgs[2].set_data(ts.observation['images']['camera_teleop'])
+                plt_imgs[3].set_data(ts.observation['images']['camera_left_wrist'])
+                plt_imgs[4].set_data(ts.observation['images']['camera_right_wrist'])
+                plt_imgs[5].set_data(ts.observation['images']['camera_collaborate'])
                 plt.pause(0.02)
 
         episode_return = np.sum([ts.reward for ts in episode_replay[1:]])
@@ -167,9 +217,9 @@ def main(args):
                                          chunks=(1, 480, 640, 3), )
             # compression='gzip',compression_opts=2,)
             # compression=32001, compression_opts=(0, 0, 0, 0, 9, 1, 1), shuffle=False)
-            qpos = obs.create_dataset('qpos', (max_timesteps, 14))
-            qvel = obs.create_dataset('qvel', (max_timesteps, 14))
-            action = root.create_dataset('action', (max_timesteps, 14))
+            qpos = obs.create_dataset('qpos', (max_timesteps, 16))
+            qvel = obs.create_dataset('qvel', (max_timesteps, 16))
+            action = root.create_dataset('action', (max_timesteps, 16))
 
             for name, array in data_dict.items():
                 root[name][...] = array
@@ -180,9 +230,9 @@ def main(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--task_name', action='store', type=str, help='task_name', required=True)
-    parser.add_argument('--dataset_dir', action='store', type=str, help='dataset saving dir', required=True)
-    parser.add_argument('--num_episodes', action='store', type=int, help='num_episodes', required=False)
-    parser.add_argument('--onscreen_render', action='store_true')
+    # parser.add_argument('--task_name', action='store', type=str, help='task_name', required=True)
+    # parser.add_argument('--dataset_dir', action='store', type=str, help='dataset saving dir', required=True)
+    # parser.add_argument('--num_episodes', action='store', type=int, help='num_episodes', required=False)
+    # parser.add_argument('--onscreen_render', action='store_true')
 
     main(vars(parser.parse_args()))
