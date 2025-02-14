@@ -6,7 +6,7 @@
   <statistic center="0 -0.1 0.2" extent="0.6" meansize="0.05"/>
 
   <visual>
-    <headlight diffuse="0.6 0.6 0.6" ambient="0.3 0.3 0.3" specular="0 0 0"/>
+    <headlight diffuse="0.6 0.65 0.75" ambient="0.5 0.5 0.6" specular="0.1 0.1 0.1"/>
     <rgba haze="0.15 0.25 0.35 1"/>
     <global azimuth="90" elevation="-20"/>
     <quality shadowsize="8192"/>
@@ -30,13 +30,16 @@
     <mesh file="tablelegs.obj"/>
     <mesh file="tabletop.obj"/>
 
-    <texture type="skybox" builtin="gradient" rgb1="1.0 1.0 1.0" rgb2="0.5 0.5 0.5" width="512" height="3072"/>
+    <texture type="skybox" builtin="gradient" rgb1="0.9725 0.9608 0.8706" rgb2="0.5 0.5 0.5" width="512" height="3072"/>
     <texture type="2d" name="groundplane" builtin="checker" mark="edge" rgb1="0.2 0.3 0.4" rgb2="0.1 0.2 0.3"
       markrgb="0.8 0.8 0.8" width="300" height="300"/>
     <texture type="2d" file="small_meta_table_diffuse.png"/>
     <material name="groundplane" texture="groundplane" texuniform="true" texrepeat="5 5" reflectance="0.2"/>
-    <material name="table" texture="small_meta_table_diffuse"/>
+    <material name="table" rgba="0.15 0.15 0.15 1.0"/>
     <material name="metal" rgba="0.517 0.529 0.537 1"/>
+    <texture name="carpet_texture" type="2d" file="carpeteven.png"/>
+    <material name="carpet" texture="carpet_texture" texuniform="true" texrepeat="1 1" reflectance="0.0001"/>
+    <material name="white_wall" rgba="0.9725 0.9608 0.8706 1"/>
   </asset>
 
   <default>
@@ -46,15 +49,20 @@
   </default>
 
   <worldbody>
-    <light pos="0 0.1 2.5"/>
+    <light name="top_light_1" pos="0.5 0 1.5" dir="0 0 -1" diffuse="0.7 0.7 0.7" specular="0.3 0.3 0.3" directional="false"/>
+
+    <!-- Light 2: Positioned above the table -->
+    <light name="top_light_2" pos="-0.5 0 1.5" dir="0 0 -1" diffuse="0.7 0.7 0.7" specular="0.3 0.3 0.3" directional="false"/>
+
 
     <body name="box" pos="0.0 0.0 0.02">
         <joint name="red_box_joint" type="free" frictionloss="0.01" />
         <inertial pos="0 0 0" mass="0.05" diaginertia="0.002 0.002 0.002" />
         <geom condim="4" solimp="2 1 0.01" solref="0.01 1" friction="1 0.005 0.0001" pos="0 0 0" size="0.02 0.02 0.02" type="box" name="red_box" rgba="1 0 0 1" />
     </body>
+    <geom name="white_wall" pos="0 0.5 0.05" size="10 0.05 1" type="box" material="white_wall"/>
 
-    <geom name="floor" size="2 2 0.05" type="plane" material="groundplane" pos="0 0 -.75"/>
+    <geom name="floor" size="20 20 0.05" type="plane" material="carpet" pos="0 0 -.75"/>
     <site name="worldref" pos="0 0 -0.75"/>
     <camera name="camera_high" pos="0 -0.303794 1.02524" euler="0 0 0.4363" resolution="1920 1080" mode="fixed"  focal="1.93e-3 1.93e-3" sensorsize="0.0037 0.0021"/>
     <camera name="camera_low" pos="0 -0.377167 0.0316055" euler="0 0 1.666" resolution="1920 1080" mode="fixed"  focal="1.93e-3 1.93e-3" sensorsize="0.0037 0.0021"/>

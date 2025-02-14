@@ -180,8 +180,8 @@ import os
 # ### env utils
 
 def sample_box_pose():
-    x_range = [-0.1, 0.1]
-    y_range = [-0.1, 0.1]
+    x_range = [-0.1, 0.2]
+    y_range = [-0.15, 0.15]
     z_range = [0.02, 0.02]
 
     ranges = np.vstack([x_range, y_range, z_range])

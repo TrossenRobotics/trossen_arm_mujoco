@@ -85,7 +85,7 @@ class PickAndTransferPolicy(BasePolicy):
 
         self.left_trajectory = [
             {"t": 0, "xyz": init_mocap_pose_left[:3], "quat": init_mocap_pose_left[3:], "gripper": 0}, # sleep
-            {"t": 100, "xyz": meet_xyz + np.array([-0.4, 0, -0.02]), "quat": meet_left_quat.elements, "gripper": 0.06}, # approach meet position
+            {"t": 100, "xyz": meet_xyz + np.array([-0.3, 0, -0.02]), "quat": meet_left_quat.elements, "gripper": 0.06}, # approach meet position
             {"t": 210, "xyz": meet_xyz + np.array([-0.2, 0, -0.02]), "quat": meet_left_quat.elements, "gripper": 0.065}, # move to meet position
             {"t": 250, "xyz": meet_xyz + np.array([-0.13, 0, -0.02]), "quat": meet_left_quat.elements, "gripper": 0.065}, # move to meet position
             {"t": 310, "xyz": meet_xyz + np.array([-0.12, 0, -0.02]), "quat": meet_left_quat.elements, "gripper": 0.02}, # close gripper
@@ -101,8 +101,8 @@ class PickAndTransferPolicy(BasePolicy):
             {"t": 140, "xyz": box_xyz + np.array([0.06, 0, 0.12]), "quat": gripper_pick_quat.elements, "gripper": 0.02}, # close gripper
             {"t": 200, "xyz": meet_xyz + np.array([0.08, 0, 0.1]), "quat": gripper_pick_quat.elements, "gripper": 0.02}, # approach meet position
             {"t": 320, "xyz": meet_xyz + np.array([0.08, 0, 0.1]),  "quat": gripper_pick_quat.elements, "gripper": 0.02}, # move to meet position
-            {"t": 350, "xyz": meet_xyz + np.array([0.2, 0, 0.15]), "quat": gripper_pick_quat.elements, "gripper": 0.065}, # open gripper
-            {"t": 360, "xyz": meet_xyz + np.array([0.2, 0, 0.1]), "quat": gripper_pick_quat.elements, "gripper": 0.065}, # move to right
+            {"t": 350, "xyz": meet_xyz + np.array([0.08, 0, 0.1]), "quat": gripper_pick_quat.elements, "gripper": 0.065}, # open gripper
+            {"t": 360, "xyz": meet_xyz + np.array([0.2, 0, 0.15]), "quat": gripper_pick_quat.elements, "gripper": 0.065}, # move to right
             {"t": 400, "xyz": meet_xyz + np.array([0.2, 0, 0.1]), "quat": gripper_pick_quat.elements, "gripper": 0.065}, # stay
         ]
 
@@ -115,7 +115,7 @@ def test_policy(task_name):
 
     # setup the environment
     episode_len = 400
-    env = make_ee_sim_env('sim_transfer_cube')
+    env = make_ee_sim_env('sim_transfer_cube', onscreen_render=onscreen_render)
     print(f"Action space: {env.action_spec().shape}")
    
 

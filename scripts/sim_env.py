@@ -60,46 +60,61 @@ class BimanualViperXTask(base.Task):
         super().__init__(random=random)
 
 
-    # def before_step(self, action, physics):
-    #     print("Action: ", action)
-    #     # left_arm_action = action[:6]
-    #     # right_arm_action = action[7:7 + 6]
-    #     # normalized_left_gripper_action = action[6]
-    #     # normalized_right_gripper_action = action[7 + 6]
+    def before_step(self, action, physics):
+        left_arm_action = action[:6]
+        right_arm_action = action[8:8 + 6]
+        normalized_left_gripper_action = action[6]
+        normalized_right_gripper_action = action[8 + 6]
 
-    #     # left_gripper_action = FOLLOWER_GRIPPER_POSITION_UNNORMALIZE_FN(normalized_left_gripper_action)
-    #     # right_gripper_action = FOLLOWER_GRIPPER_POSITION_UNNORMALIZE_FN(normalized_right_gripper_action)
+        # Clamp gripper values to 0.3 or 0.65
+        # if normalized_left_gripper_action < 0.028:
+        #     normalized_left_gripper_action = 0.02
+        # else:
+        #     normalized_left_gripper_action = 0.065
 
-    #     # full_left_gripper_action = [left_gripper_action, -left_gripper_action]
-    #     # full_right_gripper_action = [right_gripper_action, -right_gripper_action]
+        # if normalized_right_gripper_action < 0.028:
+        #     normalized_right_gripper_action = 0.02
+        # else:
+        #     normalized_right_gripper_action = 0.065
 
-    #     # env_action = np.concatenate([
-    #     #     left_arm_action,
-    #     #     full_left_gripper_action,
-    #     #     right_arm_action,
-    #     #     full_right_gripper_action,
-    #     # ])
-    #     super().before_step(action, physics)
-    #     return
+        # Assign the processed gripper actions
+        left_gripper_action = normalized_left_gripper_action
+        right_gripper_action = normalized_right_gripper_action
+
+        # Ensure both gripper fingers act oppositely
+        full_left_gripper_action = [left_gripper_action, left_gripper_action]
+        full_right_gripper_action = [right_gripper_action, right_gripper_action]
+
+        # Concatenate the final action array
+        env_action = np.concatenate([
+            left_arm_action,
+            full_left_gripper_action,
+            right_arm_action,
+            full_right_gripper_action,
+        ])
+        # print(f"action: {action}")
+        # print(f"env_action: {env_action}")
+        super().before_step(env_action, physics)
+
+        return
     
     def initialize_episode(self, physics):
         """Sets the state of the environment at the start of each episode."""
         super().initialize_episode(physics)
 
-  
+
     @staticmethod
     def get_env_state(physics):
         env_state = physics.data.qpos.copy()
         return env_state
-    
+
     def get_position(self, physics):
         position = physics.data.qpos.copy()
         return position[:16]
-    
+
     def get_velocity(self, physics):
         velocity = physics.data.qvel.copy()
         return velocity[:16]
-    
 
     def get_observation(self, physics) -> collections.OrderedDict:
         obs = collections.OrderedDict()
@@ -111,8 +126,8 @@ class BimanualViperXTask(base.Task):
         obs['images']['camera_low'] = physics.render(height=480, width=640, camera_id='camera_low')
         obs['images']['camera_left_wrist'] = physics.render(height=480, width=640, camera_id='camera_left_wrist')
         obs['images']['camera_right_wrist'] = physics.render(height=480, width=640, camera_id='camera_right_wrist')
-        obs['images']['camera_teleop'] = physics.render(height=480, width=640, camera_id='teleoperator_pov')
-        obs['images']['camera_collaborate'] = physics.render(height=480, width=640, camera_id='collaborator_pov')
+        # obs['images']['camera_teleop'] = physics.render(height=480, width=640, camera_id='teleoperator_pov')
+        # obs['images']['camera_collaborate'] = physics.render(height=480, width=640, camera_id='collaborator_pov')
 
 
         return obs
@@ -169,33 +184,32 @@ class TransferCubeTask(BimanualViperXTask):
         if touch_left_gripper and not touch_table: # successful transfer
             reward = 4
         return reward
-    
+
 def test_sim_teleop():
     """ Testing teleoperation in sim with ALOHA. Requires hardware and ALOHA repo to work. """
-    
 
     # setup the environment
     env = make_sim_env()
     ts = env.reset()
     episode = [ts]
     # setup plotting
-    fig, axs = plt.subplots(2, 3, figsize=(10, 10))
+    fig, axs = plt.subplots(2, 2, figsize=(10, 10))
     plt_imgs = [
         axs[0, 0].imshow(ts.observation['images']['camera_high']),
         axs[0, 1].imshow(ts.observation['images']['camera_low']),
-        axs[0, 2].imshow(ts.observation['images']['camera_teleop']),
+        # axs[0, 2].imshow(ts.observation['images']['camera_teleop']),
         axs[1, 0].imshow(ts.observation['images']['camera_left_wrist']),
         axs[1, 1].imshow(ts.observation['images']['camera_right_wrist']),
-        axs[1, 2].imshow(ts.observation['images']['camera_collaborate']),
+        # axs[1, 2].imshow(ts.observation['images']['camera_collaborate']),
     ]
 
     # Optionally, add titles for better clarity
     axs[0, 0].set_title("Camera High")
     axs[0, 1].set_title("Camera Low")
-    axs[0, 2].set_title("Teleoperator POV")
+    # axs[0, 2].set_title("Teleoperator POV")
     axs[1, 0].set_title("Left Wrist Camera")
     axs[1, 1].set_title("Right Wrist Camera")
-    axs[1, 2].set_title("Collaborator POV")
+    # axs[1, 2].set_title("Collaborator POV")
 
 
     # Remove axis ticks for better visualization
@@ -214,13 +228,10 @@ def test_sim_teleop():
         plt_imgs[1].set_data(ts.observation['images']['camera_low'])
         plt_imgs[3].set_data(ts.observation['images']['camera_left_wrist'])
         plt_imgs[4].set_data(ts.observation['images']['camera_right_wrist'])
-        plt_imgs[2].set_data(ts.observation['images']['camera_teleop'])
-        plt_imgs[5].set_data(ts.observation['images']['camera_collaborate'])
-
+        # plt_imgs[2].set_data(ts.observation['images']['camera_teleop'])
+        # plt_imgs[5].set_data(ts.observation['images']['camera_collaborate'])
 
         plt.pause(0.02)
-
-
 
 if __name__ == '__main__':
     test_sim_teleop()

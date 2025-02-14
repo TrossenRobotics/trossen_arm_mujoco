@@ -40,8 +40,8 @@
   
 
   <worldbody>
-    <light mode="targetbodycom" target="left/link_6_follower_cam" pos="-.5 .7 2.5" cutoff="55"/>
-    <light mode="targetbodycom" target="right/link_6_follower_cam" pos=".5 .7 2.5" cutoff="55"/>
+    <!-- <light mode="targetbodycom" target="left/link_6_follower_cam" pos="-.5 .7 2.5" cutoff="55"/>
+    <light mode="targetbodycom" target="right/link_6_follower_cam" pos=".5 .7 2.5" cutoff="55"/> -->
     <camera name="teleoperator_pov" pos="0 -1.354 0.685" xyaxes="1 0 0 0 0.2 .8" fovy="53.13" resolution="640 640" mode="targetbody"/>
     <camera name="collaborator_pov" pos="0 1.5 0.8" xyaxes="-1 0 0 0 -0.2 .8" fovy="53.13" resolution="640 640" mode="targetbody"/>
 

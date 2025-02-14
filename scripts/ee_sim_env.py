@@ -16,7 +16,7 @@ DT = 0.02
 BOX_POSE = [None] # to be changed from outside
 START_ARM_POSE = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])  # Change to 16 for bimanual
 
-def make_ee_sim_env(task_name: str):
+def make_ee_sim_env(task_name: str, onscreen_render=False):
     """
     Environment for simulated robot bi-manual manipulation, with end-effector control.
 
@@ -46,7 +46,7 @@ def make_ee_sim_env(task_name: str):
     if 'sim_transfer_cube' in task_name:
         xml_path = os.path.join(XML_DIR, 'aloha_scene.xml')
         physics = mujoco.Physics.from_xml_path(xml_path)
-        task = TransferCubeEETask(random=False)
+        task = TransferCubeEETask(random=False, onscreen_render=onscreen_render)
    
     else:
         raise NotImplementedError
@@ -61,8 +61,9 @@ def make_ee_sim_env(task_name: str):
 
 
 class BimanualViperXEETask(base.Task):
-    def __init__(self, random=None):
+    def __init__(self, random=None, onscreen_render=False):
         super().__init__(random=random)
+        self.on_screen_render = onscreen_render
 
     def before_step(self, action, physics):
         a_len = len(action) // 2
@@ -120,7 +121,6 @@ class BimanualViperXEETask(base.Task):
         """Sets the state of the environment at the start of each episode."""
         super().initialize_episode(physics)
 
-
     @staticmethod
     def get_env_state(physics):
         raise NotImplementedError
@@ -128,23 +128,26 @@ class BimanualViperXEETask(base.Task):
     def get_position(self, physics):
         positions = physics.data.qpos.copy()
         return positions[:16]
-    
+
     def get_velocity(self, physics):
         velocities = physics.data.qvel.copy()
         return velocities[:16]
-    
+
     def get_observation(self, physics):
         # note: it is important to do .copy()
         obs = collections.OrderedDict()
         obs['qpos'] = self.get_position(physics)
+        # print(f"qpos: {obs['qpos']}")
         obs['qvel'] = self.get_velocity(physics)
         obs['env_state'] = self.get_env_state(physics)
-        obs['images'] = dict()
-        obs['images']['camera_high'] = physics.render(height=480, width=640, camera_id='camera_high')
-        obs['images']['camera_low'] = physics.render(height=480, width=640, camera_id='camera_low')
-        obs['images']['camera_left_wrist'] = physics.render(height=480, width=640, camera_id='camera_left_wrist')
-        obs['images']['camera_right_wrist'] = physics.render(height=480, width=640, camera_id='camera_right_wrist')
-        # used in scripted policy to obtain starting pose
+
+        if self.on_screen_render:
+            obs['images'] = dict()
+            obs['images']['camera_high'] = physics.render(height=480, width=640, camera_id='camera_high')
+            obs['images']['camera_low'] = physics.render(height=480, width=640, camera_id='camera_low')
+            obs['images']['camera_left_wrist'] = physics.render(height=480, width=640, camera_id='camera_left_wrist')
+            obs['images']['camera_right_wrist'] = physics.render(height=480, width=640, camera_id='camera_right_wrist')
+            # used in scripted policy to obtain starting pose
         obs['mocap_pose_left'] = np.concatenate([
             physics.data.mocap_pos[0],
             physics.data.mocap_quat[0]
@@ -163,8 +166,8 @@ class BimanualViperXEETask(base.Task):
 
 
 class TransferCubeEETask(BimanualViperXEETask):
-    def __init__(self, random=None):
-        super().__init__(random=random)
+    def __init__(self, random=None, onscreen_render=False):
+        super().__init__(random=random, onscreen_render=onscreen_render)
         self.max_reward = 4
 
     def initialize_episode(self, physics):
@@ -209,47 +212,49 @@ class TransferCubeEETask(BimanualViperXEETask):
 
 
 def test_ee_sim_env():
+    onscreen_render = False
      # setup the environment
-    env = make_ee_sim_env('sim_transfer_cube')
+    env = make_ee_sim_env('sim_transfer_cube', onscreen_render)
     # print(f"Action space: {env.action_spec().shape}")
     ts = env.reset()
     episode = [ts]
     # setup plotting
-    fig, axs = plt.subplots(2, 2, figsize=(10, 10))
-    plt_imgs = [
-        axs[0, 0].imshow(ts.observation['images']['camera_high']),
-        axs[0, 1].imshow(ts.observation['images']['camera_low']),
-        axs[1, 0].imshow(ts.observation['images']['camera_left_wrist']),
-        axs[1, 1].imshow(ts.observation['images']['camera_right_wrist']),
-    ]
+    if onscreen_render:
+        fig, axs = plt.subplots(2, 2, figsize=(10, 10))
+        plt_imgs = [
+            axs[0, 0].imshow(ts.observation['images']['camera_high']),
+            axs[0, 1].imshow(ts.observation['images']['camera_low']),
+            axs[1, 0].imshow(ts.observation['images']['camera_left_wrist']),
+            axs[1, 1].imshow(ts.observation['images']['camera_right_wrist']),
+        ]
 
-    # Optionally, add titles for better clarity
-    axs[0, 0].set_title("Camera High")
-    axs[0, 1].set_title("Camera Low")
-    axs[1, 0].set_title("Left Wrist Camera")
-    axs[1, 1].set_title("Right Wrist Camera")
+        # Optionally, add titles for better clarity
+        axs[0, 0].set_title("Camera High")
+        axs[0, 1].set_title("Camera Low")
+        axs[1, 0].set_title("Left Wrist Camera")
+        axs[1, 1].set_title("Right Wrist Camera")
 
 
-    # Remove axis ticks for better visualization
-    for ax in axs.flat:
-        ax.axis('off')
+        # Remove axis ticks for better visualization
+        for ax in axs.flat:
+            ax.axis('off')
 
-    # plt.tight_layout()
-    plt.ion()
+        # plt.tight_layout()
+        plt.ion()
 
     for t in range(1000):
-        action = np.random.uniform(-np.pi, np.pi, 14)
+        action = np.random.uniform(-0.1, 0.1, 23)
         ts = env.step(action)
         episode.append(ts)
+        if onscreen_render:
+            plt_imgs[0].set_data(ts.observation['images']['camera_high'])
+            plt_imgs[1].set_data(ts.observation['images']['camera_low'])
+            plt_imgs[2].set_data(ts.observation['images']['camera_left_wrist'])
+            plt_imgs[3].set_data(ts.observation['images']['camera_right_wrist'])
 
-        plt_imgs[0].set_data(ts.observation['images']['camera_high'])
-        plt_imgs[1].set_data(ts.observation['images']['camera_low'])
-        plt_imgs[2].set_data(ts.observation['images']['camera_left_wrist'])
-        plt_imgs[3].set_data(ts.observation['images']['camera_right_wrist'])
 
 
-
-        plt.pause(0.02)
+            plt.pause(0.02)
 
 
 

@@ -8,7 +8,7 @@ import h5py
 from ee_sim_env import make_ee_sim_env
 from sim_env import make_sim_env, BOX_POSE
 from scripted_policy import PickAndTransferPolicy
-
+from tqdm import tqdm
 import IPython
 e = IPython.embed
 
@@ -23,16 +23,15 @@ def main(args):
     """
 
     task_name = "sim_transfer_cube"
-    dataset_dir = "aloha_data/ee_sim_episodes"
-    num_episodes = 5
-    onscreen_render = True
+    dataset_dir = "aloha_data/ee_sim_episodes_9"
+    num_episodes = 30
+    onscreen_render = False
     inject_noise = False
-    render_cam_name = 'angle'
 
     if not os.path.isdir(dataset_dir):
         os.makedirs(dataset_dir, exist_ok=True)
 
-    episode_len = 10
+    episode_len = 400
     camera_names = ['camera_right_wrist', 'camera_left_wrist', 'camera_high', 'camera_low']
     policy_cls = PickAndTransferPolicy
 
@@ -41,7 +40,7 @@ def main(args):
         print(f'{episode_idx=}')
         print('Rollout out EE space scripted policy')
         # setup the environment
-        env = make_ee_sim_env(task_name)
+        env = make_ee_sim_env(task_name, onscreen_render=onscreen_render)
         ts = env.reset()
         episode = [ts]
         policy = policy_cls(inject_noise)
@@ -68,18 +67,17 @@ def main(args):
 
             # plt.tight_layout()
             plt.ion()
-        for step in range(episode_len):
+        for step in tqdm(range(episode_len)):
             action = policy(ts)
             ts = env.step(action)
             episode.append(ts)
             # print(f"{step=}, {ts.observation['qpos']=}")
             if onscreen_render:
-                if onscreen_render:
-                    plt_imgs[0].set_data(ts.observation['images']['camera_high'])
-                    plt_imgs[1].set_data(ts.observation['images']['camera_low'])
-                    plt_imgs[2].set_data(ts.observation['images']['camera_left_wrist'])
-                    plt_imgs[3].set_data(ts.observation['images']['camera_right_wrist'])
-                    plt.pause(0.02)
+                plt_imgs[0].set_data(ts.observation['images']['camera_high'])
+                plt_imgs[1].set_data(ts.observation['images']['camera_low'])
+                plt_imgs[2].set_data(ts.observation['images']['camera_left_wrist'])
+                plt_imgs[3].set_data(ts.observation['images']['camera_right_wrist'])
+                plt.pause(0.02)
         plt.close()
 
         episode_return = np.sum([ts.reward for ts in episode[1:]])
@@ -104,9 +102,6 @@ def main(args):
         del env
         del episode
         del policy
-        del axs
-        del plt_imgs
-
 
         # setup the environment
         print('Replaying joint commands')
@@ -120,19 +115,15 @@ def main(args):
             plt_imgs = [
                 axs[0, 0].imshow(ts.observation['images']['camera_high']),
                 axs[0, 1].imshow(ts.observation['images']['camera_low']),
-                axs[0, 2].imshow(ts.observation['images']['camera_teleop']),
                 axs[1, 0].imshow(ts.observation['images']['camera_left_wrist']),
                 axs[1, 1].imshow(ts.observation['images']['camera_right_wrist']),
-                axs[1, 2].imshow(ts.observation['images']['camera_collaborate']),
             ]
 
             # Optionally, add titles for better clarity
             axs[0, 0].set_title("Camera High")
             axs[0, 1].set_title("Camera Low")
-            axs[0, 2].set_title("Teleoperator POV")
             axs[1, 0].set_title("Left Wrist Camera")
             axs[1, 1].set_title("Right Wrist Camera")
-            axs[1, 2].set_title("Collaborator POV")
 
 
             # Remove axis ticks for better visualization
@@ -142,7 +133,7 @@ def main(args):
             # plt.tight_layout()
             plt.ion()
 
-        for t in range(len(joint_traj)): # note: this will increase episode length by 1
+        for t in tqdm(range(len(joint_traj))): # note: this will increase episode length by 1
             action = joint_traj[t]
             # print(f"{t=}, {action=}")
             ts = env.step(action)
@@ -152,10 +143,8 @@ def main(args):
             if onscreen_render:
                 plt_imgs[0].set_data(ts.observation['images']['camera_high'])
                 plt_imgs[1].set_data(ts.observation['images']['camera_low'])
-                plt_imgs[2].set_data(ts.observation['images']['camera_teleop'])
-                plt_imgs[3].set_data(ts.observation['images']['camera_left_wrist'])
-                plt_imgs[4].set_data(ts.observation['images']['camera_right_wrist'])
-                plt_imgs[5].set_data(ts.observation['images']['camera_collaborate'])
+                plt_imgs[2].set_data(ts.observation['images']['camera_left_wrist'])
+                plt_imgs[3].set_data(ts.observation['images']['camera_right_wrist'])
                 plt.pause(0.02)
 
         episode_return = np.sum([ts.reward for ts in episode_replay[1:]])
