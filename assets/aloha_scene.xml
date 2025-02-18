@@ -49,8 +49,8 @@
   </default>
 
   <equality>
-      <weld body1="mocap_left" body2="left/link_6_follower_cam" solref="0.01 1" solimp=".25 .25 0.001" />
-      <weld body1="mocap_right" body2="right/link_6_follower_cam" solref="0.01 1" solimp=".25 .25 0.001" />
+      <weld body1="mocap_left" body2="left/link_6" solref="0.01 1" solimp=".25 .25 0.001" />
+      <weld body1="mocap_right" body2="right/link_6" solref="0.01 1" solimp=".25 .25 0.001" />
   </equality>
 
 
