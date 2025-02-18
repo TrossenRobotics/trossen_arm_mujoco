@@ -111,13 +111,12 @@ class PickAndTransferPolicy(BasePolicy):
 def test_policy(task_name):
     # example rolling out pick_and_transfer policy
     onscreen_render = True
-    inject_noise = True
+    inject_noise = False
 
     # setup the environment
     episode_len = 400
     env = make_ee_sim_env('sim_transfer_cube', onscreen_render=onscreen_render)
     print(f"Action space: {env.action_spec().shape}")
-   
 
     for episode_idx in range(2):
         ts = env.reset()

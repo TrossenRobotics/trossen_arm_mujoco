@@ -23,8 +23,8 @@ def main(args):
     """
 
     task_name = "sim_transfer_cube"
-    dataset_dir = "aloha_data/ee_sim_episodes_9"
-    num_episodes = 30
+    dataset_dir = "aloha_data/ee_sim_episodes_10"
+    num_episodes = 3
     onscreen_render = False
     inject_noise = False
 

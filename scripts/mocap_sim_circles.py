@@ -56,7 +56,6 @@ class BimanualViperXTask(base.Task):
         obs["images"]["camera_left_wrist"] = physics.render(height=480, width=640, camera_id="camera_left_wrist")
         obs["images"]["camera_right_wrist"] = physics.render(height=480, width=640, camera_id="camera_right_wrist")
         obs["images"]["camera_teleop"] = physics.render(height=480, width=640, camera_id="teleoperator_pov")
-        obs["images"]["camera_collaborate"] = physics.render(height=480, width=640, camera_id="collaborator_pov")
 
         return obs
 
@@ -84,7 +83,6 @@ def get_observation(physics) -> collections.OrderedDict:
         obs["images"]["camera_left_wrist"] = physics.render(height=480, width=640, camera_id="camera_left_wrist")
         obs["images"]["camera_right_wrist"] = physics.render(height=480, width=640, camera_id="camera_right_wrist")
         obs["images"]["camera_teleop"] = physics.render(height=480, width=640, camera_id="teleoperator_pov")
-        obs["images"]["camera_collaborate"] = physics.render(height=480, width=640, camera_id="collaborator_pov")
 
         return obs
 
@@ -103,7 +101,6 @@ def test_sim_mocap_control():
         axs[0, 2].imshow(ts.observation["images"]["camera_teleop"]),
         axs[1, 0].imshow(ts.observation["images"]["camera_left_wrist"]),
         axs[1, 1].imshow(ts.observation["images"]["camera_right_wrist"]),
-        axs[1, 2].imshow(ts.observation["images"]["camera_collaborate"]),
     ]
 
     axs[0, 0].set_title("Camera High")
@@ -111,7 +108,6 @@ def test_sim_mocap_control():
     axs[0, 2].set_title("Teleoperator POV")
     axs[1, 0].set_title("Left Wrist Camera")
     axs[1, 1].set_title("Right Wrist Camera")
-    axs[1, 2].set_title("Collaborator POV")
 
     for ax in axs.flat:
         ax.axis("off")
@@ -144,7 +140,6 @@ def test_sim_mocap_control():
         plt_imgs[2].set_data(obs["images"]["camera_teleop"])
         plt_imgs[3].set_data(obs["images"]["camera_left_wrist"])
         plt_imgs[4].set_data(obs["images"]["camera_right_wrist"])
-        plt_imgs[5].set_data(obs["images"]["camera_collaborate"])
 
         plt.pause(DT)
 
