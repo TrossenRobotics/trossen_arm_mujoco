@@ -10,14 +10,11 @@ pip install dm_control
 python3 scripts/sim_env.py
 ```
 
-# Set the environment variable
+# Set the environment variable (This is usefull if you run into Mesa Loader Issue)
 
 ```bash
 export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6
 ```
-
-
-Here’s a **detailed** **README.md** that explains each component clearly, making it easier for your team to understand and further develop the system.
 
 ---
 
@@ -126,5 +123,3 @@ The data collection process involves **two simulation phases**:
 
 
 ---
-
-This explanation now **fully** covers the workflow and ensures that anyone using the package understands the **recording and replay process**. Let me know if you need any final tweaks! 
