@@ -6,6 +6,7 @@ from dm_control.rl import control
 from dm_control.suite import base
 import matplotlib.pyplot as plt
 import numpy as np
+from utils import sample_box_pose
 
 XML_DIR="assets"
 DT = 0.02
@@ -185,7 +186,6 @@ class TransferCubeTask(BimanualViperXTask):
 
 def test_sim_teleop():
     """ Testing teleoperation in sim with ALOHA. Requires hardware and ALOHA repo to work. """
-
     # setup the environment
     env = make_sim_env()
     ts = env.reset()
@@ -220,10 +220,12 @@ def test_sim_teleop():
 
         plt_imgs[0].set_data(ts.observation['images']['camera_high'])
         plt_imgs[1].set_data(ts.observation['images']['camera_low'])
-        plt_imgs[3].set_data(ts.observation['images']['camera_left_wrist'])
-        plt_imgs[4].set_data(ts.observation['images']['camera_right_wrist'])
+        plt_imgs[2].set_data(ts.observation['images']['camera_left_wrist'])
+        plt_imgs[3].set_data(ts.observation['images']['camera_right_wrist'])
 
         plt.pause(0.02)
 
 if __name__ == '__main__':
+    BOX_POSE = sample_box_pose()
+
     test_sim_teleop()

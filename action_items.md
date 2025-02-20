@@ -5,6 +5,7 @@
 - [ ] **Add instructions** on how to use the code to generate episodes
 - [ ] **Add instructions** on how to change trajectories and add new environment setups
 - [ ] Create documentation for installation and use.
+- [ ] Control sim using real hardware
 
 ###  Future To-Do
 - [ ] **Integrate this completely into LeRobot**
