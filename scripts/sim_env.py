@@ -7,57 +7,15 @@ from dm_control.suite import base
 import matplotlib.pyplot as plt
 import numpy as np
 from utils import sample_box_pose
+from utils import make_sim_env
 
 XML_DIR="assets"
 DT = 0.02
 BOX_POSE = [None] # to be changed from outside
 START_ARM_POSE = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ,0.0])
 
-def make_sim_env():
-    """
-    Environment for simulated robot bi-manual manipulation, with joint position control
-
-    Action space: [
-        left_arm_qpos (6),              # absolute joint position
-        left_gripper_positions (1),     # normalized gripper position (0: close, 1: open)
-        right_arm_qpos (6),             # absolute joint position
-        right_gripper_positions (1),    # normalized gripper position (0: close, 1: open)
-    ]
-
-    Observation space: {
-        "qpos": Concat[
-            left_arm_qpos (6),          # absolute joint position
-            left_gripper_position (1),  # normalized gripper position (0: close, 1: open)
-            right_arm_qpos (6),         # absolute joint position
-            right_gripper_qpos (1)      # normalized gripper position (0: close, 1: open)
-        ],
-        "qvel": Concat[
-            left_arm_qvel (6),          # absolute joint velocity (rad)
-            left_gripper_velocity (1),  # normalized gripper velocity (pos: opening, neg: closing)
-            right_arm_qvel (6),         # absolute joint velocity (rad)
-            right_gripper_qvel (1)      # normalized gripper velocity (pos: opening, neg: closing)
-        ],
-        "images": {"main": (480x640x3)  # h, w, c, dtype='uint8'
-    }
-    """
-    
-    xml_path = os.path.join(XML_DIR, 'aloha_scene_joint.xml')
-    physics = mujoco.Physics.from_xml_path(xml_path)
-    task = TransferCubeTask(random=False)
-
-    env = control.Environment(
-        physics,
-        task,
-        time_limit=20,
-        control_timestep=DT,
-        n_sub_steps=None,
-        flat_observation=False,
-    )
-    return env
-
-
 class BimanualViperXTask(base.Task):
-    def __init__(self, random=None):
+    def __init__(self, random=None, onscreen_render=False):
         super().__init__(random=random)
 
 
@@ -135,10 +93,8 @@ class BimanualViperXTask(base.Task):
         # return whether left gripper is holding the box
         raise NotImplementedError
 
-
-
 class TransferCubeTask(BimanualViperXTask):
-    def __init__(self, random=None):
+    def __init__(self, random=None, onscreen_render=False):
         super().__init__(random=random)
         self.max_reward = 4
 
@@ -187,7 +143,7 @@ class TransferCubeTask(BimanualViperXTask):
 def test_sim_teleop():
     """ Testing teleoperation in sim with ALOHA. Requires hardware and ALOHA repo to work. """
     # setup the environment
-    env = make_sim_env()
+    env = make_sim_env(TransferCubeTask, 'aloha_scene_joint.xml')
     ts = env.reset()
     episode = [ts]
     # setup plotting

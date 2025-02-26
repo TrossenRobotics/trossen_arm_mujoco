@@ -5,11 +5,12 @@ import argparse
 import matplotlib.pyplot as plt
 import h5py
 
-from ee_sim_env import make_ee_sim_env
-from sim_env import make_sim_env, BOX_POSE
+from ee_sim_env import make_ee_sim_env, TransferCubeEETask
+from sim_env import BOX_POSE, TransferCubeTask
 from scripted_policy import PickAndTransferPolicy
 from tqdm import tqdm
 import IPython
+from utils import make_sim_env
 e = IPython.embed
 
 
@@ -40,7 +41,8 @@ def main(args):
         print(f'{episode_idx=}')
         print('Rollout out EE space scripted policy')
         # setup the environment
-        env = make_ee_sim_env(task_name, onscreen_render=onscreen_render)
+        # env = make_ee_sim_env(task_name, onscreen_render=onscreen_render)
+        env = make_sim_env(TransferCubeEETask, 'aloha_scene.xml', task_name, onscreen_render=onscreen_render)
         ts = env.reset()
         episode = [ts]
         policy = policy_cls(inject_noise)
@@ -105,7 +107,7 @@ def main(args):
 
         # setup the environment
         print('Replaying joint commands')
-        env = make_sim_env()
+        env = make_sim_env(TransferCubeTask, 'aloha_scene_joint.xml')
         BOX_POSE[0] = subtask_info # make sure the sim_env has the same object configurations as ee_sim_env
         ts = env.reset()
         episode_replay = [ts]

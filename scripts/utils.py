@@ -5,6 +5,9 @@ import numpy as np
 import os
 import collections
 import numpy as np
+from dm_control import mujoco
+from dm_control.rl import control
+import importlib
 # import h5py
 # from torch.utils.data import TensorDataset, DataLoader
 
@@ -203,6 +206,53 @@ def get_observation_base(physics, on_screen_render=True):
         obs["images"]["camera_right_wrist"] = physics.render(height=480, width=640, camera_id="camera_right_wrist")
         obs["images"]["camera_teleop"] = physics.render(height=480, width=640, camera_id="teleoperator_pov")
     return obs
+
+XML_DIR = "assets"
+DT = 0.02
+
+def make_sim_env(task_class, xml_file, task_name='sim_transfer_cube', onscreen_render=False):
+    """
+    Environment for simulated robot bi-manual manipulation, with end-effector control.
+
+    Action space: [
+        left_arm_pose (7),              # position and quaternion for end effector
+        left_gripper_positions (1),     # normalized gripper position (0: close, 1: open)
+        right_arm_pose (7),             # position and quaternion for end effector
+        right_gripper_positions (1),    # normalized gripper position (0: close, 1: open)
+    ]
+
+    Observation space: {
+        "qpos": Concat[
+            left_arm_qpos (6),          # absolute joint position (rad)
+            left_gripper_position (1),  # normalized gripper position (0: close, 1: open)
+            right_arm_qpos (6),         # absolute joint position (rad)
+            right_gripper_qpos (1)]     # normalized gripper position (0: close, 1: open)
+        ],
+        "qvel": Concat[
+            left_arm_qvel (6),          # absolute joint velocity (rad/s)
+            left_gripper_velocity (1),  # normalized gripper velocity (pos: opening, neg: closing)
+            right_arm_qvel (6),         # absolute joint velocity (rad/s)
+            right_gripper_qvel (1)]     # normalized gripper velocity (pos: opening, neg: closing)
+        ],
+        "images": {"main": (480x640x3)} # h, w, c, dtype='uint8'
+    }
+    """
+    if 'sim_transfer_cube' in task_name:
+        xml_path = os.path.join(XML_DIR, xml_file)
+        physics = mujoco.Physics.from_xml_path(xml_path)
+        task = task_class(random=False, onscreen_render=onscreen_render)
+    else:
+        raise NotImplementedError
+
+    env = control.Environment(
+        physics,
+        task,
+        time_limit=20,
+        control_timestep=DT,
+        n_sub_steps=None,
+        flat_observation=False,
+    )
+    return env
 
 # def sample_insertion_pose():
 #     # Peg

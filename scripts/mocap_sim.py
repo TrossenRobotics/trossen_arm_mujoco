@@ -5,33 +5,13 @@ from dm_control.rl import control
 from dm_control.suite import base
 import matplotlib.pyplot as plt
 import numpy as np
-from utils import get_observation_base
+from utils import get_observation_base, make_sim_env
 
 XML_DIR = "assets"
 DT = 0.02
 
-
-def make_sim_env(task_name: str):
-    """
-    Environment for simulated robot bi-manual manipulation, with joint position control.
-    """
-    xml_path = os.path.join(XML_DIR, "aloha_scene.xml")
-    physics = mujoco.Physics.from_xml_path(xml_path)
-    task = BimanualViperXTask(random=False)
-
-    env = control.Environment(
-        physics,
-        task,
-        time_limit=20,
-        control_timestep=DT,
-        n_sub_steps=None,
-        flat_observation=False,
-    )
-    return env
-
-
 class BimanualViperXTask(base.Task):
-    def __init__(self, random=None):
+    def __init__(self, random=None, onscreen_render=False):
         super().__init__(random=random)
 
     def initialize_episode(self, physics):
@@ -80,7 +60,7 @@ def interpolate_waypoints(waypoints, t, total_time):
 def test_sim_mocap_control():
     """Testing teleoperation in sim with ALOHA using mocap."""
     # Setup the environment
-    env = make_sim_env("sim_transfer_cube")
+    env = make_sim_env(BimanualViperXTask, "aloha_scene.xml")
     ts = env.reset()
     physics = env.physics
 
