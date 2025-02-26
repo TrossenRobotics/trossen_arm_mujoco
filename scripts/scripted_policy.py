@@ -4,8 +4,7 @@ import matplotlib.pyplot as plt
 from pyquaternion import Quaternion
 
 from constants import SIM_TASK_CONFIGS
-from ee_sim_env import make_ee_sim_env
-
+from utils import make_sim_env
 import IPython
 e = IPython.embed
 
@@ -111,7 +110,8 @@ class PickAndTransferPolicy(BasePolicy):
 
 def test_policy(task_name, num_episodes=2, episode_len=400, onscreen_render=True, inject_noise=False):
     # setup the environment
-    env = make_ee_sim_env(task_name, onscreen_render=onscreen_render)
+    # env = make_ee_sim_env(task_name, onscreen_render=onscreen_render)
+    env = make_sim_env(TransferCubeEETask, task_name=task_name, onscreen_render=onscreen_render)
     print(f"Action space: {env.action_spec().shape}")
 
     for episode_idx in range(num_episodes):

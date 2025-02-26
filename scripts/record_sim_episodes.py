@@ -5,14 +5,14 @@ import argparse
 import matplotlib.pyplot as plt
 import h5py
 
-from ee_sim_env import make_ee_sim_env, TransferCubeEETask
+from ee_sim_env import TransferCubeEETask
 from sim_env import BOX_POSE, TransferCubeTask
 from scripted_policy import PickAndTransferPolicy
 from tqdm import tqdm
 import IPython
 from utils import make_sim_env
 e = IPython.embed
-
+from utils import plot_observation_images
 
 def main(args):
     """

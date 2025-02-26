@@ -8,6 +8,7 @@ import numpy as np
 from dm_control import mujoco
 from dm_control.rl import control
 import importlib
+import matplotlib.pyplot as plt
 # import h5py
 # from torch.utils.data import TensorDataset, DataLoader
 
@@ -210,7 +211,7 @@ def get_observation_base(physics, on_screen_render=True):
 XML_DIR = "assets"
 DT = 0.02
 
-def make_sim_env(task_class, xml_file, task_name='sim_transfer_cube', onscreen_render=False):
+def make_sim_env(task_class, xml_file='aloha_scene.xml', task_name='sim_transfer_cube', onscreen_render=False):
     """
     Environment for simulated robot bi-manual manipulation, with end-effector control.
 
@@ -253,6 +254,29 @@ def make_sim_env(task_class, xml_file, task_name='sim_transfer_cube', onscreen_r
         flat_observation=False,
     )
     return env
+
+def plot_observation_images(observation):
+    fig, axs = plt.subplots(2, 2, figsize=(10, 10))
+    plt_imgs = [
+        axs[0, 0].imshow(observation['images']['camera_high']),
+        axs[0, 1].imshow(observation['images']['camera_low']),
+        axs[1, 0].imshow(observation['images']['camera_left_wrist']),
+        axs[1, 1].imshow(observation['images']['camera_right_wrist']),
+    ]
+
+    # Optionally, add titles for better clarity
+    axs[0, 0].set_title("Camera High")
+    axs[0, 1].set_title("Camera Low")
+    axs[1, 0].set_title("Left Wrist Camera")
+    axs[1, 1].set_title("Right Wrist Camera")
+
+
+    # Remove axis ticks for better visualization
+    for ax in axs.flat:
+        ax.axis('off')
+
+    # plt.tight_layout()
+    plt.ion()
 
 # def sample_insertion_pose():
 #     # Peg
