@@ -1,4 +1,5 @@
 import numpy as np
+import argparse
 import matplotlib.pyplot as plt
 from pyquaternion import Quaternion
 
@@ -108,17 +109,12 @@ class PickAndTransferPolicy(BasePolicy):
 
 
 
-def test_policy(task_name):
-    # example rolling out pick_and_transfer policy
-    onscreen_render = True
-    inject_noise = False
-
+def test_policy(task_name, num_episodes=2, episode_len=400, onscreen_render=True, inject_noise=False):
     # setup the environment
-    episode_len = 400
-    env = make_ee_sim_env('sim_transfer_cube', onscreen_render=onscreen_render)
+    env = make_ee_sim_env(task_name, onscreen_render=onscreen_render)
     print(f"Action space: {env.action_spec().shape}")
 
-    for episode_idx in range(2):
+    for episode_idx in range(num_episodes):
         ts = env.reset()
         episode = [ts]
         if onscreen_render:
@@ -165,6 +161,14 @@ def test_policy(task_name):
 
 
 if __name__ == '__main__':
-    test_task_name = 'sim_transfer_cube_scripted'
-    test_policy(test_task_name)
+    # test_task_name = 'sim_transfer_cube_scripted'
+    parser = argparse.ArgumentParser(description="Test policy with customizable parameters.")
+    parser.add_argument('--task_name', type=str, default="sim_transfer_cube", help="Task name.")
+    parser.add_argument('--num_episodes', type=int, default=2, help="Number of episodes.")
+    parser.add_argument('--episode_len', type=int, default=400, help="Episode length.")
+    parser.add_argument('--onscreen_render', action='store_true', help="Enable rendering.")
+    parser.add_argument('--inject_noise', action='store_true', help="Inject noise into actions.")
+
+    args = parser.parse_args()
+    test_policy(args.task_name, args.num_episodes, args.episode_len, args.onscreen_render,args.inject_noise)
 

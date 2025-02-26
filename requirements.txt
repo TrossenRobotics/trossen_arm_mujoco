@@ -1,0 +1,5 @@
+dm_control
+matplotlib
+h5py
+pyquaternion
+IPython

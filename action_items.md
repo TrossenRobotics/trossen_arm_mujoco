@@ -1,7 +1,7 @@
 ###  Current Tasks
-- [ ] **Add `requirements.txt`**
+- [x] **Add `requirements.txt`**
 - [ ] **Clean up redundant code**
-- [ ] **Add meaningful arguments** to make the code customizable (e.g., file paths, number of episodes, etc.)
+- [x] **Add meaningful arguments** to make the code customizable (e.g., file paths, number of episodes, etc.)
 - [ ] **Add instructions** on how to use the code to generate episodes
 - [ ] **Add instructions** on how to change trajectories and add new environment setups
 - [ ] Create documentation for installation and use.

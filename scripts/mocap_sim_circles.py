@@ -5,6 +5,7 @@ from dm_control.rl import control
 from dm_control.suite import base
 import matplotlib.pyplot as plt
 import numpy as np
+from utils import get_observation_base
 
 XML_DIR = "assets"
 DT = 0.02
@@ -46,17 +47,10 @@ class BimanualViperXTask(base.Task):
         return env_state
 
     def get_observation(self, physics) -> collections.OrderedDict:
-        obs = collections.OrderedDict()
+        obs = get_observation_base(physics)
         obs["qpos"] = physics.data.qpos.copy()
         obs["qvel"] = physics.data.qvel.copy()
         obs["env_state"] = self.get_env_state(physics)
-        obs["images"] = dict()
-        obs["images"]["camera_high"] = physics.render(height=480, width=640, camera_id="camera_high")
-        obs["images"]["camera_low"] = physics.render(height=480, width=640, camera_id="camera_low")
-        obs["images"]["camera_left_wrist"] = physics.render(height=480, width=640, camera_id="camera_left_wrist")
-        obs["images"]["camera_right_wrist"] = physics.render(height=480, width=640, camera_id="camera_right_wrist")
-        obs["images"]["camera_teleop"] = physics.render(height=480, width=640, camera_id="teleoperator_pov")
-
         return obs
 
     def get_reward(self, physics):
@@ -74,16 +68,9 @@ def circular_motion(t, center, radius, frequency=0.5):
     return np.array([x, y, z])
 
 def get_observation(physics) -> collections.OrderedDict:
-        obs = collections.OrderedDict()
+        obs = get_observation_base(physics)
         obs["qpos"] = physics.data.qpos.copy()
         obs["qvel"] = physics.data.qvel.copy()
-        obs["images"] = dict()
-        obs["images"]["camera_high"] = physics.render(height=480, width=640, camera_id="camera_high")
-        obs["images"]["camera_low"] = physics.render(height=480, width=640, camera_id="camera_low")
-        obs["images"]["camera_left_wrist"] = physics.render(height=480, width=640, camera_id="camera_left_wrist")
-        obs["images"]["camera_right_wrist"] = physics.render(height=480, width=640, camera_id="camera_right_wrist")
-        obs["images"]["camera_teleop"] = physics.render(height=480, width=640, camera_id="teleoperator_pov")
-
         return obs
 
 def test_sim_mocap_control():

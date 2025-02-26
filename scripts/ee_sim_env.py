@@ -1,15 +1,11 @@
 import collections
 import os
-
-
 from dm_control import mujoco
 from dm_control.rl import control
 from dm_control.suite import base
 import numpy as np
 import matplotlib.pyplot as plt
-
-
-from utils import sample_box_pose
+from utils import sample_box_pose, get_observation_base
 
 XML_DIR="assets"
 DT = 0.02
@@ -134,20 +130,10 @@ class BimanualViperXEETask(base.Task):
         return velocities[:16]
 
     def get_observation(self, physics):
-        # note: it is important to do .copy()
-        obs = collections.OrderedDict()
+        obs = get_observation_base(physics)
         obs['qpos'] = self.get_position(physics)
-        # print(f"qpos: {obs['qpos']}")
         obs['qvel'] = self.get_velocity(physics)
         obs['env_state'] = self.get_env_state(physics)
-
-        if self.on_screen_render:
-            obs['images'] = dict()
-            obs['images']['camera_high'] = physics.render(height=480, width=640, camera_id='camera_high')
-            obs['images']['camera_low'] = physics.render(height=480, width=640, camera_id='camera_low')
-            obs['images']['camera_left_wrist'] = physics.render(height=480, width=640, camera_id='camera_left_wrist')
-            obs['images']['camera_right_wrist'] = physics.render(height=480, width=640, camera_id='camera_right_wrist')
-            # used in scripted policy to obtain starting pose
         obs['mocap_pose_left'] = np.concatenate([
             physics.data.mocap_pos[0],
             physics.data.mocap_quat[0]
@@ -156,7 +142,6 @@ class BimanualViperXEETask(base.Task):
             physics.data.mocap_pos[1],
             physics.data.mocap_quat[1]
         ]).copy()
-
         # used when replaying joint trajectory
         obs['gripper_ctrl'] = physics.data.ctrl.copy()
         return obs

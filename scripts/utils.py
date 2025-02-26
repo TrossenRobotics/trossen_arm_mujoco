@@ -3,6 +3,8 @@
 import numpy as np
 # import torch
 import os
+import collections
+import numpy as np
 # import h5py
 # from torch.utils.data import TensorDataset, DataLoader
 
@@ -191,6 +193,16 @@ def sample_box_pose():
     print(f"Cube Position: {cube_position}")
     return np.concatenate([cube_position, cube_quat])
 
+def get_observation_base(physics, on_screen_render=True):
+    obs = collections.OrderedDict()
+    if on_screen_render:
+        obs["images"] = dict()
+        obs["images"]["camera_high"] = physics.render(height=480, width=640, camera_id="camera_high")
+        obs["images"]["camera_low"] = physics.render(height=480, width=640, camera_id="camera_low")
+        obs["images"]["camera_left_wrist"] = physics.render(height=480, width=640, camera_id="camera_left_wrist")
+        obs["images"]["camera_right_wrist"] = physics.render(height=480, width=640, camera_id="camera_right_wrist")
+        obs["images"]["camera_teleop"] = physics.render(height=480, width=640, camera_id="teleoperator_pov")
+    return obs
 
 # def sample_insertion_pose():
 #     # Peg

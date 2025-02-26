@@ -22,17 +22,17 @@ def main(args):
     Save this episode of data, and continue to next episode of data collection.
     """
 
-    task_name = "sim_transfer_cube"
-    dataset_dir = "aloha_data/ee_sim_episodes_10"
-    num_episodes = 3
-    onscreen_render = False
-    inject_noise = False
+    task_name = args.task_name
+    dataset_dir = args.dataset_dir
+    num_episodes = args.num_episodes
+    onscreen_render = args.onscreen_render
+    inject_noise = args.inject_noise
 
     if not os.path.isdir(dataset_dir):
         os.makedirs(dataset_dir, exist_ok=True)
 
-    episode_len = 400
-    camera_names = ['camera_right_wrist', 'camera_left_wrist', 'camera_high', 'camera_low']
+    episode_len = args.episode_len
+    camera_names = args.camera_names.split(",")
     policy_cls = PickAndTransferPolicy
 
     success = []
@@ -218,10 +218,15 @@ def main(args):
     print(f'Success: {np.sum(success)} / {len(success)}')
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    # parser.add_argument('--task_name', action='store', type=str, help='task_name', required=True)
-    # parser.add_argument('--dataset_dir', action='store', type=str, help='dataset saving dir', required=True)
-    # parser.add_argument('--num_episodes', action='store', type=int, help='num_episodes', required=False)
-    # parser.add_argument('--onscreen_render', action='store_true')
+    parser = argparse.ArgumentParser(description="Record simulation episodes with customization.")
+    parser.add_argument('--task_name', type=str, default="sim_transfer_cube", help="Name of the task.")
+    parser.add_argument('--dataset_dir', type=str, default="aloha_data/ee_sim_episodes", help="Directory to save episodes.")
+    parser.add_argument('--num_episodes', type=int, default=3, help="Number of episodes to run.")
+    parser.add_argument('--episode_len', type=int, default=400, help="Length of each episode.")
+    parser.add_argument('--onscreen_render', action='store_true', help="Enable on-screen rendering.")
+    parser.add_argument('--inject_noise', action='store_true', help="Inject noise into actions.")
+    parser.add_argument('--camera_names', type=str, default="camera_right_wrist,camera_left_wrist,camera_high,camera_low",
+                        help="Comma-separated list of camera names.")
 
-    main(vars(parser.parse_args()))
+    args = parser.parse_args()
+    main(args)
