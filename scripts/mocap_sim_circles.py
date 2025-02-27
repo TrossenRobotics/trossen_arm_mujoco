@@ -5,7 +5,7 @@ from dm_control.rl import control
 from dm_control.suite import base
 import matplotlib.pyplot as plt
 import numpy as np
-from utils import get_observation_base, make_sim_env
+from utils import get_observation_base, make_sim_env, plot_observation_images, set_observation_images
 
 XML_DIR = "assets"
 DT = 0.02
@@ -63,25 +63,7 @@ def test_sim_mocap_control():
     physics = env.physics
 
     # Setup plotting
-    fig, axs = plt.subplots(2, 3, figsize=(10, 10))
-    plt_imgs = [
-        axs[0, 0].imshow(ts.observation["images"]["camera_high"]),
-        axs[0, 1].imshow(ts.observation["images"]["camera_low"]),
-        axs[0, 2].imshow(ts.observation["images"]["camera_teleop"]),
-        axs[1, 0].imshow(ts.observation["images"]["camera_left_wrist"]),
-        axs[1, 1].imshow(ts.observation["images"]["camera_right_wrist"]),
-    ]
-
-    axs[0, 0].set_title("Camera High")
-    axs[0, 1].set_title("Camera Low")
-    axs[0, 2].set_title("Teleoperator POV")
-    axs[1, 0].set_title("Left Wrist Camera")
-    axs[1, 1].set_title("Right Wrist Camera")
-
-    for ax in axs.flat:
-        ax.axis("off")
-
-    plt.ion()
+    plt_imgs = plot_observation_images(ts.observation, 5)
 
     # Time variable for circular motion
     t = 0
@@ -104,13 +86,7 @@ def test_sim_mocap_control():
         obs = get_observation(physics)
 
         # Update images
-        plt_imgs[0].set_data(obs["images"]["camera_high"])
-        plt_imgs[1].set_data(obs["images"]["camera_low"])
-        plt_imgs[2].set_data(obs["images"]["camera_teleop"])
-        plt_imgs[3].set_data(obs["images"]["camera_left_wrist"])
-        plt_imgs[4].set_data(obs["images"]["camera_right_wrist"])
-
-        plt.pause(DT)
+        plt_imgs = set_observation_images(obs, plt_imgs)
 
         # Increment time for circular motion
         t += DT

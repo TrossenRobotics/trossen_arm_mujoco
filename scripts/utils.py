@@ -255,28 +255,60 @@ def make_sim_env(task_class, xml_file='aloha_scene.xml', task_name='sim_transfer
     )
     return env
 
-def plot_observation_images(observation):
-    fig, axs = plt.subplots(2, 2, figsize=(10, 10))
-    plt_imgs = [
-        axs[0, 0].imshow(observation['images']['camera_high']),
-        axs[0, 1].imshow(observation['images']['camera_low']),
-        axs[1, 0].imshow(observation['images']['camera_left_wrist']),
-        axs[1, 1].imshow(observation['images']['camera_right_wrist']),
-    ]
+def plot_observation_images(observation, num_imgs):
+    images = observation.get("images", {})
+    
+    # Define the default layout
+    layout_2x2 = ["camera_high", "camera_low", "camera_left_wrist", "camera_right_wrist"]
+    layout_2x3 = ["camera_high", "camera_low", "camera_teleop", "camera_left_wrist", "camera_right_wrist"]
 
-    # Optionally, add titles for better clarity
-    axs[0, 0].set_title("Camera High")
-    axs[0, 1].set_title("Camera Low")
-    axs[1, 0].set_title("Left Wrist Camera")
-    axs[1, 1].set_title("Right Wrist Camera")
+    # Determine which layout to use
+    if num_imgs == 5:
+        rows, cols = 2, 3
+        cameras = layout_2x3
+    else:
+        rows, cols = 2, 2
+        cameras = layout_2x2
 
+    fig, axs = plt.subplots(rows, cols, figsize=(10, 10))
 
-    # Remove axis ticks for better visualization
+    # Flatten axs for easy iteration
+    axs = axs.flatten() if isinstance(axs, (list, np.ndarray)) else [axs]
+
+    plt_imgs = []
+    titles = {
+        "camera_high": "Camera High",
+        "camera_low": "Camera Low",
+        "camera_teleop": "Teleoperator POV",
+        "camera_left_wrist": "Left Wrist Camera",
+        "camera_right_wrist": "Right Wrist Camera",
+    }
+
+    for i, cam in enumerate(cameras):
+        if cam in images:
+            plt_imgs.append(axs[i].imshow(images[cam]))
+            axs[i].set_title(titles[cam])
+
     for ax in axs.flat:
-        ax.axis('off')
+        ax.axis("off")
 
-    # plt.tight_layout()
     plt.ion()
+    return plt_imgs
+
+def set_observation_images(observation, plt_imgs):
+    images = observation.get("images", {})
+
+    # Define possible camera keys in order
+    camera_keys = ["camera_high", "camera_low", "camera_teleop", "camera_left_wrist", "camera_right_wrist"]
+
+    # Update image data dynamically
+    for i, cam in enumerate(camera_keys):
+        if cam in images and i < len(plt_imgs):  
+            plt_imgs[i].set_data(images[cam])
+
+    plt.pause(0.02)
+    return plt_imgs
+
 
 # def sample_insertion_pose():
 #     # Peg

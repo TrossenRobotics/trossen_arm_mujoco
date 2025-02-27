@@ -12,7 +12,7 @@ from tqdm import tqdm
 import IPython
 from utils import make_sim_env
 e = IPython.embed
-from utils import plot_observation_images
+from utils import plot_observation_images, set_observation_images
 
 def main(args):
     """
@@ -48,38 +48,14 @@ def main(args):
         policy = policy_cls(inject_noise)
         # setup plotting
         if onscreen_render:
-            fig, axs = plt.subplots(2, 2, figsize=(10, 10))
-            plt_imgs = [
-                axs[0, 0].imshow(ts.observation['images']['camera_high']),
-                axs[0, 1].imshow(ts.observation['images']['camera_low']),
-                axs[1, 0].imshow(ts.observation['images']['camera_left_wrist']),
-                axs[1, 1].imshow(ts.observation['images']['camera_right_wrist']),
-            ]
-
-            # Optionally, add titles for better clarity
-            axs[0, 0].set_title("Camera High")
-            axs[0, 1].set_title("Camera Low")
-            axs[1, 0].set_title("Left Wrist Camera")
-            axs[1, 1].set_title("Right Wrist Camera")
-
-
-            # Remove axis ticks for better visualization
-            for ax in axs.flat:
-                ax.axis('off')
-
-            # plt.tight_layout()
-            plt.ion()
+            plt_imgs = plot_observation_images(ts.observation, 4)
         for step in tqdm(range(episode_len)):
             action = policy(ts)
             ts = env.step(action)
             episode.append(ts)
             # print(f"{step=}, {ts.observation['qpos']=}")
             if onscreen_render:
-                plt_imgs[0].set_data(ts.observation['images']['camera_high'])
-                plt_imgs[1].set_data(ts.observation['images']['camera_low'])
-                plt_imgs[2].set_data(ts.observation['images']['camera_left_wrist'])
-                plt_imgs[3].set_data(ts.observation['images']['camera_right_wrist'])
-                plt.pause(0.02)
+                plt_imgs = set_observation_images(ts.observation, plt_imgs)
         plt.close()
 
         episode_return = np.sum([ts.reward for ts in episode[1:]])
@@ -143,12 +119,7 @@ def main(args):
 
             episode_replay.append(ts)
             if onscreen_render:
-                plt_imgs[0].set_data(ts.observation['images']['camera_high'])
-                plt_imgs[1].set_data(ts.observation['images']['camera_low'])
-                plt_imgs[2].set_data(ts.observation['images']['camera_left_wrist'])
-                plt_imgs[3].set_data(ts.observation['images']['camera_right_wrist'])
-                plt.pause(0.02)
-
+                plt_imgs = set_observation_images(ts.observation, plt_imgs)
         episode_return = np.sum([ts.reward for ts in episode_replay[1:]])
         episode_max_reward = np.max([ts.reward for ts in episode_replay[1:]])
         if episode_max_reward == env.task.max_reward:

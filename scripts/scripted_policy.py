@@ -4,8 +4,9 @@ import matplotlib.pyplot as plt
 from pyquaternion import Quaternion
 
 from constants import SIM_TASK_CONFIGS
-from utils import make_sim_env
+from utils import make_sim_env, plot_observation_images, set_observation_images
 import IPython
+from ee_sim_env import TransferCubeEETask
 e = IPython.embed
 
 
@@ -118,27 +119,7 @@ def test_policy(task_name, num_episodes=2, episode_len=400, onscreen_render=True
         ts = env.reset()
         episode = [ts]
         if onscreen_render:
-            fig, axs = plt.subplots(2, 2, figsize=(10, 10))
-            plt_imgs = [
-                axs[0, 0].imshow(ts.observation['images']['camera_high']),
-                axs[0, 1].imshow(ts.observation['images']['camera_low']),
-                axs[1, 0].imshow(ts.observation['images']['camera_left_wrist']),
-                axs[1, 1].imshow(ts.observation['images']['camera_right_wrist']),
-            ]
-
-            # Optionally, add titles for better clarity
-            axs[0, 0].set_title("Camera High")
-            axs[0, 1].set_title("Camera Low")
-            axs[1, 0].set_title("Left Wrist Camera")
-            axs[1, 1].set_title("Right Wrist Camera")
-
-
-            # Remove axis ticks for better visualization
-            for ax in axs.flat:
-                ax.axis('off')
-
-            # plt.tight_layout()
-            plt.ion()
+            plt_imgs = plot_observation_images(ts.observation, 4)
 
         policy = PickAndTransferPolicy(inject_noise)
         for step in range(episode_len):
@@ -146,11 +127,7 @@ def test_policy(task_name, num_episodes=2, episode_len=400, onscreen_render=True
             ts = env.step(action)
             episode.append(ts)
             if onscreen_render:
-                plt_imgs[0].set_data(ts.observation['images']['camera_high'])
-                plt_imgs[1].set_data(ts.observation['images']['camera_low'])
-                plt_imgs[2].set_data(ts.observation['images']['camera_left_wrist'])
-                plt_imgs[3].set_data(ts.observation['images']['camera_right_wrist'])
-                plt.pause(0.02)
+                plt_imgs = set_observation_images(ts.observation, plt_imgs)
         plt.close()
 
         episode_return = np.sum([ts.reward for ts in episode[1:]])

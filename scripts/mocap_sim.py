@@ -5,7 +5,7 @@ from dm_control.rl import control
 from dm_control.suite import base
 import matplotlib.pyplot as plt
 import numpy as np
-from utils import get_observation_base, make_sim_env
+from utils import get_observation_base, make_sim_env, set_observation_images
 
 XML_DIR = "assets"
 DT = 0.02
@@ -123,13 +123,7 @@ def test_sim_mocap_control():
         # print(obs["images"].keys())  # Debug print
 
         # Update images
-        plt_imgs[0].set_data(obs["images"]["camera_high"])
-        plt_imgs[1].set_data(obs["images"]["camera_low"])
-        plt_imgs[2].set_data(obs["images"]["camera_teleop"])
-        plt_imgs[3].set_data(obs["images"]["camera_left_wrist"])
-        plt_imgs[4].set_data(obs["images"]["camera_right_wrist"])
-
-        plt.pause(DT)
+        set_observation_images(obs, plt_imgs)
 
         # Increment time
         t += DT
