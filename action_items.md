@@ -1,10 +1,10 @@
 ###  Current Tasks
 - [x] **Add `requirements.txt`**
-- [ ] **Clean up redundant code**
+- [x] **Clean up redundant code**
 - [x] **Add meaningful arguments** to make the code customizable (e.g., file paths, number of episodes, etc.)
-- [ ] **Add instructions** on how to use the code to generate episodes
-- [ ] **Add instructions** on how to change trajectories and add new environment setups
-- [ ] Create documentation for installation and use.
+- [x] **Add instructions** on how to use the code to generate episodes
+- [x] **Add instructions** on how to change trajectories and add new environment setups
+- [x] Create documentation for installation and use.
 - [ ] Control sim using real hardware
 
 ###  Future To-Do

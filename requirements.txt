@@ -3,3 +3,4 @@ matplotlib
 h5py
 pyquaternion
 IPython
+opencv-python
