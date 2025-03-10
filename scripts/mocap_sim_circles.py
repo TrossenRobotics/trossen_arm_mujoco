@@ -14,7 +14,7 @@ RADIUS = 0.05  # Radius of the circular trajectory
 CENTER_LEFT = np.array([-0.3, 0.0, 0.4])  # Center for the left end-effector
 CENTER_RIGHT = np.array([0.3, 0.0, 0.4])  # Center for the right end-effector
 
-class BimanualViperXTask(base.Task):
+class TrossenAIBimanualTask(base.Task):
     def __init__(self, random=None, onscreen_render=False, camera_list=None):
         super().__init__(random=random)
         self.on_screen_render = onscreen_render
@@ -57,10 +57,10 @@ def get_observation(physics, camera_list) -> collections.OrderedDict:
         return obs
 
 def test_sim_mocap_control():
-    """Testing teleoperation in sim with ALOHA using mocap."""
+    """Testing teleoperation in sim with Trossen AI using mocap."""
     # Setup the environment
     camera_list = ["camera_high", "camera_low", "camera_left_wrist", "camera_right_wrist"]
-    env = make_sim_env(BimanualViperXTask, "aloha_scene.xml", camera_list=camera_list)
+    env = make_sim_env(TrossenAIBimanualTask, "aloha_scene.xml", camera_list=camera_list)
     ts = env.reset()
     physics = env.physics
 

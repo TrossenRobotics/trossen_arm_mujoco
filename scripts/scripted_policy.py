@@ -7,8 +7,6 @@ from constants import SIM_TASK_CONFIGS
 from utils import make_sim_env, plot_observation_images, set_observation_images
 import IPython
 from ee_sim_env import TransferCubeEETask
-e = IPython.embed
-
 
 class BasePolicy:
     def __init__(self, inject_noise=False):
@@ -111,7 +109,6 @@ class PickAndTransferPolicy(BasePolicy):
 
 def test_policy(task_name, num_episodes=2, episode_len=400, onscreen_render=True, inject_noise=False):
     # setup the environment
-    # env = make_ee_sim_env(task_name, onscreen_render=onscreen_render)
     camera_list = ["camera_high", "camera_low", "camera_left_wrist", "camera_right_wrist"]
     env = make_sim_env(TransferCubeEETask, task_name=task_name, onscreen_render=onscreen_render, camera_list=camera_list)
     print(f"Action space: {env.action_spec().shape}")

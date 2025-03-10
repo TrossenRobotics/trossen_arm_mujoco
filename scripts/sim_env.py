@@ -6,15 +6,14 @@ from dm_control.rl import control
 from dm_control.suite import base
 import matplotlib.pyplot as plt
 import numpy as np
-from utils import sample_box_pose
-from utils import make_sim_env, get_observation_base, plot_observation_images
+from utils import sample_box_pose, make_sim_env, get_observation_base, plot_observation_images
 
 XML_DIR="assets"
 DT = 0.02
 BOX_POSE = [None] # to be changed from outside
 START_ARM_POSE = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ,0.0])
 
-class BimanualViperXTask(base.Task):
+class TrossenAIBimanualTask(base.Task):
     def __init__(self, random=None, onscreen_render=False, camera_list=None):
         super().__init__(random=random)
         self.camera_list = camera_list if camera_list else ["camera_high", "camera_low", "camera_left_wrist", "camera_right_wrist"]
@@ -86,7 +85,7 @@ class BimanualViperXTask(base.Task):
         # return whether left gripper is holding the box
         raise NotImplementedError
 
-class TransferCubeTask(BimanualViperXTask):
+class TransferCubeTask(TrossenAIBimanualTask):
     def __init__(self, random=None, onscreen_render=False, camera_list=None):
         super().__init__(random=random, onscreen_render=onscreen_render, camera_list=camera_list)
         self.max_reward = 4
@@ -134,7 +133,7 @@ class TransferCubeTask(BimanualViperXTask):
         return reward
 
 def test_sim_teleop():
-    """ Testing teleoperation in sim with ALOHA. Requires hardware and ALOHA repo to work. """
+    """ Testing teleoperation in sim with Trossen AI. Requires hardware and Trossen AI repo to work. """
     # setup the environment
     camera_list = ["camera_high", "camera_low", "camera_left_wrist", "camera_right_wrist"]
     env = make_sim_env(TransferCubeTask, 'aloha_scene_joint.xml')

@@ -11,7 +11,6 @@ from scripted_policy import PickAndTransferPolicy
 from tqdm import tqdm
 import IPython
 from utils import make_sim_env
-e = IPython.embed
 from utils import plot_observation_images, set_observation_images
 
 def main(args):
@@ -29,8 +28,6 @@ def main(args):
     onscreen_render = args.onscreen_render
     inject_noise = args.inject_noise
 
-    # camera_list = ["camera_high", "camera_low", "camera_left_wrist", "camera_right_wrist"]
-
     if not os.path.isdir(dataset_dir):
         os.makedirs(dataset_dir, exist_ok=True)
 
@@ -43,7 +40,6 @@ def main(args):
         print(f'{episode_idx=}')
         print('Rollout out EE space scripted policy')
         # setup the environment
-        # env = make_ee_sim_env(task_name, onscreen_render=onscreen_render)
         env = make_sim_env(TransferCubeEETask, 'aloha_scene.xml', task_name, onscreen_render=onscreen_render, camera_list = camera_list)
         ts = env.reset()
         episode = [ts]

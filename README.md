@@ -1,7 +1,9 @@
-# **Aloha Simulation Package**
+# Trossen Arm MujoCo
 
 ## **Overview**  
-The **Aloha Simulation Package** provides the necessary assets and scripts for simulating and training robotic policies using the **Aloha Solo** system in **MuJoCo**. It includes **URDFs, mesh models, and MuJoCo XML files** for the robot configuration, as well as Python scripts for policy execution, reward-based evaluation, data collection, and visualization.
+
+The **Trossen Arm MujoCo** provides the necessary assets and scripts for simulating and training robotic policies using the **Trossen AI** system in **MuJoCo**. 
+It includes **URDFs, mesh models, and MuJoCo XML files** for the robot configuration, as well as Python scripts for policy execution, reward-based evaluation, data collection, and visualization.
 
 This package supports two types of simulation environments:  
 1. **End-Effector (EE) Controlled Simulation (`ee_sim_env.py`)** – Uses **motion capture (mocap) bodies** to move the arms.  
@@ -10,9 +12,11 @@ This package supports two types of simulation environments:
 ---
 
 ## Installation
+
 First, clone this repository to your preferred directory:
 
-It is recommended to create a virtual environment before installing dependencies. Create Conda Enviroment with Python 3.10 or above.
+It is recommended to create a virtual environment before installing dependencies. 
+Create a Conda enviroment with Python 3.10 or above.
 
 ```bash
 conda create --name mujoco_env python=3.10
@@ -34,7 +38,7 @@ python ee_sim_env.py
 ```
 If the simulation window appears, the setup is successful.
 
-### Set the environment variable (This is usefull if you run into Mesa Loader Issue)
+### Set the environment variable (This is useful if you run into Mesa Loader Issues)
 
 ```bash
 export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6
@@ -45,7 +49,7 @@ export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6
 ## **Folder Structure**  
 
 ```
-Aloha Solo Simulation Package  
+Trossen Arm MujoCo
  ┣ assets/  
  ┃ ┣ MuJoCo XML files  
  ┃ ┣ URDF files  
@@ -68,13 +72,15 @@ Aloha Solo Simulation Package
 This folder contains all required **MuJoCo XML configuration files**, **URDF files**, and **mesh models** for the simulation.  
 
 ### **Key Files:**
-- **`aloha.xml`** → Base model definition of the Aloha Solo robot.  
+
+- **`aloha.xml`** → Base model definition of the Trossen AI robot.  
 - **`aloha_scene.xml`** → Uses **motion capture (mocap) bodies** to control the arms in simulation.  
 - **`aloha_scene_joint.xml`** → Uses **joint controllers** similar to real hardware, enabling precise control over movements.  
 - **`wxai_follower.urdf` & `wxai_follower.xml`** → URDF and XML descriptions of the follower arms.  
 - **`meshes/`** → Contains **STL** and **OBJ** files for the robot components, including arms, cameras, and environmental objects.
 
 ### **Motion Capture vs Joint-Controlled Environments:**
+
 - **Motion Capture (`aloha_scene.xml`)**: Uses predefined **mocap bodies** that move the robot arms dynamically based on scripted policies.  
 - **Joint Control (`aloha_scene_joint.xml`)**: Uses position controllers for each joint, similar to a real-world robot setup.
 
@@ -85,6 +91,7 @@ This folder contains all required **MuJoCo XML configuration files**, **URDF fil
 This folder contains all Python scripts necessary for **running simulations, executing policies, recording episodes, and visualizing results**.
 
 ### **2.1 Simulation Scripts**
+
 - **`ee_sim_env.py`**  
   - Loads **`aloha_scene.xml`** (motion capture-based control).  
   - The arms move by following the positions commanded to the **mocap bodies**.  
@@ -96,11 +103,11 @@ This folder contains all Python scripts necessary for **running simulations, exe
   - Mimics the real robot’s movement with controlled joint actuation.
 
 ### **2.2 Scripted Policy Execution**
+
 - **`scripted_policy.py`**  
   - Defines **pre-scripted movements** for the robot arms to perform tasks like picking up objects.  
   - Uses the **motion capture bodies** to generate smooth movement trajectories.  
   - In the current setup, a policy is designed to **pick up a red block**, with **randomized block positions** in the environment.
-I've refined the explanation in the **README.md** to ensure clarity and completeness. Here's the updated section:
 
 ---
 
@@ -137,10 +144,16 @@ The data collection process involves **two simulation phases**:
 ---
 
 ## **4. Function Arguments Explanation**
+
 ### **a. record_sim_episodes.py**
+
 To generate and save simulation episodes, use:
 ```bash
-python record_sim_episodes.py --task_name sim_transfer_cube --num_episodes 5 --dataset_dir aloha_data/episodes --onscreen_render
+python record_sim_episodes.py \
+    --task_name sim_transfer_cube \
+    --num_episodes 5 \
+    --dataset_dir trossen_ai_data/episodes \
+    --onscreen_render
 ```
 **Arguments:**
 
@@ -159,9 +172,12 @@ python record_sim_episodes.py --task_name sim_transfer_cube --num_episodes 5 --d
 - `--camera_names`: Comma-separated list of camera names for image collection
 
 ### **b. scripted_policy.py**
+
 A predefined scripted policy can be used to control the robot:
 ```bash
-python scripted_policy.py --task_name sim_transfer_cube --num_episodes 2
+python scripted_policy.py \
+    --task_name sim_transfer_cube \
+    --num_episodes 2
 ```
 **Arguments:**
 
@@ -176,9 +192,12 @@ python scripted_policy.py --task_name sim_transfer_cube --num_episodes 2
 - `--inject_noise`: Add noise to actions
 
 ### **c. visualize.py**
+
 To convert saved episodes to videos, run:
 ```bash
-python visualize.py --dataset_dir data/episodes --output_dir data/videos --fps 50
+python visualize.py \
+    --dataset_dir data/episodes \
+    --output_dir data/videos --fps 50
 ```
 **Arguments:**
 
@@ -191,13 +210,16 @@ python visualize.py --dataset_dir data/episodes --output_dir data/videos --fps 5
 ---
 
 ## **Customization**
+
 ### **1. Modifying Tasks**
+
 To create a custom task, modify `ee_sim_env.py` or `sim_env.py` and define a new subclass of `BimanualViperXTask`. Implement:
 - `initialize_episode(self, physics)`: Set up the initial environment state, including robot and object positions.
 - `get_observation(self, physics)`: Define what sensor data and environment variables should be recorded as observations.
 - `get_reward(self, physics)`: Implement the reward function to determine task success criteria.
 
 ### **2. Changing Policy Behavior**
+
 Modify `scripted_policy.py` to define new behavior for the robotic arms. 
 Update the trajectory generation logic in `PickAndTransferPolicy.generate_trajectory()` to create different movement patterns.
 
@@ -217,6 +239,7 @@ def generate_trajectory(self, ts_first):
 ```
 
 ### **3. Adding New Environment Setups**
+
 The simulation uses XML files stored in the `assets/` directory. To introduce a new environment setup:
 
 1. Create a new XML configuration file in `assets/` with desired object placements and constraints.
@@ -226,6 +249,7 @@ The simulation uses XML files stored in the `assets/` directory. To introduce a 
 3. Update the scripted policies in `scripted_policy.py` to accommodate new task goals and constraints.
 
 ### **4. Adding New Sensors or Observations**
+
 To record additional observations, modify `get_observation(self, physics)` in `sim_env.py`. Example:
 ```bash
 def get_observation(self, physics):
@@ -235,6 +259,7 @@ def get_observation(self, physics):
 ```
 
 ## Troubleshoot
+
 if you encounter rendering issues or need a clean MuJoCo setup on Linux.
 ```bash
 chmod +x setup.sh

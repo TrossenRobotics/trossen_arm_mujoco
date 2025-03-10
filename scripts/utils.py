@@ -201,11 +201,6 @@ def get_observation_base(physics, camera_list, on_screen_render=True):
     obs = collections.OrderedDict()
     if on_screen_render:
         obs["images"] = dict()
-        # obs["images"]["camera_high"] = physics.render(height=480, width=640, camera_id="camera_high")
-        # obs["images"]["camera_low"] = physics.render(height=480, width=640, camera_id="camera_low")
-        # obs["images"]["camera_left_wrist"] = physics.render(height=480, width=640, camera_id="camera_left_wrist")
-        # obs["images"]["camera_right_wrist"] = physics.render(height=480, width=640, camera_id="camera_right_wrist")
-        # obs["images"]["camera_teleop"] = physics.render(height=480, width=640, camera_id="teleoperator_pov")
         for cam in camera_list:
             obs['images'][cam] = physics.render(height=480, width=640, camera_id=cam)
     return obs
@@ -256,46 +251,6 @@ def make_sim_env(task_class, xml_file='aloha_scene.xml', task_name='sim_transfer
         flat_observation=False,
     )
     return env
-
-# def plot_observation_images(observation, num_imgs):
-#     images = observation.get("images", {})
-    
-#     # Define the default layout
-#     layout_2x2 = ["camera_high", "camera_low", "camera_left_wrist", "camera_right_wrist"]
-#     layout_2x3 = ["camera_high", "camera_low", "camera_teleop", "camera_left_wrist", "camera_right_wrist"]
-
-#     # Determine which layout to use
-#     if num_imgs == 5:
-#         rows, cols = 2, 3
-#         cameras = layout_2x3
-#     else:
-#         rows, cols = 2, 2
-#         cameras = layout_2x2
-
-#     fig, axs = plt.subplots(rows, cols, figsize=(10, 10))
-
-#     # Flatten axs for easy iteration
-#     axs = axs.flatten() if isinstance(axs, (list, np.ndarray)) else [axs]
-
-#     plt_imgs = []
-#     titles = {
-#         "camera_high": "Camera High",
-#         "camera_low": "Camera Low",
-#         "camera_teleop": "Teleoperator POV",
-#         "camera_left_wrist": "Left Wrist Camera",
-#         "camera_right_wrist": "Right Wrist Camera",
-#     }
-
-#     for i, cam in enumerate(cameras):
-#         if cam in images:
-#             plt_imgs.append(axs[i].imshow(images[cam]))
-#             axs[i].set_title(titles[cam])
-
-#     for ax in axs.flat:
-#         ax.axis("off")
-
-#     plt.ion()
-#     return plt_imgs
 
 def plot_observation_images(observation, camera_list):
     images = observation.get("images", {})

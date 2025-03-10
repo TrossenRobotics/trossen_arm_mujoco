@@ -12,7 +12,7 @@ DT = 0.02
 BOX_POSE = [None] # to be changed from outside
 START_ARM_POSE = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])  # Change to 16 for bimanual
 
-class BimanualViperXEETask(base.Task):
+class TrossenAIBimanualEETask(base.Task):
     def __init__(self, random=None, onscreen_render=False, camera_list=None):
         super().__init__(random=random)
         self.camera_list = camera_list if camera_list else ["camera_high", "camera_low", "camera_left_wrist", "camera_right_wrist"]
@@ -106,7 +106,7 @@ class BimanualViperXEETask(base.Task):
         raise NotImplementedError
 
 
-class TransferCubeEETask(BimanualViperXEETask):
+class TransferCubeEETask(TrossenAIBimanualEETask):
     def __init__(self, random=None, onscreen_render=False, camera_list=None):
         super().__init__(random=random, onscreen_render=onscreen_render, camera_list=camera_list)
         self.max_reward = 4

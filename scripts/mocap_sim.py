@@ -10,7 +10,7 @@ from utils import get_observation_base, make_sim_env, set_observation_images
 XML_DIR = "assets"
 DT = 0.02
 
-class BimanualViperXTask(base.Task):
+class TrossenAIBimanualTask(base.Task):
     def __init__(self, random=None, onscreen_render=False, camera_list=None):
         super().__init__(random=random)
         self.camera_list = camera_list if camera_list else ["camera_high", "camera_low", "camera_left_wrist", "camera_right_wrist"]
@@ -59,10 +59,10 @@ def interpolate_waypoints(waypoints, t, total_time):
     return (1 - t_segment) * waypoints[current_segment] + t_segment * waypoints[current_segment + 1]
 
 def test_sim_mocap_control():
-    """Testing teleoperation in sim with ALOHA using mocap."""
+    """Testing teleoperation in sim with Trossen AI using mocap."""
     # Setup the environment
     camera_list = ["camera_high", "camera_low", "camera_left_wrist", "camera_right_wrist"]
-    env = make_sim_env(BimanualViperXTask, "aloha_scene.xml", camera_list = camera_list)
+    env = make_sim_env(TrossenAIBimanualTask, "aloha_scene.xml", camera_list = camera_list)
     ts = env.reset()
     physics = env.physics
 
