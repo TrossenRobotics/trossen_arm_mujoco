@@ -136,7 +136,7 @@ def test_sim_teleop():
     """ Testing teleoperation in sim with Trossen AI. Requires hardware and Trossen AI repo to work. """
     # setup the environment
     camera_list = ["camera_high", "camera_low", "camera_left_wrist", "camera_right_wrist"]
-    env = make_sim_env(TransferCubeTask, 'aloha_scene_joint.xml')
+    env = make_sim_env(TransferCubeTask, 'trossen_ai_scene_joint.xml')
     ts = env.reset()
     episode = [ts]
     # setup plotting

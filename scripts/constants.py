@@ -3,11 +3,11 @@
 import os
 import pathlib
 
-# Try to import ALOHA package's DATA_DIR, else default to ~/aloha_data
+# Try to import Trossen AI package's DATA_DIR, else default to ~/trossen_ai_data
 try:
-    from aloha.constants import DATA_DIR
+    from trossen_ai.constants import DATA_DIR
 except ImportError:
-    DATA_DIR = os.path.expanduser('~/aloha_data')
+    DATA_DIR = os.path.expanduser('~/trossen_ai_data')
 
 ### Simulated task configurations
 

@@ -208,7 +208,7 @@ def get_observation_base(physics, camera_list, on_screen_render=True):
 XML_DIR = "assets"
 DT = 0.02
 
-def make_sim_env(task_class, xml_file='aloha_scene.xml', task_name='sim_transfer_cube', onscreen_render=False, camera_list=None):
+def make_sim_env(task_class, xml_file='trossen_ai_scene.xml', task_name='sim_transfer_cube', onscreen_render=False, camera_list=None):
     """
     Environment for simulated robot bi-manual manipulation, with end-effector control.
 

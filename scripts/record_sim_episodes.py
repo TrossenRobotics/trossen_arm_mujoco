@@ -40,7 +40,7 @@ def main(args):
         print(f'{episode_idx=}')
         print('Rollout out EE space scripted policy')
         # setup the environment
-        env = make_sim_env(TransferCubeEETask, 'aloha_scene.xml', task_name, onscreen_render=onscreen_render, camera_list = camera_list)
+        env = make_sim_env(TransferCubeEETask, 'trossen_ai_scene.xml', task_name, onscreen_render=onscreen_render, camera_list = camera_list)
         ts = env.reset()
         episode = [ts]
         policy = policy_cls(inject_noise)
@@ -81,7 +81,7 @@ def main(args):
 
         # setup the environment
         print('Replaying joint commands')
-        env = make_sim_env(TransferCubeTask, 'aloha_scene_joint.xml', camera_list = camera_list)
+        env = make_sim_env(TransferCubeTask, 'trossen_ai_scene_joint.xml', camera_list = camera_list)
         BOX_POSE[0] = subtask_info # make sure the sim_env has the same object configurations as ee_sim_env
         ts = env.reset()
         episode_replay = [ts]
@@ -170,7 +170,7 @@ def main(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Record simulation episodes with customization.")
     parser.add_argument('--task_name', type=str, default="sim_transfer_cube", help="Name of the task.")
-    parser.add_argument('--dataset_dir', type=str, default="aloha_data/ee_sim_episodes", help="Directory to save episodes.")
+    parser.add_argument('--dataset_dir', type=str, default="trossen_ai_data/ee_sim_episodes", help="Directory to save episodes.")
     parser.add_argument('--num_episodes', type=int, default=3, help="Number of episodes to run.")
     parser.add_argument('--episode_len', type=int, default=400, help="Length of each episode.")
     parser.add_argument('--onscreen_render', action='store_true', help="Enable on-screen rendering.")

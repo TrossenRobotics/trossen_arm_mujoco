@@ -60,7 +60,7 @@ def test_sim_mocap_control():
     """Testing teleoperation in sim with Trossen AI using mocap."""
     # Setup the environment
     camera_list = ["camera_high", "camera_low", "camera_left_wrist", "camera_right_wrist"]
-    env = make_sim_env(TrossenAIBimanualTask, "aloha_scene.xml", camera_list=camera_list)
+    env = make_sim_env(TrossenAIBimanualTask, "trossen_ai_scene.xml", camera_list=camera_list)
     ts = env.reset()
     physics = env.physics
 
