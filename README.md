@@ -73,16 +73,16 @@ This folder contains all required **MuJoCo XML configuration files**, **URDF fil
 
 ### **Key Files:**
 
-- **`aloha.xml`** → Base model definition of the Trossen AI robot.  
-- **`aloha_scene.xml`** → Uses **motion capture (mocap) bodies** to control the arms in simulation.  
-- **`aloha_scene_joint.xml`** → Uses **joint controllers** similar to real hardware, enabling precise control over movements.  
+- **`trossen_ai.xml`** → Base model definition of the Trossen AI robot.  
+- **`trossen_ai_scene.xml`** → Uses **motion capture (mocap) bodies** to control the arms in simulation.  
+- **`trossen_ai_scene_joint.xml`** → Uses **joint controllers** similar to real hardware, enabling precise control over movements.  
 - **`wxai_follower.urdf` & `wxai_follower.xml`** → URDF and XML descriptions of the follower arms.  
 - **`meshes/`** → Contains **STL** and **OBJ** files for the robot components, including arms, cameras, and environmental objects.
 
 ### **Motion Capture vs Joint-Controlled Environments:**
 
-- **Motion Capture (`aloha_scene.xml`)**: Uses predefined **mocap bodies** that move the robot arms dynamically based on scripted policies.  
-- **Joint Control (`aloha_scene_joint.xml`)**: Uses position controllers for each joint, similar to a real-world robot setup.
+- **Motion Capture (`trossen_ai_scene.xml`)**: Uses predefined **mocap bodies** that move the robot arms dynamically based on scripted policies.  
+- **Joint Control (`trossen_ai_scene_joint.xml`)**: Uses position controllers for each joint, similar to a real-world robot setup.
 
 ---
 
@@ -93,12 +93,12 @@ This folder contains all Python scripts necessary for **running simulations, exe
 ### **2.1 Simulation Scripts**
 
 - **`ee_sim_env.py`**  
-  - Loads **`aloha_scene.xml`** (motion capture-based control).  
+  - Loads **`trossen_ai_scene.xml`** (motion capture-based control).  
   - The arms move by following the positions commanded to the **mocap bodies**.  
   - Used for generating **scripted policies** that control the robot’s arms in predefined ways.
 
 - **`sim_env.py`**  
-  - Loads **`aloha_scene_joint.xml`** (position-controlled joints).  
+  - Loads **`trossen_ai_scene_joint.xml`** (position-controlled joints).  
   - Uses **joint controllers** instead of mocap bodies.  
   - Mimics the real robot’s movement with controlled joint actuation.
 
@@ -135,7 +135,7 @@ The data collection process involves **two simulation phases**:
 
 3. **Save the Data**  
    - All **observations and actions** are stored in **HDF5 format**, with one file per episode.  
-   - Each episode is saved as **`episode_X.hdf5`** inside the **`aloha_data/`** folder.  
+   - Each episode is saved as **`episode_X.hdf5`** inside the **`trossen_ai_data/`** folder.  
 
 4. **Visualizing the Data**  
    - The stored **HDF5 files** can be converted into videos using **`visualize.py`**.  
