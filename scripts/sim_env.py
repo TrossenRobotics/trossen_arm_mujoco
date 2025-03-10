@@ -7,7 +7,7 @@ from dm_control.suite import base
 import matplotlib.pyplot as plt
 import numpy as np
 from utils import sample_box_pose
-from utils import make_sim_env
+from utils import make_sim_env, get_observation_base, plot_observation_images
 
 XML_DIR="assets"
 DT = 0.02
@@ -15,9 +15,9 @@ BOX_POSE = [None] # to be changed from outside
 START_ARM_POSE = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ,0.0])
 
 class BimanualViperXTask(base.Task):
-    def __init__(self, random=None, onscreen_render=False):
+    def __init__(self, random=None, onscreen_render=False, camera_list=None):
         super().__init__(random=random)
-
+        self.camera_list = camera_list if camera_list else ["camera_high", "camera_low", "camera_left_wrist", "camera_right_wrist"]
 
     def before_step(self, action, physics):
         left_arm_action = action[:6]
@@ -76,17 +76,10 @@ class BimanualViperXTask(base.Task):
         return velocity[:16]
 
     def get_observation(self, physics) -> collections.OrderedDict:
-        obs = collections.OrderedDict()
+        obs = get_observation_base(physics, self.camera_list)
         obs['qpos'] = self.get_position(physics)
         obs['qvel'] = self.get_velocity(physics)
         obs['env_state'] = self.get_env_state(physics)
-        obs['images'] = dict()
-        obs['images']['camera_high'] = physics.render(height=480, width=640, camera_id='camera_high')
-        obs['images']['camera_low'] = physics.render(height=480, width=640, camera_id='camera_low')
-        obs['images']['camera_left_wrist'] = physics.render(height=480, width=640, camera_id='camera_left_wrist')
-        obs['images']['camera_right_wrist'] = physics.render(height=480, width=640, camera_id='camera_right_wrist')
-
-
         return obs
 
     def get_reward(self, physics):
@@ -94,8 +87,8 @@ class BimanualViperXTask(base.Task):
         raise NotImplementedError
 
 class TransferCubeTask(BimanualViperXTask):
-    def __init__(self, random=None, onscreen_render=False):
-        super().__init__(random=random)
+    def __init__(self, random=None, onscreen_render=False, camera_list=None):
+        super().__init__(random=random, onscreen_render=onscreen_render, camera_list=camera_list)
         self.max_reward = 4
 
     def initialize_episode(self, physics):
@@ -143,31 +136,12 @@ class TransferCubeTask(BimanualViperXTask):
 def test_sim_teleop():
     """ Testing teleoperation in sim with ALOHA. Requires hardware and ALOHA repo to work. """
     # setup the environment
+    camera_list = ["camera_high", "camera_low", "camera_left_wrist", "camera_right_wrist"]
     env = make_sim_env(TransferCubeTask, 'aloha_scene_joint.xml')
     ts = env.reset()
     episode = [ts]
     # setup plotting
-    fig, axs = plt.subplots(2, 2, figsize=(10, 10))
-    plt_imgs = [
-        axs[0, 0].imshow(ts.observation['images']['camera_high']),
-        axs[0, 1].imshow(ts.observation['images']['camera_low']),
-        axs[1, 0].imshow(ts.observation['images']['camera_left_wrist']),
-        axs[1, 1].imshow(ts.observation['images']['camera_right_wrist']),
-    ]
-
-    # Optionally, add titles for better clarity
-    axs[0, 0].set_title("Camera High")
-    axs[0, 1].set_title("Camera Low")
-    axs[1, 0].set_title("Left Wrist Camera")
-    axs[1, 1].set_title("Right Wrist Camera")
-
-
-    # Remove axis ticks for better visualization
-    for ax in axs.flat:
-        ax.axis('off')
-
-    # plt.tight_layout()
-    plt.ion()
+    plt_imgs = plot_observation_images(ts.observation, camera_list)
 
     for t in range(1000):
         action = np.random.uniform(-np.pi, np.pi, 16)

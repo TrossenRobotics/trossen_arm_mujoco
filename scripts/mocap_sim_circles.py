@@ -15,9 +15,10 @@ CENTER_LEFT = np.array([-0.3, 0.0, 0.4])  # Center for the left end-effector
 CENTER_RIGHT = np.array([0.3, 0.0, 0.4])  # Center for the right end-effector
 
 class BimanualViperXTask(base.Task):
-    def __init__(self, random=None, onscreen_render=False):
+    def __init__(self, random=None, onscreen_render=False, camera_list=None):
         super().__init__(random=random)
         self.on_screen_render = onscreen_render
+        self.camera_list = camera_list if camera_list else ["camera_high", "camera_low", "camera_left_wrist", "camera_right_wrist"]
 
     def initialize_episode(self, physics):
         """Sets the state of the environment at the start of each episode."""
@@ -29,7 +30,7 @@ class BimanualViperXTask(base.Task):
         return env_state
 
     def get_observation(self, physics) -> collections.OrderedDict:
-        obs = get_observation_base(physics)
+        obs = get_observation_base(physics, self.camera_list)
         obs["qpos"] = physics.data.qpos.copy()
         obs["qvel"] = physics.data.qvel.copy()
         obs["env_state"] = self.get_env_state(physics)
@@ -49,8 +50,8 @@ def circular_motion(t, center, radius, frequency=0.5):
     z = center[2]  # Keep the z-coordinate constant
     return np.array([x, y, z])
 
-def get_observation(physics) -> collections.OrderedDict:
-        obs = get_observation_base(physics)
+def get_observation(physics, camera_list) -> collections.OrderedDict:
+        obs = get_observation_base(physics, camera_list)
         obs["qpos"] = physics.data.qpos.copy()
         obs["qvel"] = physics.data.qvel.copy()
         return obs
@@ -58,12 +59,13 @@ def get_observation(physics) -> collections.OrderedDict:
 def test_sim_mocap_control():
     """Testing teleoperation in sim with ALOHA using mocap."""
     # Setup the environment
-    env = make_sim_env(BimanualViperXTask, "aloha_scene.xml")
+    camera_list = ["camera_high", "camera_low", "camera_left_wrist", "camera_right_wrist"]
+    env = make_sim_env(BimanualViperXTask, "aloha_scene.xml", camera_list=camera_list)
     ts = env.reset()
     physics = env.physics
 
     # Setup plotting
-    plt_imgs = plot_observation_images(ts.observation, 5)
+    plt_imgs = plot_observation_images(ts.observation, camera_list)
 
     # Time variable for circular motion
     t = 0
@@ -83,10 +85,10 @@ def test_sim_mocap_control():
 
         physics.step()
         # Step the environment
-        obs = get_observation(physics)
+        obs = get_observation(physics, camera_list)
 
         # Update images
-        plt_imgs = set_observation_images(obs, plt_imgs)
+        plt_imgs = set_observation_images(obs, plt_imgs, camera_list)
 
         # Increment time for circular motion
         t += DT

@@ -45,21 +45,21 @@ export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6
 ## **Folder Structure**  
 
 ```
-📦 Aloha Solo Simulation Package  
- ┣ 📂 assets/  
- ┃ ┣ 📜 MuJoCo XML files  
- ┃ ┣ 📜 URDF files  
- ┃ ┗ 📂 meshes/  → 3D model files for simulation  
- ┣ 📂 scripts/  
- ┃ ┣ 📜 constants.py  
- ┃ ┣ 📜 ee_sim_env.py  
- ┃ ┣ 📜 sim_env.py  
- ┃ ┣ 📜 scripted_policy.py  
- ┃ ┣ 📜 record_sim_episodes.py  
- ┃ ┣ 📜 visualize.py  
- ┃ ┗ 📜 utils.py  
- ┣ 📜 requirements.txt  
- ┗ 📜 README.md
+Aloha Solo Simulation Package  
+ ┣ assets/  
+ ┃ ┣ MuJoCo XML files  
+ ┃ ┣ URDF files  
+ ┃ ┗ meshes/  → 3D model files for simulation  
+ ┣ scripts/  
+ ┃ ┣ constants.py  
+ ┃ ┣ ee_sim_env.py  
+ ┃ ┣ sim_env.py  
+ ┃ ┣ scripted_policy.py  
+ ┃ ┣ record_sim_episodes.py  
+ ┃ ┣ visualize.py  
+ ┃ ┗ utils.py  
+ ┣ requirements.txt  
+ ┗ README.md
 
 ```
 

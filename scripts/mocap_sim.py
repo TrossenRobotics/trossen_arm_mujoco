@@ -11,8 +11,9 @@ XML_DIR = "assets"
 DT = 0.02
 
 class BimanualViperXTask(base.Task):
-    def __init__(self, random=None, onscreen_render=False):
+    def __init__(self, random=None, onscreen_render=False, camera_list=None):
         super().__init__(random=random)
+        self.camera_list = camera_list if camera_list else ["camera_high", "camera_low", "camera_left_wrist", "camera_right_wrist"]
 
     def initialize_episode(self, physics):
         """Sets the state of the environment at the start of each episode."""
@@ -24,7 +25,7 @@ class BimanualViperXTask(base.Task):
         return env_state
 
     def get_observation(self, physics) -> collections.OrderedDict:
-        obs = get_observation_base(physics)
+        obs = get_observation_base(physics, self.camera_list)
         obs["qpos"] = physics.data.qpos.copy()
         obs["qvel"] = physics.data.qvel.copy()
         return obs
@@ -33,8 +34,8 @@ class BimanualViperXTask(base.Task):
         # return whether left gripper is holding the box
         return 0.0
 
-def get_observation(physics) -> collections.OrderedDict:
-        obs = get_observation_base(physics)
+def get_observation(physics, camera_list) -> collections.OrderedDict:
+        obs = get_observation_base(physics, camera_list)
         obs["qpos"] = physics.data.qpos.copy()
         obs["qvel"] = physics.data.qvel.copy()
         return obs
@@ -60,7 +61,8 @@ def interpolate_waypoints(waypoints, t, total_time):
 def test_sim_mocap_control():
     """Testing teleoperation in sim with ALOHA using mocap."""
     # Setup the environment
-    env = make_sim_env(BimanualViperXTask, "aloha_scene.xml")
+    camera_list = ["camera_high", "camera_low", "camera_left_wrist", "camera_right_wrist"]
+    env = make_sim_env(BimanualViperXTask, "aloha_scene.xml", camera_list = camera_list)
     ts = env.reset()
     physics = env.physics
 
@@ -82,19 +84,16 @@ def test_sim_mocap_control():
     t = 0  # Start time
 
     # Setup plotting
-    fig, axs = plt.subplots(2, 3, figsize=(10, 10))
+    fig, axs = plt.subplots(2, 2, figsize=(10, 10))
     plt_imgs = [
         axs[0, 0].imshow(np.zeros((480, 640, 3), dtype=np.uint8)),
         axs[0, 1].imshow(np.zeros((480, 640, 3), dtype=np.uint8)),
-        axs[0, 2].imshow(np.zeros((480, 640, 3), dtype=np.uint8)),
         axs[1, 0].imshow(np.zeros((480, 640, 3), dtype=np.uint8)),
-        axs[1, 1].imshow(np.zeros((480, 640, 3), dtype=np.uint8)),
-        axs[1, 2].imshow(np.zeros((480, 640, 3), dtype=np.uint8)),
+        axs[1, 1].imshow(np.zeros((480, 640, 3), dtype=np.uint8))
     ]
 
     axs[0, 0].set_title("Camera High")
     axs[0, 1].set_title("Camera Low")
-    axs[0, 2].set_title("Teleoperator POV")
     axs[1, 0].set_title("Left Wrist Camera")
     axs[1, 1].set_title("Right Wrist Camera")
 
@@ -119,11 +118,11 @@ def test_sim_mocap_control():
         physics.step()
 
         # Get updated observation
-        obs = get_observation(physics)
+        obs = get_observation(physics, camera_list)
         # print(obs["images"].keys())  # Debug print
 
         # Update images
-        set_observation_images(obs, plt_imgs)
+        set_observation_images(obs, plt_imgs, camera_list)
 
         # Increment time
         t += DT

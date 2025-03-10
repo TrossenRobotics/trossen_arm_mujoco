@@ -13,8 +13,9 @@ BOX_POSE = [None] # to be changed from outside
 START_ARM_POSE = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])  # Change to 16 for bimanual
 
 class BimanualViperXEETask(base.Task):
-    def __init__(self, random=None, onscreen_render=False):
+    def __init__(self, random=None, onscreen_render=False, camera_list=None):
         super().__init__(random=random)
+        self.camera_list = camera_list if camera_list else ["camera_high", "camera_low", "camera_left_wrist", "camera_right_wrist"]
 
     def before_step(self, action, physics):
         a_len = len(action) // 2
@@ -85,7 +86,7 @@ class BimanualViperXEETask(base.Task):
         return velocities[:16]
 
     def get_observation(self, physics):
-        obs = get_observation_base(physics)
+        obs = get_observation_base(physics, self.camera_list)
         obs['qpos'] = self.get_position(physics)
         obs['qvel'] = self.get_velocity(physics)
         obs['env_state'] = self.get_env_state(physics)
@@ -106,8 +107,8 @@ class BimanualViperXEETask(base.Task):
 
 
 class TransferCubeEETask(BimanualViperXEETask):
-    def __init__(self, random=None, onscreen_render=False):
-        super().__init__(random=random, onscreen_render=onscreen_render)
+    def __init__(self, random=None, onscreen_render=False, camera_list=None):
+        super().__init__(random=random, onscreen_render=onscreen_render, camera_list=camera_list)
         self.max_reward = 4
 
     def initialize_episode(self, physics):
@@ -154,19 +155,20 @@ class TransferCubeEETask(BimanualViperXEETask):
 def test_ee_sim_env():
     onscreen_render = True
      # setup the environment
-    env = make_sim_env(TransferCubeEETask, task_name='sim_transfer_cube', onscreen_render=onscreen_render)
+    camera_list = ["camera_high", "camera_low", "camera_left_wrist", "camera_right_wrist"]
+    env = make_sim_env(TransferCubeEETask, task_name='sim_transfer_cube', onscreen_render=onscreen_render, camera_list = camera_list)
     # print(f"Action space: {env.action_spec().shape}")
     ts = env.reset()
     episode = [ts]
     # setup plotting
     if onscreen_render:
-        plt_imgs = plot_observation_images(ts.observation, 4)
+        plt_imgs = plot_observation_images(ts.observation, camera_list)
     for t in range(1000):
         action = np.random.uniform(-0.1, 0.1, 23)
         ts = env.step(action)
         episode.append(ts)
         if onscreen_render:
-            plt_imgs = set_observation_images(ts.observation, plt_imgs)
+            plt_imgs = set_observation_images(ts.observation, plt_imgs, camera_list)
 
 if __name__ == '__main__':
     test_ee_sim_env()

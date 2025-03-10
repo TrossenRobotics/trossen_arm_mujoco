@@ -112,14 +112,15 @@ class PickAndTransferPolicy(BasePolicy):
 def test_policy(task_name, num_episodes=2, episode_len=400, onscreen_render=True, inject_noise=False):
     # setup the environment
     # env = make_ee_sim_env(task_name, onscreen_render=onscreen_render)
-    env = make_sim_env(TransferCubeEETask, task_name=task_name, onscreen_render=onscreen_render)
+    camera_list = ["camera_high", "camera_low", "camera_left_wrist", "camera_right_wrist"]
+    env = make_sim_env(TransferCubeEETask, task_name=task_name, onscreen_render=onscreen_render, camera_list=camera_list)
     print(f"Action space: {env.action_spec().shape}")
 
     for episode_idx in range(num_episodes):
         ts = env.reset()
         episode = [ts]
         if onscreen_render:
-            plt_imgs = plot_observation_images(ts.observation, 4)
+            plt_imgs = plot_observation_images(ts.observation, camera_list)
 
         policy = PickAndTransferPolicy(inject_noise)
         for step in range(episode_len):
@@ -127,7 +128,7 @@ def test_policy(task_name, num_episodes=2, episode_len=400, onscreen_render=True
             ts = env.step(action)
             episode.append(ts)
             if onscreen_render:
-                plt_imgs = set_observation_images(ts.observation, plt_imgs)
+                plt_imgs = set_observation_images(ts.observation, plt_imgs, camera_list)
         plt.close()
 
         episode_return = np.sum([ts.reward for ts in episode[1:]])

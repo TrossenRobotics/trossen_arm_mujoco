@@ -29,11 +29,13 @@ def main(args):
     onscreen_render = args.onscreen_render
     inject_noise = args.inject_noise
 
+    # camera_list = ["camera_high", "camera_low", "camera_left_wrist", "camera_right_wrist"]
+
     if not os.path.isdir(dataset_dir):
         os.makedirs(dataset_dir, exist_ok=True)
 
     episode_len = args.episode_len
-    camera_names = args.camera_names.split(",")
+    camera_list = args.camera_names.split(",")
     policy_cls = PickAndTransferPolicy
 
     success = []
@@ -42,20 +44,20 @@ def main(args):
         print('Rollout out EE space scripted policy')
         # setup the environment
         # env = make_ee_sim_env(task_name, onscreen_render=onscreen_render)
-        env = make_sim_env(TransferCubeEETask, 'aloha_scene.xml', task_name, onscreen_render=onscreen_render)
+        env = make_sim_env(TransferCubeEETask, 'aloha_scene.xml', task_name, onscreen_render=onscreen_render, camera_list = camera_list)
         ts = env.reset()
         episode = [ts]
         policy = policy_cls(inject_noise)
         # setup plotting
         if onscreen_render:
-            plt_imgs = plot_observation_images(ts.observation, 4)
+            plt_imgs = plot_observation_images(ts.observation, camera_list)
         for step in tqdm(range(episode_len)):
             action = policy(ts)
             ts = env.step(action)
             episode.append(ts)
             # print(f"{step=}, {ts.observation['qpos']=}")
             if onscreen_render:
-                plt_imgs = set_observation_images(ts.observation, plt_imgs)
+                plt_imgs = set_observation_images(ts.observation, plt_imgs, camera_list)
         plt.close()
 
         episode_return = np.sum([ts.reward for ts in episode[1:]])
@@ -83,33 +85,12 @@ def main(args):
 
         # setup the environment
         print('Replaying joint commands')
-        env = make_sim_env(TransferCubeTask, 'aloha_scene_joint.xml')
+        env = make_sim_env(TransferCubeTask, 'aloha_scene_joint.xml', camera_list = camera_list)
         BOX_POSE[0] = subtask_info # make sure the sim_env has the same object configurations as ee_sim_env
         ts = env.reset()
         episode_replay = [ts]
         # setup plotting
-        if onscreen_render:
-            fig, axs = plt.subplots(2, 3, figsize=(10, 10))
-            plt_imgs = [
-                axs[0, 0].imshow(ts.observation['images']['camera_high']),
-                axs[0, 1].imshow(ts.observation['images']['camera_low']),
-                axs[1, 0].imshow(ts.observation['images']['camera_left_wrist']),
-                axs[1, 1].imshow(ts.observation['images']['camera_right_wrist']),
-            ]
-
-            # Optionally, add titles for better clarity
-            axs[0, 0].set_title("Camera High")
-            axs[0, 1].set_title("Camera Low")
-            axs[1, 0].set_title("Left Wrist Camera")
-            axs[1, 1].set_title("Right Wrist Camera")
-
-
-            # Remove axis ticks for better visualization
-            for ax in axs.flat:
-                ax.axis('off')
-
-            # plt.tight_layout()
-            plt.ion()
+        plt_imgs = plot_observation_images(ts.observation, camera_list)
 
         for t in tqdm(range(len(joint_traj))): # note: this will increase episode length by 1
             action = joint_traj[t]
@@ -119,7 +100,7 @@ def main(args):
 
             episode_replay.append(ts)
             if onscreen_render:
-                plt_imgs = set_observation_images(ts.observation, plt_imgs)
+                plt_imgs = set_observation_images(ts.observation, plt_imgs, camera_list)
         episode_return = np.sum([ts.reward for ts in episode_replay[1:]])
         episode_max_reward = np.max([ts.reward for ts in episode_replay[1:]])
         if episode_max_reward == env.task.max_reward:
@@ -147,7 +128,7 @@ def main(args):
             '/observations/qvel': [],
             '/action': [],
         }
-        for cam_name in camera_names:
+        for cam_name in camera_list:
             data_dict[f'/observations/images/{cam_name}'] = []
 
         # because the replaying, there will be eps_len + 1 actions and eps_len + 2 timesteps
@@ -164,7 +145,7 @@ def main(args):
             data_dict['/observations/qpos'].append(ts.observation['qpos'])
             data_dict['/observations/qvel'].append(ts.observation['qvel'])
             data_dict['/action'].append(action)
-            for cam_name in camera_names:
+            for cam_name in camera_list:
                 data_dict[f'/observations/images/{cam_name}'].append(ts.observation['images'][cam_name])
 
         # HDF5
@@ -174,7 +155,7 @@ def main(args):
             root.attrs['sim'] = True
             obs = root.create_group('observations')
             image = obs.create_group('images')
-            for cam_name in camera_names:
+            for cam_name in camera_list:
                 _ = image.create_dataset(cam_name, (max_timesteps, 480, 640, 3), dtype='uint8',
                                          chunks=(1, 480, 640, 3), )
             # compression='gzip',compression_opts=2,)
