@@ -2,8 +2,8 @@
 
 ## **Overview**  
 
-The **Trossen Arm MujoCo** provides the necessary assets and scripts for simulating and training robotic policies using the **Trossen AI** system in **MuJoCo**. 
-It includes **URDFs, mesh models, and MuJoCo XML files** for the robot configuration, as well as Python scripts for policy execution, reward-based evaluation, data collection, and visualization.
+The **Trossen Arm MujoCo** provides the necessary assets and scripts for simulating and training robotic policies using the **Trossen AI** system in **MujoCo**. 
+It includes **URDFs, mesh models, and MujoCo XML files** for the robot configuration, as well as Python scripts for policy execution, reward-based evaluation, data collection, and visualization.
 
 This package supports two types of simulation environments:  
 1. **End-Effector (EE) Controlled Simulation (`ee_sim_env.py`)** – Uses **motion capture (mocap) bodies** to move the arms.  
@@ -51,7 +51,7 @@ export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6
 ```
 Trossen Arm MujoCo
  ┣ assets/  
- ┃ ┣ MuJoCo XML files  
+ ┃ ┣ MujoCo XML files  
  ┃ ┣ URDF files  
  ┃ ┗ meshes/  → 3D model files for simulation  
  ┣ scripts/  
@@ -69,7 +69,7 @@ Trossen Arm MujoCo
 
 ## **1. Assets Folder (`assets/`)**  
 
-This folder contains all required **MuJoCo XML configuration files**, **URDF files**, and **mesh models** for the simulation.  
+This folder contains all required **MujoCo XML configuration files**, **URDF files**, and **mesh models** for the simulation.  
 
 ### **Key Files:**
 
@@ -260,14 +260,14 @@ def get_observation(self, physics):
 
 ## Troubleshoot
 
-if you encounter rendering issues or need a clean MuJoCo setup on Linux.
+if you encounter rendering issues or need a clean MujoCo setup on Linux.
 ```bash
 chmod +x setup.sh
 ./setup.sh
 ```
 Here's what it does:
 - Reinstalls OpenGL-related libraries (`libgl1-mesa-glx`, `libgl1-mesa-dri`, `mesa-utils`) to fix rendering issues.
-- Installs GLFW (`libglfw3`, `libglfw3-dev`), required for MuJoCo simulations.
+- Installs GLFW (`libglfw3`, `libglfw3-dev`), required for MujoCo simulations.
 - Sets the `MUJOCO_GL=egl` environment variable to enable headless rendering using EGL.
 - Updates the `.bashrc` file so the environment variable persists across terminal sessions.
 - Prompts the user to restart the terminal or reload `.bashrc` for changes to take effect.

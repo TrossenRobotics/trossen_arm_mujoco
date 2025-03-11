@@ -7,11 +7,7 @@ from dm_control.suite import base
 import matplotlib.pyplot as plt
 import numpy as np
 from utils import sample_box_pose, make_sim_env, get_observation_base, plot_observation_images
-
-XML_DIR="assets"
-DT = 0.02
-BOX_POSE = [None] # to be changed from outside
-START_ARM_POSE = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ,0.0])
+from constants import DT, START_ARM_POSE, XML_DIR, BOX_POSE
 
 class TrossenAIBimanualTask(base.Task):
     def __init__(self, random=None, onscreen_render=False, camera_list=None):

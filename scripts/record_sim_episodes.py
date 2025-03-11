@@ -12,6 +12,7 @@ from tqdm import tqdm
 import IPython
 from utils import make_sim_env
 from utils import plot_observation_images, set_observation_images
+from constants import SIM_TASK_CONFIGS
 
 def main(args):
     """
@@ -22,17 +23,17 @@ def main(args):
     Save this episode of data, and continue to next episode of data collection.
     """
 
-    task_name = args.task_name
-    dataset_dir = args.dataset_dir
-    num_episodes = args.num_episodes
-    onscreen_render = args.onscreen_render
-    inject_noise = args.inject_noise
+    task_config = SIM_TASK_CONFIGS.get(args.task_name, {}).copy()
+    dataset_dir = args.dataset_dir if args.dataset_dir else task_config.get('dataset_dir')
+    num_episodes = args.num_episodes if args.num_episodes is not None else task_config.get('num_episodes')
+    episode_len = args.episode_len if args.episode_len is not None else task_config.get('episode_len')
+    camera_list = args.camera_names.split(",") if args.camera_names else task_config.get('camera_names')
+    onscreen_render = args.onscreen_render if args.onscreen_render else task_config.get('onscreen_render')
+    inject_noise = args.inject_noise if args.inject_noise else task_config.get('inject_noise')
 
     if not os.path.isdir(dataset_dir):
         os.makedirs(dataset_dir, exist_ok=True)
 
-    episode_len = args.episode_len
-    camera_list = args.camera_names.split(",")
     policy_cls = PickAndTransferPolicy
 
     success = []
@@ -40,7 +41,7 @@ def main(args):
         print(f'{episode_idx=}')
         print('Rollout out EE space scripted policy')
         # setup the environment
-        env = make_sim_env(TransferCubeEETask, 'trossen_ai_scene.xml', task_name, onscreen_render=onscreen_render, camera_list = camera_list)
+        env = make_sim_env(TransferCubeEETask, 'trossen_ai_scene.xml', args.task_name, onscreen_render=onscreen_render, camera_list = camera_list)
         ts = env.reset()
         episode = [ts]
         policy = policy_cls(inject_noise)
@@ -170,13 +171,12 @@ def main(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Record simulation episodes with customization.")
     parser.add_argument('--task_name', type=str, default="sim_transfer_cube", help="Name of the task.")
-    parser.add_argument('--dataset_dir', type=str, default="trossen_ai_data/ee_sim_episodes", help="Directory to save episodes.")
-    parser.add_argument('--num_episodes', type=int, default=3, help="Number of episodes to run.")
-    parser.add_argument('--episode_len', type=int, default=400, help="Length of each episode.")
+    parser.add_argument('--dataset_dir', type=str, help="Directory to save episodes.")
+    parser.add_argument('--num_episodes', type=int, help="Number of episodes to run.")
+    parser.add_argument('--episode_len', type=int, help="Length of each episode.")
     parser.add_argument('--onscreen_render', action='store_true', help="Enable on-screen rendering.")
     parser.add_argument('--inject_noise', action='store_true', help="Inject noise into actions.")
-    parser.add_argument('--camera_names', type=str, default="camera_right_wrist,camera_left_wrist,camera_high,camera_low",
-                        help="Comma-separated list of camera names.")
+    parser.add_argument('--camera_names', type=str, help="Comma-separated list of camera names.")
 
     args = parser.parse_args()
     main(args)

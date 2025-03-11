@@ -6,11 +6,7 @@ from dm_control.suite import base
 import numpy as np
 import matplotlib.pyplot as plt
 from utils import sample_box_pose, get_observation_base, make_sim_env, plot_observation_images, set_observation_images
-
-XML_DIR="assets"
-DT = 0.02
-BOX_POSE = [None] # to be changed from outside
-START_ARM_POSE = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])  # Change to 16 for bimanual
+from constants import DT, START_ARM_POSE, XML_DIR, BOX_POSE
 
 class TrossenAIBimanualEETask(base.Task):
     def __init__(self, random=None, onscreen_render=False, camera_list=None):
@@ -46,7 +42,7 @@ class TrossenAIBimanualEETask(base.Task):
 
     def initialize_robots(self, physics):
         # reset joint position
-        physics.named.data.qpos[:12] = START_ARM_POSE
+        physics.named.data.qpos[:12] = START_ARM_POSE[:6] + START_ARM_POSE[8:14]
 
         # reset mocap to align with end effector
         # to obtain these numbers:

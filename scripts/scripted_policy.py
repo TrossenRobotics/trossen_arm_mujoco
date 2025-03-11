@@ -139,11 +139,16 @@ if __name__ == '__main__':
     # test_task_name = 'sim_transfer_cube_scripted'
     parser = argparse.ArgumentParser(description="Test policy with customizable parameters.")
     parser.add_argument('--task_name', type=str, default="sim_transfer_cube", help="Task name.")
-    parser.add_argument('--num_episodes', type=int, default=2, help="Number of episodes.")
-    parser.add_argument('--episode_len', type=int, default=400, help="Episode length.")
+    parser.add_argument('--num_episodes', type=int, help="Number of episodes.")
+    parser.add_argument('--episode_len', type=int, help="Episode length.")
     parser.add_argument('--onscreen_render', action='store_true', help="Enable rendering.")
     parser.add_argument('--inject_noise', action='store_true', help="Inject noise into actions.")
 
     args = parser.parse_args()
-    test_policy(args.task_name, args.num_episodes, args.episode_len, args.onscreen_render,args.inject_noise)
+    task_config = SIM_TASK_CONFIGS.get(args.task_name, {}).copy()
+    num_episodes = args.num_episodes if args.num_episodes is not None else task_config.get('num_episodes')
+    episode_len = args.episode_len if args.episode_len is not None else task_config.get('episode_len')
+    onscreen_render = args.onscreen_render if args.onscreen_render else task_config.get('onscreen_render')
+    inject_noise = args.inject_noise if args.inject_noise else task_config.get('inject_noise')
+    test_policy(args.task_name, num_episodes, episode_len, onscreen_render, inject_noise)
 
