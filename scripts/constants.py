@@ -23,30 +23,38 @@ SIM_TASK_CONFIGS = {
 
     'sim_transfer_cube_scripted':{
         'dataset_dir': DATA_DIR + '/sim_transfer_cube_scripted',
-        'num_episodes': 50,
+        'num_episodes': 3,
         'episode_len': 400,
-        'camera_names': ['top']
+        'onscreen_render': True,
+        'inject_noise': False,
+        'camera_names': ["camera_high", "camera_low", "camera_left_wrist", "camera_right_wrist"]
     },
 
     'sim_transfer_cube_human':{
         'dataset_dir': DATA_DIR + '/sim_transfer_cube_human',
-        'num_episodes': 50,
+        'num_episodes': 3,
         'episode_len': 400,
-        'camera_names': ['top']
+        'onscreen_render': True,
+        'inject_noise': False,
+        'camera_names': ["camera_high", "camera_low", "camera_left_wrist", "camera_right_wrist"]
     },
 
     'sim_insertion_scripted': {
         'dataset_dir': DATA_DIR + '/sim_insertion_scripted',
-        'num_episodes': 50,
+        'num_episodes': 3,
         'episode_len': 400,
-        'camera_names': ['top']
+        'onscreen_render': True,
+        'inject_noise': False,
+        'camera_names': ["camera_high", "camera_low", "camera_left_wrist", "camera_right_wrist"]
     },
 
     'sim_insertion_human': {
         'dataset_dir': DATA_DIR + '/sim_insertion_human',
-        'num_episodes': 50,
-        'episode_len': 500,
-        'camera_names': ['top']
+        'num_episodes': 3,
+        'episode_len': 400,
+        'onscreen_render': True,
+        'inject_noise': False,
+        'camera_names': ["camera_high", "camera_low", "camera_left_wrist", "camera_right_wrist"]
     },
 }
 
