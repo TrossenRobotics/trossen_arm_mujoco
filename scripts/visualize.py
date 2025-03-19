@@ -7,7 +7,12 @@ import re
 
 def load_hdf5(dataset_path):
     """
-    Load the camera feeds from an HDF5 dataset.
+    Load camera feed data from an HDF5 dataset.
+
+    :param dataset_path: Path to the HDF5 dataset file.
+    :type dataset_path: str
+    :return: Dictionary mapping camera names to image sequences.
+    :rtype: dict or None
     """
     if not os.path.isfile(dataset_path):
         print(f"Dataset does not exist at {dataset_path}")
@@ -23,7 +28,14 @@ def load_hdf5(dataset_path):
 
 def save_videos(image_dict, dt, video_path):
     """
-    Save all camera feeds into a single video file.
+    Save all camera feeds into a single MP4 video.
+
+    :param image_dict: Dictionary mapping camera names to image sequences.
+    :type image_dict: dict
+    :param dt: Time interval per frame (1 / fps).
+    :type dt: float
+    :param video_path: Path to save the output MP4 video.
+    :type video_path: str
     """
     if not image_dict:
         print(f"Skipping {video_path}: No valid images found.")
@@ -52,7 +64,14 @@ def save_videos(image_dict, dt, video_path):
 
 def process_directory(dataset_dir, output_dir, fps=50):
     """
-    Convert all episodes in the dataset directory to videos.
+    Convert all HDF5 episodes in the dataset directory to MP4 videos.
+
+    :param dataset_dir: Path to the directory containing HDF5 dataset files.
+    :type dataset_dir: str
+    :param output_dir: Path to the directory to save the output MP4 videos.
+    :type output_dir: str
+    :param fps: Frames per second for the output video, defaults to 50.
+    :type fps: int, optional
     """
     os.makedirs(output_dir, exist_ok=True)
 

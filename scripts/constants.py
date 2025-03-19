@@ -3,11 +3,7 @@
 import os
 import pathlib
 
-# Try to import Trossen AI package's DATA_DIR, else default to ~/trossen_ai_data
-try:
-    from trossen_ai.constants import DATA_DIR
-except ImportError:
-    DATA_DIR = os.path.expanduser('~/trossen_ai_data')
+DATA_DIR = os.path.expanduser('~/trossen_ai_data')
 
 ### Simulated task configurations
 

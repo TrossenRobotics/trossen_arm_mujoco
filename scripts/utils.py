@@ -9,6 +9,13 @@ import matplotlib.pyplot as plt
 from constants import XML_DIR, DT
 
 def sample_box_pose():
+    """
+    Generate a random pose for a cube within predefined position ranges.
+
+    :return: A 7D array containing the sampled position ``[x, y, z, w, x, y, z]`` 
+        representing the cube's position and orientation as a quaternion.
+    :rtype: np.ndarray
+    """
     x_range = [-0.1, 0.2]
     y_range = [-0.15, 0.15]
     z_range = [0.02, 0.02]
@@ -20,6 +27,18 @@ def sample_box_pose():
     return np.concatenate([cube_position, cube_quat])
 
 def get_observation_base(physics, camera_list, on_screen_render=True):
+    """
+    Capture image observations from multiple cameras in the simulation.
+
+    :param physics: The simulation physics instance.
+    :type physics: mujoco.Physics
+    :param camera_list: List of camera names to capture images from.
+    :type camera_list: list
+    :param on_screen_render: Whether to capture images from cameras, defaults to ``True``.
+    :type on_screen_render: bool, optional
+    :return: A dictionary containing image observations.
+    :rtype: collections.OrderedDict
+    """
     obs = collections.OrderedDict()
     if on_screen_render:
         obs["images"] = dict()
@@ -29,30 +48,20 @@ def get_observation_base(physics, camera_list, on_screen_render=True):
 
 def make_sim_env(task_class, xml_file='trossen_ai_scene.xml', task_name='sim_transfer_cube', onscreen_render=False, camera_list=None):
     """
-    Environment for simulated robot bi-manual manipulation, with end-effector control.
+    Create a simulated environment for bi-manual robotic manipulation.
 
-    Action space: [
-        left_arm_pose (7),              # position and quaternion for end effector
-        left_gripper_positions (1),     # normalized gripper position (0: close, 1: open)
-        right_arm_pose (7),             # position and quaternion for end effector
-        right_gripper_positions (1),    # normalized gripper position (0: close, 1: open)
-    ]
-
-    Observation space: {
-        "qpos": Concat[
-            left_arm_qpos (6),          # absolute joint position (rad)
-            left_gripper_position (1),  # normalized gripper position (0: close, 1: open)
-            right_arm_qpos (6),         # absolute joint position (rad)
-            right_gripper_qpos (1)]     # normalized gripper position (0: close, 1: open)
-        ],
-        "qvel": Concat[
-            left_arm_qvel (6),          # absolute joint velocity (rad/s)
-            left_gripper_velocity (1),  # normalized gripper velocity (pos: opening, neg: closing)
-            right_arm_qvel (6),         # absolute joint velocity (rad/s)
-            right_gripper_qvel (1)]     # normalized gripper velocity (pos: opening, neg: closing)
-        ],
-        "images": {"main": (480x640x3)} # h, w, c, dtype='uint8'
-    }
+    :param task_class: The task class for defining simulation behavior.
+    :type task_class: class
+    :param xml_file: Path to the robot XML file, defaults to ``'trossen_ai_scene.xml'``.
+    :type xml_file: str, optional
+    :param task_name: Name of the task, defaults to ``'sim_transfer_cube'``.
+    :type task_name: str, optional
+    :param onscreen_render: Whether to render the simulation on-screen, defaults to ``False``.
+    :type onscreen_render: bool, optional
+    :param camera_list: List of camera names to be used, defaults to ``None``.
+    :type camera_list: list, optional
+    :return: The simulated robot environment.
+    :rtype: control.Environment
     """
     if 'sim_transfer_cube' in task_name:
         xml_path = os.path.join(XML_DIR, xml_file)
@@ -72,9 +81,19 @@ def make_sim_env(task_class, xml_file='trossen_ai_scene.xml', task_name='sim_tra
     return env
 
 def plot_observation_images(observation, camera_list):
+    """
+    Plot observation images from multiple camera viewpoints.
+
+    :param observation: The observation data containing images.
+    :type observation: dict
+    :param camera_list: List of camera names used for capturing images.
+    :type camera_list: list
+    :return: A list of :class:`matplotlib.image.AxesImage` objects for dynamic updates.
+    :rtype: list
+    """
     images = observation.get("images", {})
     
-    # Define the layout dynamically based on the provided camera list
+    # Define the layout based on the provided camera list
     num_cameras = len(camera_list)
 
     if num_cameras == 4:
@@ -107,6 +126,18 @@ def plot_observation_images(observation, camera_list):
     return plt_imgs
 
 def set_observation_images(observation, plt_imgs, camera_list):
+    """
+    Update displayed observation images dynamically.
+
+    :param observation: The observation data containing updated images.
+    :type observation: dict
+    :param plt_imgs: A list of :class:`matplotlib.image.AxesImage` objects for dynamic updates.
+    :type plt_imgs: list
+    :param camera_list: List of camera names.
+    :type camera_list: list
+    :return: Updated list of :class:`matplotlib.image.AxesImage` objects for real-time visualization.
+    :rtype: list
+    """
     images = observation.get("images", {})
 
     # Update image data dynamically

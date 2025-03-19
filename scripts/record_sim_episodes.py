@@ -9,7 +9,6 @@ from ee_sim_env import TransferCubeEETask
 from sim_env import BOX_POSE, TransferCubeTask
 from scripted_policy import PickAndTransferPolicy
 from tqdm import tqdm
-import IPython
 from utils import make_sim_env
 from utils import plot_observation_images, set_observation_images
 from constants import SIM_TASK_CONFIGS
@@ -41,7 +40,13 @@ def main(args):
         print(f'{episode_idx=}')
         print('Rollout out EE space scripted policy')
         # setup the environment
-        env = make_sim_env(TransferCubeEETask, 'trossen_ai_scene.xml', args.task_name, onscreen_render=onscreen_render, camera_list = camera_list)
+        env = make_sim_env(
+            TransferCubeEETask, 
+            'trossen_ai_scene.xml', 
+            args.task_name, 
+            onscreen_render=onscreen_render, 
+            camera_list=camera_list
+        )
         ts = env.reset()
         episode = [ts]
         policy = policy_cls(inject_noise)
@@ -52,7 +57,6 @@ def main(args):
             action = policy(ts)
             ts = env.step(action)
             episode.append(ts)
-            # print(f"{step=}, {ts.observation['qpos']=}")
             if onscreen_render:
                 plt_imgs = set_observation_images(ts.observation, plt_imgs, camera_list)
         plt.close()
@@ -82,7 +86,11 @@ def main(args):
 
         # setup the environment
         print('Replaying joint commands')
-        env = make_sim_env(TransferCubeTask, 'trossen_ai_scene_joint.xml', camera_list = camera_list)
+        env = make_sim_env(
+            TransferCubeTask, 
+            'trossen_ai_scene_joint.xml',
+            camera_list=camera_list
+        )
         BOX_POSE[0] = subtask_info # make sure the sim_env has the same object configurations as ee_sim_env
         ts = env.reset()
         episode_replay = [ts]
@@ -91,10 +99,7 @@ def main(args):
 
         for t in tqdm(range(len(joint_traj))): # note: this will increase episode length by 1
             action = joint_traj[t]
-            # print(f"{t=}, {action=}")
             ts = env.step(action)
-            # print(f"{ts.observation['qpos']=}")
-
             episode_replay.append(ts)
             if onscreen_render:
                 plt_imgs = set_observation_images(ts.observation, plt_imgs, camera_list)

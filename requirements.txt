@@ -1,6 +1,5 @@
 dm_control
-matplotlib
 h5py
-pyquaternion
-IPython
+matplotlib
 opencv-python
+pyquaternion

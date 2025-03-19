@@ -10,11 +10,29 @@ from utils import sample_box_pose, make_sim_env, get_observation_base, plot_obse
 from constants import DT, START_ARM_POSE, XML_DIR, BOX_POSE
 
 class TrossenAIBimanualTask(base.Task):
+    """
+    A base task for bi-manual manipulation with Trossen AI robotic arms.
+
+    :param random: Random seed for environment variability, defaults to ``None``.
+    :type random: int, optional
+    :param onscreen_render: Whether to enable real-time rendering, defaults to ``False``.
+    :type onscreen_render: bool, optional
+    :param camera_list: List of cameras to capture observations, defaults to ``None``.
+    :type camera_list: list, optional
+    """
     def __init__(self, random=None, onscreen_render=False, camera_list=None):
         super().__init__(random=random)
         self.camera_list = camera_list if camera_list else ["camera_high", "camera_low", "camera_left_wrist", "camera_right_wrist"]
 
     def before_step(self, action, physics):
+        """
+        Processes the action before passing it to the simulation.
+
+        :param action: The action array containing arm and gripper controls.
+        :type action: np.ndarray
+        :param physics: The MuJoCo physics simulation instance.
+        :type physics: mujoco.Physics
+        """
         left_arm_action = action[:6]
         right_arm_action = action[8:8 + 6]
         normalized_left_gripper_action = action[6]
@@ -53,24 +71,62 @@ class TrossenAIBimanualTask(base.Task):
         return
     
     def initialize_episode(self, physics):
+        """
+        Sets the state of the environment at the start of each episode.
+
+        :param physics: The MuJoCo physics simulation instance.
+        :type physics: mujoco.Physics
+        """
         """Sets the state of the environment at the start of each episode."""
         super().initialize_episode(physics)
 
 
     @staticmethod
     def get_env_state(physics):
+        """
+        Retrieves the current state of the environment.
+
+        :param physics: The MuJoCo physics simulation instance.
+        :type physics: mujoco.Physics
+        :return: The environment state.
+        :rtype: np.ndarray
+        """
         env_state = physics.data.qpos.copy()
         return env_state
 
     def get_position(self, physics):
+        """
+        Retrieves the current joint positions.
+
+        :param physics: The MuJoCo physics simulation instance.
+        :type physics: mujoco.Physics
+        :return: The joint positions.
+        :rtype: np.ndarray
+        """
         position = physics.data.qpos.copy()
         return position[:16]
 
     def get_velocity(self, physics):
+        """
+        Retrieves the current joint velocities.
+
+        :param physics: The MuJoCo physics simulation instance.
+        :type physics: mujoco.Physics
+        :return: The joint velocities.
+        :rtype: np.ndarray
+        """
         velocity = physics.data.qvel.copy()
         return velocity[:16]
 
     def get_observation(self, physics) -> collections.OrderedDict:
+        """
+        Collects the current observation from the environment.
+
+        :param physics: The MuJoCo physics simulation instance.
+        :type physics: mujoco.Physics
+        :return: An ordered dictionary containing joint positions, velocities, and environment state.
+        :rtype: collections.OrderedDict
+        """
         obs = get_observation_base(physics, self.camera_list)
         obs['qpos'] = self.get_position(physics)
         obs['qvel'] = self.get_velocity(physics)
@@ -78,15 +134,38 @@ class TrossenAIBimanualTask(base.Task):
         return obs
 
     def get_reward(self, physics):
+        """
+        Computes the reward for the current timestep.
+
+        :param physics: The MuJoCo physics simulation instance.
+        :type physics: mujoco.Physics
+        :raises NotImplementedError: This method must be implemented in subclasses.
+        """
         # return whether left gripper is holding the box
         raise NotImplementedError
 
 class TransferCubeTask(TrossenAIBimanualTask):
+    """
+    A task where a cube must be transferred between two robotic arms.
+
+    :param random: Random seed for environment variability, defaults to ``None``.
+    :type random: int, optional
+    :param onscreen_render: Whether to enable real-time rendering, defaults to ``False``.
+    :type onscreen_render: bool, optional
+    :param camera_list: List of cameras to capture observations, defaults to ``None``.
+    :type camera_list: list, optional
+    """
     def __init__(self, random=None, onscreen_render=False, camera_list=None):
         super().__init__(random=random, onscreen_render=onscreen_render, camera_list=camera_list)
         self.max_reward = 4
 
     def initialize_episode(self, physics):
+        """
+        Initializes the episode, resetting the robot's pose and cube position.
+
+        :param physics: The MuJoCo physics simulation instance.
+        :type physics: mujoco.Physics
+        """
         """Sets the state of the environment at the start of each episode."""
         # TODO Notice: this function does not randomize the env configuration. Instead, set
         # BOX_POSE from outside reset qpos, control and box position
@@ -99,11 +178,26 @@ class TransferCubeTask(TrossenAIBimanualTask):
 
     @staticmethod
     def get_env_state(physics):
+        """
+        Retrieves the environment state related to the cube position.
+
+        :param physics: The MuJoCo physics simulation instance.
+        :type physics: mujoco.Physics
+        :return: The environment state.
+        :rtype: np.ndarray
+        """
         env_state = physics.data.qpos.copy()[16:]
         return env_state
 
     def get_reward(self, physics):
-        # return whether left gripper is holding the box
+        """
+        Computes the reward based on whether the cube has been transferred successfully.
+
+        :param physics: The MuJoCo physics simulation instance.
+        :type physics: mujoco.Physics
+        :return: The computed reward which is whether left gripper is holding the box
+        :rtype: int
+        """
         all_contact_pairs = []
         for i_contact in range(physics.data.ncon):
             id_geom_1 = physics.data.contact[i_contact].geom1
@@ -129,10 +223,17 @@ class TransferCubeTask(TrossenAIBimanualTask):
         return reward
 
 def test_sim_teleop():
-    """ Testing teleoperation in sim with Trossen AI. Requires hardware and Trossen AI repo to work. """
+    """
+    Runs a simulation to test teleoperation with the Trossen AI robotic arms. 
+    Testing teleoperation in sim with Trossen AI. 
+    Requires hardware and Trossen AI repo to work.
+    """
     # setup the environment
     camera_list = ["camera_high", "camera_low", "camera_left_wrist", "camera_right_wrist"]
-    env = make_sim_env(TransferCubeTask, 'trossen_ai_scene_joint.xml')
+    env = make_sim_env(
+        TransferCubeTask, 
+        'trossen_ai_scene_joint.xml'
+    )
     ts = env.reset()
     episode = [ts]
     # setup plotting

@@ -1,9 +1,9 @@
-# Trossen Arm MujoCo
+# Trossen Arm MuJoCo
 
 ## **Overview**  
 
-The **Trossen Arm MujoCo** provides the necessary assets and scripts for simulating and training robotic policies using the **Trossen AI** system in **MujoCo**. 
-It includes **URDFs, mesh models, and MujoCo XML files** for the robot configuration, as well as Python scripts for policy execution, reward-based evaluation, data collection, and visualization.
+The **Trossen Arm MuJoCo** provides the necessary assets and scripts for simulating and training robotic policies using the **Trossen AI** system in **MuJoCo**. 
+It includes **URDFs, mesh models, and MuJoCo XML files** for the robot configuration, as well as Python scripts for policy execution, reward-based evaluation, data collection, and visualization.
 
 This package supports two types of simulation environments:  
 1. **End-Effector (EE) Controlled Simulation (`ee_sim_env.py`)** – Uses **motion capture (mocap) bodies** to move the arms.  
@@ -49,9 +49,9 @@ export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6
 ## **Folder Structure**  
 
 ```
-Trossen Arm MujoCo
+Trossen Arm MuJoCo
  ┣ assets/  
- ┃ ┣ MujoCo XML files  
+ ┃ ┣ MuJoCo XML files  
  ┃ ┣ URDF files  
  ┃ ┗ meshes/  → 3D model files for simulation  
  ┣ scripts/  
@@ -69,7 +69,7 @@ Trossen Arm MujoCo
 
 ## **1. Assets Folder (`assets/`)**  
 
-This folder contains all required **MujoCo XML configuration files**, **URDF files**, and **mesh models** for the simulation.  
+This folder contains all required **MuJoCo XML configuration files**, **URDF files**, and **mesh models** for the simulation.  
 
 ### **Key Files:**
 
@@ -215,7 +215,7 @@ python visualize.py \
 
 To create a custom task, modify `ee_sim_env.py` or `sim_env.py` and define a new subclass of `BimanualViperXTask`. Implement:
 - `initialize_episode(self, physics)`: Set up the initial environment state, including robot and object positions.
-- `get_observation(self, physics)`: Define what sensor data and environment variables should be recorded as observations.
+- `get_observation(self, physics)`: Define what data should be recorded as observations.
 - `get_reward(self, physics)`: Implement the reward function to determine task success criteria.
 
 ### **2. Changing Policy Behavior**
@@ -227,7 +227,7 @@ Each movement step in the trajectory is defined by:
 - `t`: The time step at which the movement shall occur.
 - `xyz`: The target position of the end effector in 3D space.
 - `quat`: The target orientation of the end effector, represented as a quaternion.
-- `gripper`: The target gripper opening width 0~1 where 0 is closed and 1 is fully open.
+- `gripper`: The target gripper finger position 0~0.065 where 0 is closed and 0.065 is fully open.
 
 Example:
 ```bash
@@ -248,26 +248,16 @@ The simulation uses XML files stored in the `assets/` directory. To introduce a 
 
 3. Update the scripted policies in `scripted_policy.py` to accommodate new task goals and constraints.
 
-### **4. Adding New Sensors or Observations**
+## Troubleshooting
 
-To record additional observations, modify `get_observation(self, physics)` in `sim_env.py`. Example:
-```bash
-def get_observation(self, physics):
-    obs = super().get_observation(physics)
-    obs["force_sensor"] = physics.data.sensordata.copy()  # Record force sensor data
-    return obs
-```
-
-## Troubleshoot
-
-if you encounter rendering issues or need a clean MujoCo setup on Linux.
+if you encounter rendering issues or need a clean MuJoCo setup on Linux.
 ```bash
 chmod +x setup.sh
 ./setup.sh
 ```
 Here's what it does:
 - Reinstalls OpenGL-related libraries (`libgl1-mesa-glx`, `libgl1-mesa-dri`, `mesa-utils`) to fix rendering issues.
-- Installs GLFW (`libglfw3`, `libglfw3-dev`), required for MujoCo simulations.
+- Installs GLFW (`libglfw3`, `libglfw3-dev`), required for MuJoCo simulations.
 - Sets the `MUJOCO_GL=egl` environment variable to enable headless rendering using EGL.
 - Updates the `.bashrc` file so the environment variable persists across terminal sessions.
 - Prompts the user to restart the terminal or reload `.bashrc` for changes to take effect.

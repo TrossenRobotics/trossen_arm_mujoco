@@ -1,4 +1,4 @@
-<mujoco model="trossen_ai">
+<mujoco model="trossen_ai_bimanual">
   <compiler angle="radian" meshdir="meshes" texturedir="meshes" eulerseq="ZYX" autolimits="true"/>
 
   <option iterations="50" timestep="0.001" solver="PGS" gravity="0 0 -9.81" />

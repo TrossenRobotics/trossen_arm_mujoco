@@ -5,10 +5,15 @@ from pyquaternion import Quaternion
 
 from constants import SIM_TASK_CONFIGS
 from utils import make_sim_env, plot_observation_images, set_observation_images
-import IPython
 from ee_sim_env import TransferCubeEETask
 
 class BasePolicy:
+    """
+    Base class for trajectory-based robot policies.
+
+    :param inject_noise: Whether to inject noise into actions for robustness testing, defaults to ``False``.
+    :type inject_noise: bool, optional
+    """
     def __init__(self, inject_noise=False):
         self.inject_noise = inject_noise
         self.step_count = 0
@@ -16,10 +21,29 @@ class BasePolicy:
         self.right_trajectory = None
 
     def generate_trajectory(self, ts_first):
+        """
+        Generate a trajectory based on the initial timestep.
+
+        :param ts_first: The first observation of the episode.
+        :type ts_first: TimeStep
+        :raises NotImplementedError: This method must be implemented in subclasses.
+        """
         raise NotImplementedError
 
     @staticmethod
     def interpolate(curr_waypoint, next_waypoint, t):
+        """
+        Interpolates position, orientation, and gripper state between two waypoints.
+
+        :param curr_waypoint: The current waypoint.
+        :type curr_waypoint: dict
+        :param next_waypoint: The next waypoint.
+        :type next_waypoint: dict
+        :param t: The current time step.
+        :type t: int
+        :return: Interpolated position, quaternion, and gripper state.
+        :rtype: tuple(np.ndarray, np.ndarray, float)
+        """
         t_frac = (t - curr_waypoint["t"]) / (next_waypoint["t"] - curr_waypoint["t"])
         curr_xyz = curr_waypoint['xyz']
         curr_quat = curr_waypoint['quat']
@@ -33,6 +57,14 @@ class BasePolicy:
         return xyz, quat, gripper
 
     def __call__(self, ts):
+        """
+        Executes the policy for one timestep.
+
+        :param ts: The current observation timestep.
+        :type ts: TimeStep
+        :return: The computed action for the current timestep.
+        :rtype: np.ndarray
+        """
         # generate trajectory at first timestep, then open-loop execution
         if self.step_count == 0:
             self.generate_trajectory(ts)
@@ -64,8 +96,16 @@ class BasePolicy:
 
 
 class PickAndTransferPolicy(BasePolicy):
-
+    """
+    Policy for picking up and transferring a cube between two robotic arms.
+    """
     def generate_trajectory(self, ts_first):
+        """
+        Generates a predefined trajectory for the pick-and-transfer task.
+
+        :param ts_first: The first observation of the episode.
+        :type ts_first: TimeStep
+        """
         init_mocap_pose_right = ts_first.observation['mocap_pose_right']
         init_mocap_pose_left = ts_first.observation['mocap_pose_left']
 
@@ -108,9 +148,28 @@ class PickAndTransferPolicy(BasePolicy):
 
 
 def test_policy(task_name, num_episodes=2, episode_len=400, onscreen_render=True, inject_noise=False):
+    """
+    Tests the pick-and-transfer policy in the simulated environment.
+
+    :param task_name: The name of the task to execute.
+    :type task_name: str
+    :param num_episodes: The number of episodes to run, defaults to ``2``.
+    :type num_episodes: int, optional
+    :param episode_len: The length of each episode in timesteps, defaults to ``400``.
+    :type episode_len: int, optional
+    :param onscreen_render: Whether to enable real-time rendering, defaults to ``True``.
+    :type onscreen_render: bool, optional
+    :param inject_noise: Whether to inject noise into actions for robustness testing, defaults to ``False``.
+    :type inject_noise: bool, optional
+    """
     # setup the environment
     camera_list = ["camera_high", "camera_low", "camera_left_wrist", "camera_right_wrist"]
-    env = make_sim_env(TransferCubeEETask, task_name=task_name, onscreen_render=onscreen_render, camera_list=camera_list)
+    env = make_sim_env(
+        TransferCubeEETask, 
+        task_name=task_name, 
+        onscreen_render=onscreen_render, 
+        camera_list=camera_list
+    )
     print(f"Action space: {env.action_spec().shape}")
 
     for episode_idx in range(num_episodes):
