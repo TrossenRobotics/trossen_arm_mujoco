@@ -28,18 +28,16 @@
 
 import collections
 import os
-from typing import Type
 
 from dm_control import mujoco
 from dm_control.mujoco import Physics
 from dm_control.rl import control
+from dm_control.suite import base
 from matplotlib.image import AxesImage
 import matplotlib.pyplot as plt
 import numpy as np
 
 from trossen_arm_mujoco.constants import ASSETS_DIR, DT
-from trossen_arm_mujoco.ee_sim_env import TrossenAIStationaryEETask
-from trossen_arm_mujoco.sim_env import TrossenAIStationaryTask
 
 
 def sample_box_pose() -> np.ndarray:
@@ -82,7 +80,7 @@ def get_observation_base(
 
 
 def make_sim_env(
-    task_class: Type[TrossenAIStationaryTask | TrossenAIStationaryEETask],
+    task_class: base.Task,
     xml_file: str = "trossen_ai_scene.xml",
     task_name: str = "sim_transfer_cube",
     onscreen_render: bool = False,

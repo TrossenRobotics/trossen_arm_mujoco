@@ -10,8 +10,6 @@ This package supports two types of simulation environments:
 1. End-Effector (EE) Controlled Simulation (`ee_sim_env.py`) – Uses motion capture bodies to move the arms.
 2. Joint-Controlled Simulation (`sim_env.py`) – Uses position controllers for more realistic robot movements.
 
----
-
 ## Installation
 
 First, clone this repository to your preferred directory:
@@ -32,7 +30,7 @@ conda activate trossen_mujoco_env
 Install the package and required dependencies using:
 
 ```bash
-pip install -e .
+pip install .
 ```
 
 To verify the installation, run:
@@ -41,8 +39,6 @@ To verify the installation, run:
 python ee_sim_env.py
 ```
 If the simulation window appears, the setup is successful.
-
----
 
 ## 1. Assets Folder (`assets/`)
 
@@ -60,8 +56,6 @@ This folder contains all required MuJoCo XML configuration files, URDF files, an
 
 - Motion Capture (`trossen_ai_scene.xml`): Uses predefined mocap bodies that move the robot arms dynamically based on scripted policies.
 - Joint Control (`trossen_ai_scene_joint.xml`): Uses position controllers for each joint, similar to a real-world robot setup.
-
----
 
 ## 2. Scripts Folder (`scripts/`)
 
@@ -85,8 +79,6 @@ This folder contains all Python scripts necessary for running simulations, execu
   - Defines pre-scripted movements for the robot arms to perform tasks like picking up objects.
   - Uses the motion capture bodies to generate smooth movement trajectories.
   - In the current setup, a policy is designed to pick up a red block, with randomized block positions in the environment.
-
----
 
 ## 3. How the Data Collection Works
 
@@ -122,8 +114,6 @@ The data collection process involves two simulation phases:
 
    - The stored HDF5 files can be converted into videos using `visualize.py`.
    - The resulting videos are saved in MP4 format inside the `ee_sim_episodes_output/` folder.
-
----
 
 ## 4. Function Arguments Explanation
 
@@ -181,7 +171,6 @@ Arguments:
 - `--output_dir`: Output directory for `.mp4` files
 - `--fps`: Frames per second for the generated videos (default: 50)
 
----
 
 ## Customization
 
@@ -226,9 +215,7 @@ The simulation uses XML files stored in the `assets/` directory. To introduce a 
 
 ## Troubleshooting
 
-If you encounter rendering issues or need a clean MuJoCo setup on Linux.
-
-If you encounter into Mesa Loader Issues:
+If you encounter into Mesa Loader or `mujoco.FatalError: gladLoadGL error` errors:
 
 ```bash
 export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6

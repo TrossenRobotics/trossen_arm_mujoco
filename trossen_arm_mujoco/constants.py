@@ -100,5 +100,4 @@ START_ARM_POSE = [
 # Get the path to the assets directory
 ASSETS_DIR = str(files("trossen_arm_mujoco").joinpath("assets"))
 
-
 BOX_POSE = [None]

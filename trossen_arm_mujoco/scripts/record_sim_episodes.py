@@ -88,8 +88,7 @@ def main(args):
 
     success = []
     for episode_idx in range(num_episodes):
-        print(f"{episode_idx=}")
-        print("Rollout out EE space scripted policy")
+        print(f"Episode {episode_idx + 1}/{num_episodes}")
         # setup the environment
         env = make_sim_env(
             TransferCubeEETask,
@@ -129,9 +128,7 @@ def main(args):
         #     joint[6+7] = right_ctrl
 
         subtask_info = episode[0].observation["env_state"].copy()  # box pose at step 0
-        print(
-            f"Box Pose at step 0: {subtask_info}, Box Pose at step 1: {episode[1].observation['env_state']}"
-        )
+
         # clear unused variables
         del env
         del episode

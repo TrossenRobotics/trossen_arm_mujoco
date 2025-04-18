@@ -290,9 +290,9 @@ def test_policy(
         onscreen_render=onscreen_render,
         cam_list=cam_list,
     )
-    print(f"Action space: {env.action_spec().shape}")
 
     for episode_idx in range(num_episodes):
+        print(f"Episode {episode_idx + 1}/{num_episodes}")
         ts = env.reset()
         episode = [ts]
         if onscreen_render:
