@@ -66,9 +66,7 @@ class TrossenAIStationaryEETask(base.Task):
         Apply the action to the robotic arms before stepping the simulation.
 
         :param action: The action vector containing position and gripper commands.
-        :type action: np.ndarray
         :param physics: The simulation physics instance.
-        :type physics: mujoco.Physics
         """
         a_len = len(action) // 2
         action_left = action[:a_len]
@@ -159,9 +157,7 @@ class TrossenAIStationaryEETask(base.Task):
         Get the current joint velocities of the robot.
 
         :param physics: The simulation physics engine.
-        :type physics: mujoco.Physics
         :return: The joint velocities.
-        :rtype: np.ndarray
         """
         velocities = physics.data.qvel.copy()
         return velocities[:16]
@@ -192,7 +188,6 @@ class TrossenAIStationaryEETask(base.Task):
         Compute the task-specific reward.
 
         :param physics: The simulation physics engine.
-        :type physics: mujoco.Physics
         :raises NotImplementedError: This function must be implemented in derived classes.
         """
         raise NotImplementedError
