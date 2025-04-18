@@ -2,17 +2,21 @@
 
 ## Overview
 
-The Trossen Arm MuJoCo provides the necessary scripts and assets for simulating and training robotic policies using the Trossen AI system in MuJoCo.
-It includes URDFs, mesh models, and MuJoCo XML files for the robot configuration, as well as Python scripts for policy execution, reward-based evaluation, data collection, and visualization.
+This package provides the necessary scripts and assets for simulating and training robotic policies using the Trossen AI kits in MuJoCo.
+It includes URDFs, mesh models, and MuJoCo XML files for robot configuration, as well as Python scripts for policy execution, reward-based evaluation, data collection, and visualization.
 
 This package supports two types of simulation environments:
 
-1. End-Effector (EE) Controlled Simulation (`ee_sim_env.py`) – Uses motion capture bodies to move the arms.
-2. Joint-Controlled Simulation (`sim_env.py`) – Uses position controllers for more realistic robot movements.
+1. End-Effector (EE) Controlled Simulation ([`ee_sim_env.py`](./trossen_arm_mujoco/ee_sim_env.py)): Uses motion capture bodies to move the arms
+2. Joint-Controlled Simulation ([`sim_env.py`](./trossen_arm_mujoco/sim_env.py)): Uses joint position controllers
 
 ## Installation
 
-First, clone this repository to your preferred directory:
+First, clone this repository:
+
+```bash
+git clone https://github.com/TrossenRobotics/trossen_arm_mujoco.git
+```
 
 It is recommended to create a virtual environment before installing dependencies.
 Create a Conda environment with Python 3.10 or above.
@@ -30,38 +34,41 @@ conda activate trossen_mujoco_env
 Install the package and required dependencies using:
 
 ```bash
+cd trossen_arm_mujoco
 pip install .
 ```
 
 To verify the installation, run:
 
 ```bash
-python ee_sim_env.py
+cd trossen_arm_mujoco
+python trossen_arm_mujoco/ee_sim_env.py
 ```
-If the simulation window appears, the setup is successful.
 
-## 1. Assets Folder (`assets/`)
+If the simulation window appears, the setup was successful.
+
+## 1. Assets ([`assets/`](./trossen_arm_mujoco/assets/))
 
 This folder contains all required MuJoCo XML configuration files, URDF files, and mesh models for the simulation.
 
 ### Key Files:
 
 - `trossen_ai.xml` → Base model definition of the Trossen AI robot.
-- `trossen_ai_scene.xml` → Uses motion capture (mocap) bodies to control the arms in simulation.
-- `trossen_ai_scene_joint.xml` → Uses joint controllers similar to real hardware, enabling precise control over movements.
+- `trossen_ai_scene.xml` → Uses mocap bodies to control the simulated arms.
+- `trossen_ai_scene_joint.xml` → Uses joint controllers similar to real hardware to control the simulated arms.
 - `wxai_follower.urdf` & `wxai_follower.xml` → URDF and XML descriptions of the follower arms.
 - `meshes/` → Contains STL and OBJ files for the robot components, including arms, cameras, and environmental objects.
 
 ### Motion Capture vs Joint-Controlled Environments:
 
-- Motion Capture (`trossen_ai_scene.xml`): Uses predefined mocap bodies that move the robot arms dynamically based on scripted policies.
+- Motion Capture (`trossen_ai_scene.xml`): Uses predefined mocap bodies that move the robot arms based on scripted end effector movements.
 - Joint Control (`trossen_ai_scene_joint.xml`): Uses position controllers for each joint, similar to a real-world robot setup.
 
-## 2. Scripts Folder (`scripts/`)
+## 2. Modules ([`trossen_arm_mujoco`](./trossen_arm_mujoco/))
 
-This folder contains all Python scripts necessary for running simulations, executing policies, recording episodes, and visualizing results.
+This folder contains all Python modules necessary for running simulations, executing policies, recording episodes, and visualizing results.
 
-### 2.1 Simulation Scripts
+### 2.1 Simulations
 
 - `ee_sim_env.py`
   - Loads `trossen_ai_scene.xml` (motion capture-based control).
@@ -108,14 +115,14 @@ The data collection process involves two simulation phases:
 3. Save the Data
 
    - All observations and actions are stored in HDF5 format, with one file per episode.
-   - Each episode is saved as `episode_X.hdf5` inside the `trossen_ai_data/` folder.
+   - Each episode is saved as `episode_X.hdf5` inside the `~/.trossen/mujoco/data/` folder.
 
 4. Visualizing the Data
 
    - The stored HDF5 files can be converted into videos using `visualize.py`.
    - The resulting videos are saved in MP4 format inside the `ee_sim_episodes_output/` folder.
 
-## 4. Function Arguments Explanation
+## 4. Script Arguments Explanation
 
 ### a. record_sim_episodes.py
 
@@ -138,24 +145,7 @@ Arguments:
 - `--inject_noise`: Add noise to actions for variation (optional)
 - `--cam_names`: Comma-separated list of camera names for image collection
 
-### b. scripted_policy.py
-
-A predefined scripted policy can be used to control the robot:
-
-```bash
-python scripted_policy.py \
-    --task_name sim_transfer_cube \
-    --num_episodes 2
-```
-Arguments:
-
-- `--task_name`: Name of the task
-- `--num_episodes`: Number of episodes to run
-- `--episode_len`: Length of each episode
-- `--onscreen_render`: Enable visualization
-- `--inject_noise`: Add noise to actions
-
-### c. visualize.py
+### b. visualize.py
 
 To convert saved episodes to videos, run:
 
@@ -171,12 +161,11 @@ Arguments:
 - `--output_dir`: Output directory for `.mp4` files
 - `--fps`: Frames per second for the generated videos (default: 50)
 
-
 ## Customization
 
 ### 1. Modifying Tasks
 
-To create a custom task, modify `ee_sim_env.py` or `sim_env.py` and define a new subclass of `BimanualViperXTask`.
+To create a custom task, modify `ee_sim_env.py` or `sim_env.py` and define a new subclass of `TrossenAIStationary(EE)Task`.
 Implement:
 
 - `initialize_episode(self, physics)`: Set up the initial environment state, including robot and object positions.
@@ -198,7 +187,7 @@ Each movement step in the trajectory is defined by:
 Example:
 
 ```python
-def generate_trajectory(self, ts_first):
+def generate_trajectory(self, ts_first: TimeStep):
     self.left_trajectory = [
         {"t": 0, "xyz": [0, 0, 0.4], "quat": [1, 0, 0, 0], "gripper": 0},
         {"t": 100, "xyz": [0.1, 0, 0.3], "quat": [1, 0, 0, 0], "gripper": 0.05}

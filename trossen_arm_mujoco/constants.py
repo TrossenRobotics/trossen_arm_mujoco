@@ -29,7 +29,7 @@
 from importlib.resources import files
 import os
 
-DATA_DIR = os.path.expanduser("~/.trossen/mujoco")
+DATA_DIR = os.path.expanduser("~/.trossen/mujoco/data")
 
 ### Simulated task configurations
 
