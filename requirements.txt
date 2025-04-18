@@ -1,5 +1,0 @@
-dm_control
-h5py
-matplotlib
-opencv-python
-pyquaternion

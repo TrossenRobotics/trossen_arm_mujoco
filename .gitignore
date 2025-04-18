@@ -1,4 +1,6 @@
-**/__pycache__/
-*output
+__pycache__
+*.egg-info/
 *.mp4
+*output
+build/
 trossen_ai_data/
