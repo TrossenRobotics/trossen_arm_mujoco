@@ -28,6 +28,7 @@
 
 from importlib.resources import files
 import os
+import numpy as np
 
 DATA_DIR = os.path.expanduser("~/.trossen/mujoco/data")
 
@@ -37,7 +38,7 @@ SIM_TASK_CONFIGS = {
     "sim_transfer_cube": {
         "dataset_dir": DATA_DIR + "/sim_transfer_cube",
         "num_episodes": 3,
-        "episode_len": 400,
+        "episode_len": 600,
         "onscreen_render": True,
         "inject_noise": False,
         "cam_names": ["cam_high", "cam_low", "cam_left_wrist", "cam_right_wrist"],
@@ -45,7 +46,7 @@ SIM_TASK_CONFIGS = {
     "sim_transfer_cube_scripted": {
         "dataset_dir": DATA_DIR + "/sim_transfer_cube_scripted",
         "num_episodes": 3,
-        "episode_len": 400,
+        "episode_len": 600,
         "onscreen_render": True,
         "inject_noise": False,
         "cam_names": ["cam_high", "cam_low", "cam_left_wrist", "cam_right_wrist"],
@@ -53,7 +54,7 @@ SIM_TASK_CONFIGS = {
     "sim_transfer_cube_human": {
         "dataset_dir": DATA_DIR + "/sim_transfer_cube_human",
         "num_episodes": 3,
-        "episode_len": 400,
+        "episode_len": 600,
         "onscreen_render": True,
         "inject_noise": False,
         "cam_names": ["cam_high", "cam_low", "cam_left_wrist", "cam_right_wrist"],
@@ -61,7 +62,7 @@ SIM_TASK_CONFIGS = {
     "sim_insertion_scripted": {
         "dataset_dir": DATA_DIR + "/sim_insertion_scripted",
         "num_episodes": 3,
-        "episode_len": 400,
+        "episode_len": 600,
         "onscreen_render": True,
         "inject_noise": False,
         "cam_names": ["cam_high", "cam_low", "cam_left_wrist", "cam_right_wrist"],
@@ -69,7 +70,7 @@ SIM_TASK_CONFIGS = {
     "sim_insertion_human": {
         "dataset_dir": DATA_DIR + "/sim_insertion_human",
         "num_episodes": 3,
-        "episode_len": 400,
+        "episode_len": 600,
         "onscreen_render": True,
         "inject_noise": False,
         "cam_names": ["cam_high", "cam_low", "cam_left_wrist", "cam_right_wrist"],
@@ -79,22 +80,8 @@ SIM_TASK_CONFIGS = {
 ### Simulation envs fixed constants
 DT = 0.02
 START_ARM_POSE = [
-    0.0,
-    -0.96,
-    1.16,
-    0.0,
-    -0.3,
-    0.0,
-    0.02239,
-    -0.02239,
-    0.0,
-    -0.96,
-    1.16,
-    0.0,
-    -0.3,
-    0.0,
-    0.02239,
-    -0.02239,
+    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.06, 0.06,
+    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.06, 0.06
 ]
 
 # Get the path to the assets directory
