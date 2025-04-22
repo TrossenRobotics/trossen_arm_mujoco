@@ -149,7 +149,7 @@ class PickAndTransferPolicy(BasePolicy):
 
         gripper_pick_quat = Quaternion(init_mocap_pose_right[3:])
         gripper_pick_quat = gripper_pick_quat * Quaternion(
-            axis=[0.0, 1.0, 0.0], degrees=-60
+            axis=[0.0, 1.0, 0.0], degrees=-45
         )
 
         meet_left_quat = Quaternion(axis=[1.0, 0.0, 0.0], degrees=90)

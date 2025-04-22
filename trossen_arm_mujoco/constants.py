@@ -39,7 +39,7 @@ SIM_TASK_CONFIGS = {
         "dataset_dir": DATA_DIR + "/sim_transfer_cube",
         "num_episodes": 3,
         "episode_len": 600,
-        "onscreen_render": True,
+        "onscreen_render": False,
         "inject_noise": False,
         "cam_names": ["cam_high", "cam_low", "cam_left_wrist", "cam_right_wrist"],
     },
