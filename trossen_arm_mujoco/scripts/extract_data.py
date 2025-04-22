@@ -42,4 +42,4 @@ def extract_to_csv_with_timestamp(hdf5_path, output_dir):
 
     print(f"Data saved to: {output_dir}")
 
-extract_to_csv_with_timestamp("/home/shuhang/workspace/MuJoCo/original/trossen_arm_mj/aloha_data/ee_sim_episodes_10/episode_1.hdf5", "output_csvs")
+extract_to_csv_with_timestamp("/home/shuhang/workspace/MuJoCo/original/trossen_arm_mj/aloha_data/ee_sim_episodes_10/episode_0.hdf5", "output_csvs")

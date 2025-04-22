@@ -165,43 +165,43 @@ class PickAndTransferPolicy(BasePolicy):
             },  # sleep
             {
                 "t": 100,
-                "xyz": meet_xyz + np.array([-0.3, 0, -0.02]),
+                "xyz": meet_xyz + np.array([-0.3, 0, -0.01]),
                 "quat": meet_left_quat.elements,
                 "gripper": 0.022,
             },  # approach meet position
             {
                 "t": 360,
-                "xyz": meet_xyz + np.array([-0.3, 0, -0.02]),
+                "xyz": meet_xyz + np.array([-0.3, 0, -0.01]),
                 "quat": meet_left_quat.elements,
                 "gripper": 0.022,
             },  # stay
             {
                 "t": 400,
-                "xyz": meet_xyz + np.array([-0.1, 0, -0.02]),
+                "xyz": meet_xyz + np.array([-0.1, 0, -0.01]),
                 "quat": meet_left_quat.elements,
                 "gripper": 0.022,
             },  # move to meet position
             {
                 "t": 460,
-                "xyz": meet_xyz + np.array([-0.1, 0, -0.02]),
+                "xyz": meet_xyz + np.array([-0.1, 0, -0.01]),
                 "quat": meet_left_quat.elements,
                 "gripper": 0.018,
             },  # close gripper
             {
                 "t": 520,
-                "xyz": meet_xyz + np.array([-0.1, 0, -0.02]),
+                "xyz": meet_xyz + np.array([-0.1, 0, -0.01]),
                 "quat": meet_left_quat.elements,
                 "gripper": 0.018,
             },  # Stay for a while
             {
                 "t": 550,
-                "xyz": meet_xyz + np.array([-0.2, 0, -0.02]),
+                "xyz": meet_xyz + np.array([-0.2, 0, -0.01]),
                 "quat": meet_left_quat.elements,
                 "gripper": 0.018,
             },  # move left
             {
                 "t": 600,
-                "xyz": meet_xyz + np.array([-0.2, 0, -0.02]),
+                "xyz": meet_xyz + np.array([-0.2, 0, -0.01]),
                 "quat": np.array([1, 0, 0, 0]),
                 "gripper": 0.018,
             },  # stay

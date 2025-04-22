@@ -91,7 +91,7 @@
                     <geom type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="carriage_right" class="visual"/>
                     <geom type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="carriage_right" class="collision"/>
                     <geom type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="gripper_right" class="visual"/>
-                    <geom name="left/gripper_follower_right" type="mesh" rgba="0.752941 0.752941 0.752941 1"  mesh="gripper_right" class="collision"/>
+                    <geom name="left/gripper_follower_right" type="mesh" rgba="0.752941 0.752941 0.752941 1"  mesh="gripper_right" class="collision" friction="2.0 0.02 0.01"/>
                   </body>
                   <body name="left/carriage_left" pos="0.0745 0.023 0" gravcomp="1">
                     <inertial pos="0.00169017 -0.00592796 -0.00365701" quat="-0.0382691 0.628022 -0.255101 0.734198" mass="0.081271" diaginertia="4.21112e-05 3.61943e-05 2.40003e-05" />
@@ -99,7 +99,7 @@
                     <geom type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="carriage_left" class="visual"/>
                     <geom type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="carriage_left" class="collision"/>
                     <geom type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="gripper_left" class="visual"/>
-                    <geom name ="left/gripper_follower_left" type="mesh" rgba="0.752941 0.752941 0.752941 1"  mesh="gripper_left" class="collision"/>
+                    <geom name ="left/gripper_follower_left" type="mesh" rgba="0.752941 0.752941 0.752941 1"  mesh="gripper_left" class="collision" friction="2.0 0.02 0.01"/>
                   </body>
                 </body>
               </body>
@@ -153,7 +153,7 @@
                     <geom type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="carriage_right" class="visual"/>
                     <geom type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="carriage_right" class="collision"/>
                     <geom type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="gripper_right" class="visual"/>
-                    <geom name= "right/gripper_follower_right" type="mesh" rgba="0.752941 0.752941 0.752941 1"  mesh="gripper_right" class="collision"/>
+                    <geom name= "right/gripper_follower_right" type="mesh" rgba="0.752941 0.752941 0.752941 1"  mesh="gripper_right" class="collision" friction="2.0 0.02 0.01"/>
                   </body>
                   <body name="right/carriage_left" pos="0.0745 0.023 0" gravcomp="1">
                     <inertial pos="0.00169017 -0.00592796 -0.00365701" quat="-0.0382691 0.628022 -0.255101 0.734198" mass="0.081271" diaginertia="4.21112e-05 3.61943e-05 2.40003e-05" />
@@ -161,7 +161,7 @@
                     <geom type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="carriage_left" class="visual"/>
                     <geom type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="carriage_left" class="collision"/>
                     <geom type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="gripper_left" class="visual"/>
-                    <geom name="right/gripper_follower_left" type="mesh" rgba="0.752941 0.752941 0.752941 1"  mesh="gripper_left" class="collision"/>
+                    <geom name="right/gripper_follower_left" type="mesh" rgba="0.752941 0.752941 0.752941 1"  mesh="gripper_left" class="collision" friction="2.0 0.02 0.01"/>
                   </body>
                 </body>
               </body>
