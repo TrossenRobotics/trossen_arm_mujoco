@@ -52,7 +52,8 @@ def sample_box_pose() -> np.ndarray:
     z_range = [0.02, 0.02]
 
     ranges = np.vstack([x_range, y_range, z_range])
-    cube_position = np.random.uniform(ranges[:, 0], ranges[:, 1])
+    # cube_position = np.random.uniform(ranges[:, 0], ranges[:, 1])
+    cube_position = np.array([0.13, -0.19, 0])
 
     cube_quat = np.array([1, 0, 0, 0])
     return np.concatenate([cube_position, cube_quat])
