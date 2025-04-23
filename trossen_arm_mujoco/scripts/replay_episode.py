@@ -4,6 +4,9 @@ import time
 from pathlib import Path
 import argparse
 import trossen_arm
+import os
+from trossen_arm_mujoco.constants import ROOT_DIR, DATA_DIR, USER_NAME
+from pathlib import Path
 
 
 def configure_arm(ip_address, home_pose):
@@ -48,10 +51,11 @@ def cleanup_arms(left_driver, right_driver, home_pose):
 
 def main(args):
     home_pose = np.array([0.0, np.pi / 12, np.pi / 12, 0.0, 0.0, 0.0, 0.0])
-    root_dir = Path.home() / 'trossen_arm_mujoco' / 'trossen_ai_data' / args.dataset
-    hdf5_path = root_dir / f'episode_{args.episode_idx}.hdf5'
+    root_dir = args.root_dir if args.root_dir else ROOT_DIR
+    data_dir = args.data_dir if args.data_dir else DATA_DIR
+    hdf5_path = os.path.join(root_dir, USER_NAME, data_dir, f"episode_{args.episode_idx}.hdf5")
 
-    if not hdf5_path.exists():
+    if not Path(hdf5_path).exists():
         print(f"HDF5 file not found at {hdf5_path}")
         return
 
@@ -68,7 +72,8 @@ def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Replay HDF5 episode for Trossen arms.")
-    parser.add_argument("--dataset", type=str, default="data/sim_transfer_cube", help="Dataset directory name.")
+    parser.add_argument("--data_dir", type=str, help="Dataset directory name.")
+    parser.add_argument("--root_dir", type=str, help="Root directory for data.")
     parser.add_argument("--episode_idx", type=int, default=0, help="Episode index to replay.")
     parser.add_argument("--fps", type=int, default=10, help="Playback frames per second.")
     parser.add_argument("--left_ip", type=str, default="192.168.1.5", help="IP address of left arm.")

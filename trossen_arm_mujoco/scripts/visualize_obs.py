@@ -33,6 +33,7 @@ import re
 import cv2
 import h5py
 import numpy as np
+from trossen_arm_mujoco.constants import ROOT_DIR, DATA_DIR, USER_NAME
 
 
 def load_hdf5(dataset_path: str) -> dict | None:
@@ -95,25 +96,33 @@ def save_videos(image_dict: dict, dt: float, video_path: str) -> None:
     print(f"Saved video to: {video_path}")
 
 
-def process_directory(dataset_dir: str, output_dir: str, fps: int = 50):
+def process_directory(args: argparse.Namespace):
     """
     Convert all HDF5 episodes in the dataset directory to MP4 videos.
 
-    :param dataset_dir: Path to the directory containing HDF5 dataset files.
+    :param hdf5_dir: Path to the directory containing HDF5 dataset files.
     :param output_dir: Path to the directory to save the output MP4 videos.
     :param fps: Frames per second for the output video, defaults to 50.
     """
+    root_dir = args.root_dir if args.root_dir else ROOT_DIR
+    data_dir = args.data_dir if args.data_dir else DATA_DIR
+    output_dir = args.output_dir
+    fps = args.fps
+
+    hdf5_dir = os.path.join(root_dir, USER_NAME, data_dir)
+    output_dir = os.path.join(root_dir, USER_NAME, output_dir)
+
     os.makedirs(output_dir, exist_ok=True)
 
     # Match episode files (episode_{number}.hdf5)
     episode_pattern = re.compile(r"episode_(\d+)\.hdf5")
 
     # Iterate over all files in the directory
-    for filename in os.listdir(dataset_dir):
+    for filename in os.listdir(hdf5_dir):
         match = episode_pattern.match(filename)
         if match:
             episode_number = match.group(1)
-            input_path = os.path.join(dataset_dir, filename)
+            input_path = os.path.join(hdf5_dir, filename)
             print(f"Processing {input_path}")
             output_path = os.path.join(output_dir, f"episode_{episode_number}.mp4")
 
@@ -131,13 +140,16 @@ if __name__ == "__main__":
         description="Convert all HDF5 episodes in a directory to MP4 videos.",
     )
     parser.add_argument(
-        "--dataset_dir",
-        required=True,
+        "--data_dir",
         help="Path to the directory containing HDF5 dataset files.",
     )
     parser.add_argument(
+        "--root_dir",
+        help="Root directory for data saving.",
+    )
+    parser.add_argument(
         "--output_dir",
-        required=True,
+        default="videos",
         help="Path to the directory to save the output MP4 videos.",
     )
     parser.add_argument(
@@ -150,4 +162,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # Process all episodes in the directory
-    process_directory(args.dataset_dir, args.output_dir, fps=args.fps)
+    process_directory(args)

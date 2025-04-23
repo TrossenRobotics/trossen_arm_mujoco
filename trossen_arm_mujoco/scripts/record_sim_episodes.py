@@ -35,7 +35,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from tqdm import tqdm
 
-from trossen_arm_mujoco.constants import SIM_TASK_CONFIGS, DATA_DIR
+from trossen_arm_mujoco.constants import SIM_TASK_CONFIGS, DATA_DIR, ROOT_DIR, USER_NAME
 from trossen_arm_mujoco.ee_sim_env import TransferCubeEETask
 from trossen_arm_mujoco.scripted_policy import PickAndTransferPolicy
 from trossen_arm_mujoco.sim_env import BOX_POSE, TransferCubeTask
@@ -56,9 +56,14 @@ def main(args):
     """
 
     task_config = SIM_TASK_CONFIGS.get(args.task_name, {}).copy()
-    dataset_dir = (
-        args.dataset_dir if args.dataset_dir else task_config.get("dataset_dir")
+    root_dir = (
+        args.root_dir if args.root_dir else task_config.get("root_dir")
     )
+    data_dir = (
+        args.data_dir if args.data_dir else task_config.get("data_dir")
+    )
+    hdf5_save_dir = os.path.join(root_dir, USER_NAME, data_dir)
+
     num_episodes = (
         args.num_episodes
         if args.num_episodes is not None
@@ -82,8 +87,8 @@ def main(args):
     )
 
     # create dataset directory if it does not exist
-    if not os.path.exists(dataset_dir):
-        os.makedirs(dataset_dir)
+    if not os.path.exists(hdf5_save_dir):
+        os.makedirs(hdf5_save_dir)
 
     policy_cls = PickAndTransferPolicy
 
@@ -202,7 +207,7 @@ def main(args):
 
         # HDF5
         t0 = time.time()
-        dataset_path = os.path.join(dataset_dir, f"episode_{episode_idx}")
+        dataset_path = os.path.join(hdf5_save_dir, f"episode_{episode_idx}")
         with h5py.File(dataset_path + ".hdf5", "w", rdcc_nbytes=1024**2 * 2) as root:
             root.attrs["sim"] = True
             obs = root.create_group("observations")
@@ -223,7 +228,7 @@ def main(args):
 
         print(f"Saving: {time.time() - t0:.1f} secs\n")
 
-    print(f"Saved to {dataset_dir}")
+    print(f"Saved to {hdf5_save_dir}")
     print(f"Success: {np.sum(success)} / {len(success)}")
 
 
@@ -238,9 +243,14 @@ if __name__ == "__main__":
         help="Name of the task.",
     )
     parser.add_argument(
-        "--dataset_dir",
+        "--data_dir",
         type=str,
         help="Directory to save episodes.",
+    )
+    parser.add_argument(
+        "--root_dir",
+        type=str,
+        help="Root directory for data saving.",
     )
     parser.add_argument(
         "--num_episodes",

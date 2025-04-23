@@ -29,14 +29,20 @@
 from importlib.resources import files
 import os
 import numpy as np
+import getpass
 
-DATA_DIR = os.path.expanduser("~/.trossen/mujoco/data")
+# Placeholder for the user name
+USER_NAME = "trossen_ai"
+
+ROOT_DIR = os.path.expanduser("~/.trossen/mujoco/")
+DATA_DIR = "data/sim_transfer_cube"
 
 ### Simulated task configurations
 
 SIM_TASK_CONFIGS = {
     "sim_transfer_cube": {
-        "dataset_dir": DATA_DIR + "/sim_transfer_cube",
+        "root_dir": ROOT_DIR,
+        "data_dir": DATA_DIR,
         "num_episodes": 3,
         "episode_len": 600,
         "onscreen_render": False,
