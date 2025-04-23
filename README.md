@@ -154,12 +154,12 @@ Arguments:
 
 - All parameters loaded from `constants.py` can be individually overridden via command-line arguments.
 
-### b. visualize.py
+### b. hdf5_video_extractor.py
 
 To convert saved episodes to videos, run:
 
 ```bash
-python trossen_arm_mujoco/scripts/visualize.py \
+python trossen_arm_mujoco/scripts/hdf5_video_extractor.py \
     --dataset_dir data/sim_transfer_cube \
     --output_dir data/videos \
     --fps 50
