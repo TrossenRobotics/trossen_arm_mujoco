@@ -42,39 +42,7 @@ SIM_TASK_CONFIGS = {
         "onscreen_render": False,
         "inject_noise": False,
         "cam_names": ["cam_high", "cam_low", "cam_left_wrist", "cam_right_wrist"],
-    },
-    "sim_transfer_cube_scripted": {
-        "dataset_dir": DATA_DIR + "/sim_transfer_cube_scripted",
-        "num_episodes": 3,
-        "episode_len": 600,
-        "onscreen_render": True,
-        "inject_noise": False,
-        "cam_names": ["cam_high", "cam_low", "cam_left_wrist", "cam_right_wrist"],
-    },
-    "sim_transfer_cube_human": {
-        "dataset_dir": DATA_DIR + "/sim_transfer_cube_human",
-        "num_episodes": 3,
-        "episode_len": 600,
-        "onscreen_render": True,
-        "inject_noise": False,
-        "cam_names": ["cam_high", "cam_low", "cam_left_wrist", "cam_right_wrist"],
-    },
-    "sim_insertion_scripted": {
-        "dataset_dir": DATA_DIR + "/sim_insertion_scripted",
-        "num_episodes": 3,
-        "episode_len": 600,
-        "onscreen_render": True,
-        "inject_noise": False,
-        "cam_names": ["cam_high", "cam_low", "cam_left_wrist", "cam_right_wrist"],
-    },
-    "sim_insertion_human": {
-        "dataset_dir": DATA_DIR + "/sim_insertion_human",
-        "num_episodes": 3,
-        "episode_len": 600,
-        "onscreen_render": True,
-        "inject_noise": False,
-        "cam_names": ["cam_high", "cam_low", "cam_left_wrist", "cam_right_wrist"],
-    },
+    }
 }
 
 ### Simulation envs fixed constants

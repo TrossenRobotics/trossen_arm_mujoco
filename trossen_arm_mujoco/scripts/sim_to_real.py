@@ -68,7 +68,7 @@ def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Replay HDF5 episode for Trossen arms.")
-    parser.add_argument("--dataset", type=str, default="episodes", help="Dataset directory name.")
+    parser.add_argument("--dataset", type=str, default="data/sim_transfer_cube", help="Dataset directory name.")
     parser.add_argument("--episode_idx", type=int, default=0, help="Episode index to replay.")
     parser.add_argument("--fps", type=int, default=10, help="Playback frames per second.")
     parser.add_argument("--left_ip", type=str, default="192.168.1.5", help="IP address of left arm.")
@@ -76,5 +76,3 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     main(args)
-
-# python replay_episode.py --dataset episodes --episode_idx 1 --fps 12 --left_ip 192.168.1.5 --right_ip 192.168.1.4

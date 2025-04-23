@@ -73,17 +73,6 @@ class TrossenAIStationaryTask(base.Task):
         normalized_left_gripper_action = action[6]
         normalized_right_gripper_action = action[8 + 6]
 
-        # Clamp gripper values to 0.3 or 0.65
-        # if normalized_left_gripper_action < 0.028:
-        #     normalized_left_gripper_action = 0.02
-        # else:
-        #     normalized_left_gripper_action = 0.065
-
-        # if normalized_right_gripper_action < 0.028:
-        #     normalized_right_gripper_action = 0.02
-        # else:
-        #     normalized_right_gripper_action = 0.065
-
         # Assign the processed gripper actions
         left_gripper_action = normalized_left_gripper_action
         right_gripper_action = normalized_right_gripper_action

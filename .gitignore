@@ -5,3 +5,4 @@ __pycache__
 build/
 trossen_ai_data/
 output_csvs/
+data/

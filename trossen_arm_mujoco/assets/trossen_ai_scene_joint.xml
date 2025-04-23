@@ -55,10 +55,10 @@
     <light name="top_light_2" pos="-0.5 0 1.5" dir="0 0 -1" diffuse="0.7 0.7 0.7" specular="0.3 0.3 0.3" directional="false"/>
 
 
-    <body name="box" pos="0.0 0.0 0.02">
+    <body name="box" pos="0.0 0.0 0.0125">
         <joint name="red_box_joint" type="free" frictionloss="0.01" />
         <inertial pos="0 0 0" mass="0.05" diaginertia="0.002 0.002 0.002" />
-        <geom condim="4" solimp="2 1 0.01" solref="0.01 1" friction="2.0 0.02 0.01" pos="0 0 0" size="0.0125 0.0125 0.0125" type="box" name="red_box" rgba="1 0 0 1" />
+        <geom condim="4" solimp="2 1 0.01" solref="0.01 1" friction="5.0 2 0.01" pos="0 0 0" size="0.0125 0.0125 0.0125" type="box" name="red_box" rgba="1 0 0 1" />
     </body>
     <geom name="white_wall" pos="0 0.5 0.05" size="10 0.05 1" type="box" material="white_wall"/>
 

@@ -41,7 +41,6 @@ pip install .
 To verify the installation, run:
 
 ```bash
-cd trossen_arm_mujoco
 python trossen_arm_mujoco/ee_sim_env.py
 ```
 
@@ -126,13 +125,15 @@ The data collection process involves two simulation phases:
 
 ### a. record_sim_episodes.py
 
+This script generates and saves demonstration episodes using a scripted policy in simulation. It supports both end-effector control (for task definition) and joint-space replay (for clean data collection), storing all observations in `.hdf5` format.
+
 To generate and save simulation episodes, use:
 
 ```bash
-python record_sim_episodes.py \
+python trossen_arm_mujoco/scripts/record_sim_episodes.py \
     --task_name sim_transfer_cube \
     --num_episodes 5 \
-    --dataset_dir trossen_ai_data/episodes \
+    --dataset_dir data/sim_transfer_cube \
     --onscreen_render
 ```
 Arguments:
@@ -140,18 +141,26 @@ Arguments:
 - `--task_name`: Name of the task (default: sim_transfer_cube)
 - `--num_episodes`: Number of episodes to generate
 - `--dataset_dir`: Directory where episodes will be saved
-- `--episode_len`: Length of each episode (default: 400 steps)
-- `--onscreen_render` : Enable real-time visualization (optional)
-- `--inject_noise`: Add noise to actions for variation (optional)
+- `--episode_len`: Length of each episode
+- `--onscreen_render` : Enables on-screen rendering. Default: False (only true if explicitly set)
+- `--inject_noise`: Injects noise into actions. Default: False (only true if explicitly set)
 - `--cam_names`: Comma-separated list of camera names for image collection
+
+**Note:**
+
+- When you pass `--task_name`, the script will automatically load the corresponding configuration from constants.py.
+
+- You can extend `SIM_TASK_CONFIGS` in `constants.py` to support new task configurations.
+
+- All parameters loaded from `constants.py` can be individually overridden via command-line arguments.
 
 ### b. visualize.py
 
 To convert saved episodes to videos, run:
 
 ```bash
-python visualize.py \
-    --dataset_dir data/episodes \
+python trossen_arm_mujoco/scripts/visualize.py \
+    --dataset_dir data/sim_transfer_cube \
     --output_dir data/videos \
     --fps 50
 ```
@@ -160,6 +169,30 @@ Arguments:
 - `--dataset_dir`: Directory containing `.hdf5` files
 - `--output_dir`: Output directory for `.mp4` files
 - `--fps`: Frames per second for the generated videos (default: 50)
+
+### c. sim_to_real.py
+
+This script replays recorded joint-space episodes on real Trossen robotic arms using data saved in .hdf5 files. 
+It configures each arm, plays back the actions with a user-defined frame rate, and returns both arms to a safe rest pose after execution.
+
+To perform sim to real, run:
+
+```bash
+python trossen_arm_mujoco/scripts/replay_episode.py \
+    --dataset data/sim_transfer_cube \
+    --episode_idx 0 \
+    --fps 10 \
+    --left_ip 192.168.1.5 \
+    --right_ip 192.168.1.4
+```
+
+Arguments:
+
+- `--dataset`: Directory containing `.hdf5` files
+- `--episode_idx`: Index of the episode to replay. Default: 0
+- `--fps`: Playback frame rate (Hz). Controls the action replay speed. Default: 10
+- `--left_ip` : IP address of the left Trossen arm. Default: 192.168.1.5
+- `--right_ip`: 	IP address of the right Trossen arm. Default: 192.168.1.4
 
 ## Customization
 

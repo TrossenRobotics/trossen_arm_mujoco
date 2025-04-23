@@ -165,13 +165,13 @@ class PickAndTransferPolicy(BasePolicy):
             },  # sleep
             {
                 "t": 100,
-                "xyz": meet_xyz + np.array([-0.1, 0, 0]),
+                "xyz": meet_xyz + np.array([-0.2, 0, 0]),
                 "quat": meet_left_quat.elements,
                 "gripper": 0.044,
             },  # approach meet position
             {
                 "t": 360,
-                "xyz": meet_xyz + np.array([-0.1, 0, 0]),
+                "xyz": meet_xyz + np.array([-0.2, 0, 0]),
                 "quat": meet_left_quat.elements,
                 "gripper": 0.044,
             },  # stay
@@ -233,26 +233,38 @@ class PickAndTransferPolicy(BasePolicy):
                 "gripper": 0.044,
             },  # stay for a while
             {
+                "t": 200,
+                "xyz": box_xyz + np.array([0, 0, 0.02]),
+                "quat": gripper_pick_quat.elements,
+                "gripper": 0.044,
+            },  # go down
+            {
                 "t": 220,
-                "xyz": box_xyz + np.array([0, 0, 0.0125]),
+                "xyz": box_xyz + np.array([0, 0, 0.005]),
                 "quat": gripper_pick_quat.elements,
                 "gripper": 0.044,
             },  # go down
             {
                 "t": 240,
-                "xyz": box_xyz + np.array([0, 0, 0.0125]),
+                "xyz": box_xyz + np.array([0, 0, 0]),
                 "quat": gripper_pick_quat.elements,
                 "gripper": 0.012,
             },  # close gripper
             {
                 "t": 280,
-                "xyz": box_xyz + np.array([0, 0, 0.0125]),
+                "xyz": box_xyz + np.array([0, 0, 0]),
                 "quat": gripper_pick_quat.elements,
                 "gripper": 0.012,
             },  # Stay there for a while
             {
-                "t": 360,
+                "t": 340,
                 "xyz": meet_xyz + np.array([0.1, 0, 0]),
+                "quat": gripper_pick_quat.elements,
+                "gripper": 0.012,
+            },  # approach meet position
+            {
+                "t": 360,
+                "xyz": meet_xyz + np.array([0.05, 0, 0]),
                 "quat": gripper_pick_quat.elements,
                 "gripper": 0.012,
             },  # approach meet position

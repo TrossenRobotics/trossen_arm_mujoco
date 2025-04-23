@@ -80,14 +80,6 @@ class TrossenAIStationaryEETask(base.Task):
         np.copyto(physics.data.mocap_pos[1], action_right[:3])
         np.copyto(physics.data.mocap_quat[1], action_right[3:7])
 
-        # # set gripper
-        # g_left_ctrl = FOLLOWER_GRIPPER_POSITION_UNNORMALIZE_FN(action_left[7])
-        # g_right_ctrl = FOLLOWER_GRIPPER_POSITION_UNNORMALIZE_FN(action_right[7])
-        # np.copyto(
-        #     physics.data.ctrl,
-        #     np.array([g_left_ctrl, -g_left_ctrl, g_right_ctrl, -g_right_ctrl])
-        # )
-
         physics.data.qpos[6] = action_left[7]
         physics.data.qpos[7] = action_left[7]
         physics.data.qpos[14] = action_right[7]
@@ -103,30 +95,11 @@ class TrossenAIStationaryEETask(base.Task):
         physics.named.data.qpos[:12] = START_ARM_POSE[:6] + START_ARM_POSE[8:14]
 
         # reset mocap to align with end effector
-        # to obtain these numbers:
-        # (1) make an ee_sim env and reset to the same start_pose
-        # (2) get env._physics.named.data.xpos['vx300s_left/gripper_link']
-        #     get env._physics.named.data.xquat['vx300s_left/gripper_link']
-        #     repeat the same for right side
         np.copyto(physics.data.mocap_pos[0], [-0.31718881+0.142, 0.0, 0.29525084])
         np.copyto(physics.data.mocap_quat[0], [1, 0, 0, 0])
         # right
         np.copyto(physics.data.mocap_pos[1], np.array([0.31718881-0.142, 0.0, 0.29525084]))
         np.copyto(physics.data.mocap_quat[1], [1, 0, 0, 0])
-        # np.copyto(physics.data.mocap_pos[0], physics.named.data.xpos["left/ee_gripper_link"])
-        # np.copyto(physics.data.mocap_quat[0], [1, 0, 0, 0])
-        # # right
-        # np.copyto(physics.data.mocap_pos[1], physics.named.data.xpos["right/ee_gripper_link"])
-        # np.copyto(physics.data.mocap_quat[1], [1, 0, 0, 0])
-
-        # reset gripper control
-        # close_gripper_control = np.array([
-        #     FOLLOWER_GRIPPER_POSITION_CLOSE,
-        #     -FOLLOWER_GRIPPER_POSITION_CLOSE,
-        #     FOLLOWER_GRIPPER_POSITION_CLOSE,
-        #     -FOLLOWER_GRIPPER_POSITION_CLOSE,
-        # ])
-        # np.copyto(physics.data.ctrl, close_gripper_control)
 
     def initialize_episode(self, physics: Physics):
         """
@@ -184,16 +157,10 @@ class TrossenAIStationaryEETask(base.Task):
         obs["mocap_pose_right"] = np.concatenate(
             [physics.data.mocap_pos[1], physics.data.mocap_quat[1]]
         ).copy()
-        # obs["mocap_pose_right"] = np.concatenate(
-        #     [physics.named.data.xpos["right/ee_gripper_link"], physics.named.data.xquat["right/ee_gripper_link"]]
-        # ).copy()
-        # used when replaying joint trajectory
         obs["gripper_ctrl"] = physics.data.ctrl.copy()
 
-        # DEBUG
-        # pos = physics.named.data.xpos["right/ee_gripper_link"]
         pos = physics.named.data.xpos["mocap_right"]
-        print(f"[{pos[0]:.2f}, {pos[1]:.2f}, {pos[2]:.2f}]")
+        # print(f"[{pos[0]:.2f}, {pos[1]:.2f}, {pos[2]:.2f}]")
 
         
         return obs

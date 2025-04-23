@@ -54,25 +54,36 @@ def main(args):
     Replay this joint trajectory (as action sequence) in sim_env, and record all observations.
     Save this episode of data, and continue to next episode of data collection.
     """
-    if args.task_name is not None:
-        task_config = SIM_TASK_CONFIGS.get(args.task_name, {}).copy()
-        dataset_dir = task_config.get("dataset_dir", args.dataset_dir)
-        num_episodes = task_config.get("num_episodes")
-        episode_len = task_config.get("episode_len")
-        cam_list = task_config.get("cam_names")
-        onscreen_render = task_config.get("onscreen_render")
-        inject_noise = task_config.get("inject_noise")
-    else:
-        dataset_dir = args.dataset_dir
-        num_episodes = args.num_episodes
-        episode_len = args.episode_len
-        cam_list = args.cam_names.split(",")
-        onscreen_render = args.onscreen_render
-        inject_noise = args.inject_noise
-        args.task_name = "sim_transfer_cube"
 
-    if not os.path.isdir(dataset_dir):
-        os.makedirs(dataset_dir, exist_ok=True)
+    task_config = SIM_TASK_CONFIGS.get(args.task_name, {}).copy()
+    dataset_dir = (
+        args.dataset_dir if args.dataset_dir else task_config.get("dataset_dir")
+    )
+    num_episodes = (
+        args.num_episodes
+        if args.num_episodes is not None
+        else task_config.get("num_episodes")
+    )
+    episode_len = (
+        args.episode_len
+        if args.episode_len is not None
+        else task_config.get("episode_len")
+    )
+    cam_list = (
+        args.cam_names.split(",") if args.cam_names else task_config.get("cam_names")
+    )
+    onscreen_render = (
+        args.onscreen_render
+        if args.onscreen_render
+        else task_config.get("onscreen_render")
+    )
+    inject_noise = (
+        args.inject_noise if args.inject_noise else task_config.get("inject_noise")
+    )
+
+    # create dataset directory if it does not exist
+    if not os.path.exists(dataset_dir):
+        os.makedirs(dataset_dir)
 
     policy_cls = PickAndTransferPolicy
 
@@ -109,13 +120,6 @@ def main(args):
             print(f"{episode_idx=} Failed")
 
         joint_traj = [ts.observation["qpos"] for ts in episode]
-        # replace gripper pose with gripper control
-        # gripper_ctrl_traj = [ts.observation['gripper_ctrl'] for ts in episode]
-        # for joint, ctrl in zip(joint_traj, gripper_ctrl_traj):
-        #     left_ctrl = FOLLOWER_GRIPPER_POSITION_NORMALIZE_FN(ctrl[0])
-        #     right_ctrl = FOLLOWER_GRIPPER_POSITION_NORMALIZE_FN(ctrl[2])
-        #     joint[6] = left_ctrl
-        #     joint[6+7] = right_ctrl
 
         subtask_info = episode[0].observation["env_state"].copy()  # box pose at step 0
 
@@ -230,24 +234,22 @@ if __name__ == "__main__":
     parser.add_argument(
         "--task_name",
         type=str,
+        default="sim_transfer_cube",
         help="Name of the task.",
     )
     parser.add_argument(
         "--dataset_dir",
         type=str,
-        default=DATA_DIR + "/sim_transfer_cube",
         help="Directory to save episodes.",
     )
     parser.add_argument(
         "--num_episodes",
         type=int,
-        default=3,
         help="Number of episodes to run.",
     )
     parser.add_argument(
         "--episode_len",
         type=int,
-        default=600,
         help="Length of each episode.",
     )
     parser.add_argument(
@@ -263,7 +265,6 @@ if __name__ == "__main__":
     parser.add_argument(
         "--cam_names",
         type=str,
-        default="cam_high,cam_low,cam_left_wrist,cam_right_wrist",
         help="Comma-separated list of camera names.",
     )
 
