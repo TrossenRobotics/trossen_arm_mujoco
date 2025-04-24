@@ -234,25 +234,25 @@ class PickAndTransferPolicy(BasePolicy):
             },  # stay for a while
             {
                 "t": 200,
-                "xyz": box_xyz + np.array([0, 0, 0.02]),
+                "xyz": box_xyz + np.array([0, 0, 0.05]),
                 "quat": gripper_pick_quat.elements,
                 "gripper": 0.044,
             },  # go down
             {
                 "t": 220,
-                "xyz": box_xyz + np.array([0, 0, 0.005]),
+                "xyz": box_xyz + np.array([0, 0, 0.01]),
                 "quat": gripper_pick_quat.elements,
                 "gripper": 0.044,
             },  # go down
             {
                 "t": 240,
-                "xyz": box_xyz + np.array([0, 0, 0]),
+                "xyz": box_xyz + np.array([0, 0, 0.01]),
                 "quat": gripper_pick_quat.elements,
                 "gripper": 0.012,
             },  # close gripper
             {
                 "t": 280,
-                "xyz": box_xyz + np.array([0, 0, 0]),
+                "xyz": box_xyz + np.array([0, 0, 0.01]),
                 "quat": gripper_pick_quat.elements,
                 "gripper": 0.012,
             },  # Stay there for a while

@@ -95,10 +95,10 @@ class TrossenAIStationaryEETask(base.Task):
         physics.named.data.qpos[:12] = START_ARM_POSE[:6] + START_ARM_POSE[8:14]
 
         # reset mocap to align with end effector
-        np.copyto(physics.data.mocap_pos[0], [-0.31718881+0.142, 0.0, 0.29525084])
+        np.copyto(physics.data.mocap_pos[0], [-0.31718881+0.142+0.0115, 0.0, 0.29525084])
         np.copyto(physics.data.mocap_quat[0], [1, 0, 0, 0])
         # right
-        np.copyto(physics.data.mocap_pos[1], np.array([0.31718881-0.142, 0.0, 0.29525084]))
+        np.copyto(physics.data.mocap_pos[1], np.array([0.31718881-0.142-0.0115, 0.0, 0.29525084]))
         np.copyto(physics.data.mocap_quat[1], [1, 0, 0, 0])
 
     def initialize_episode(self, physics: Physics):
@@ -160,7 +160,7 @@ class TrossenAIStationaryEETask(base.Task):
         obs["gripper_ctrl"] = physics.data.ctrl.copy()
 
         pos = physics.named.data.xpos["mocap_right"]
-        # print(f"[{pos[0]:.2f}, {pos[1]:.2f}, {pos[2]:.2f}]")
+        print(f"[{pos[0]:.3f}, {pos[1]:.3f}, {pos[2]:.3f}]")
 
         
         return obs

@@ -61,12 +61,12 @@
     <light name="top_light_2" pos="-0.5 0 1.5" dir="0 0 -1" diffuse="0.7 0.7 0.7" specular="0.3 0.3 0.3" directional="false"/>
 
 
-    <body mocap="true" name="mocap_left" pos="-0.2293 -0.019 0.1835">
+    <body mocap="true" name="mocap_left" pos="-0.2178 -0.019 0.182">
         <site pos="0 0 0" size="0.0003 0.0003 0.03" type="box" name="mocap_left_site1" rgba="1 0 0 1"/>
         <site pos="0 0 0" size="0.0003 0.03 0.0003" type="box" name="mocap_left_site2" rgba="1 0 0 1"/>
         <site pos="0 0 0" size="0.0003 0.0003 0.03" type="box" name="mocap_left_site3" rgba="1 0 0 1"/>
     </body>
-    <body mocap="true" name="mocap_right" pos="0.2293 -0.019 0.1835">
+    <body mocap="true" name="mocap_right" pos="0.2178 -0.019 0.182">
         <site pos="0 0 0" size="0.0003 0.0003 0.03" type="box" name="mocap_right_site1" rgba="1 0 0 1"/>
         <site pos="0 0 0" size="0.0003 0.03 0.0003" type="box" name="mocap_right_site2" rgba="1 0 0 1"/>
         <site pos="0 0 0" size="0.0003 0.0003 0.03" type="box" name="mocap_right_site3" rgba="1 0 0 1"/>

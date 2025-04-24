@@ -43,7 +43,7 @@ SIM_TASK_CONFIGS = {
     "sim_transfer_cube": {
         "root_dir": ROOT_DIR,
         "data_dir": DATA_DIR,
-        "num_episodes": 3,
+        "num_episodes": 1,
         "episode_len": 600,
         "onscreen_render": False,
         "inject_noise": False,

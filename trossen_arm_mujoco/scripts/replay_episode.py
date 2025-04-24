@@ -16,7 +16,7 @@ def configure_arm(ip_address, home_pose):
         trossen_arm.Model.wxai_v0,
         trossen_arm.StandardEndEffector.wxai_v0_leader,
         ip_address,
-        False
+        True
     )
     driver.set_all_modes(trossen_arm.Mode.position)
     driver.set_all_positions(home_pose, 2.0, True)
@@ -36,6 +36,12 @@ def replay_episode(hdf5_path, left_driver, right_driver, home_pose, fps=10):
             print(f"Timestep {t}: Left = {left_action}, Right = {right_action}")
             right_driver.set_all_positions(right_action, 3.0 / fps, False)
             left_driver.set_all_positions(left_action, 3.0 / fps, False)
+            # print("Given actions: " + str(right_action))
+            # print("Actual actions: " + str(right_driver.get_positions()))
+            diff = right_driver.get_positions() - right_action
+            print(f"Position difference: {diff}.3f")
+
+            # print(left_driver.get_all_positions())
             time.sleep(1 / fps)
 
 
