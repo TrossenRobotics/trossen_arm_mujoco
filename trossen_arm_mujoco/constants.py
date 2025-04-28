@@ -54,8 +54,8 @@ SIM_TASK_CONFIGS = {
 ### Simulation envs fixed constants
 DT = 0.02
 START_ARM_POSE = [
-    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.06, 0.06,
-    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.06, 0.06
+    0.0, np.pi/12, np.pi/12, 0.0, 0.0, 0.0, 0.044, 0.044,
+    0.0, np.pi/12, np.pi/12, 0.0, 0.0, 0.0, 0.044, 0.044
 ]
 
 # Get the path to the assets directory

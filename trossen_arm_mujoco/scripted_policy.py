@@ -154,7 +154,7 @@ class PickAndTransferPolicy(BasePolicy):
 
         meet_left_quat = Quaternion(axis=[1.0, 0.0, 0.0], degrees=90)
 
-        meet_xyz = np.array([0.0, 0.0, 0.25])
+        meet_xyz = np.array([0.0, 0.0, 0.3])
 
         self.left_trajectory = [
             {
@@ -221,38 +221,44 @@ class PickAndTransferPolicy(BasePolicy):
                 "gripper": 0.044,
             },  # open gripper
             {
-                "t": 100,
+                "t": 80,
                 "xyz": box_xyz + np.array([0, 0, 0.2]),
                 "quat": gripper_pick_quat.elements,
                 "gripper": 0.044,
             },  # approach the cube
             {
-                "t": 140,
+                "t": 120,
                 "xyz": box_xyz + np.array([0, 0, 0.2]),
                 "quat": gripper_pick_quat.elements,
                 "gripper": 0.044,
             },  # stay for a while
             {
-                "t": 200,
+                "t": 160,
                 "xyz": box_xyz + np.array([0, 0, 0.05]),
                 "quat": gripper_pick_quat.elements,
                 "gripper": 0.044,
             },  # go down
             {
+                "t": 200,
+                "xyz": box_xyz + np.array([0, 0, 0.02]),
+                "quat": gripper_pick_quat.elements,
+                "gripper": 0.044,
+            },  # go down
+            {
                 "t": 220,
-                "xyz": box_xyz + np.array([0, 0, 0.01]),
+                "xyz": box_xyz + np.array([0, 0, 0]),
                 "quat": gripper_pick_quat.elements,
                 "gripper": 0.044,
             },  # go down
             {
                 "t": 240,
-                "xyz": box_xyz + np.array([0, 0, 0.01]),
+                "xyz": box_xyz + np.array([0, 0, 0]),
                 "quat": gripper_pick_quat.elements,
                 "gripper": 0.012,
             },  # close gripper
             {
                 "t": 280,
-                "xyz": box_xyz + np.array([0, 0, 0.01]),
+                "xyz": box_xyz + np.array([0, 0, 0]),
                 "quat": gripper_pick_quat.elements,
                 "gripper": 0.012,
             },  # Stay there for a while

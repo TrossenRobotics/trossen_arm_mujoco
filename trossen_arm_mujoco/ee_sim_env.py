@@ -95,10 +95,12 @@ class TrossenAIStationaryEETask(base.Task):
         physics.named.data.qpos[:12] = START_ARM_POSE[:6] + START_ARM_POSE[8:14]
 
         # reset mocap to align with end effector
-        np.copyto(physics.data.mocap_pos[0], [-0.31718881+0.142+0.0115, 0.0, 0.29525084])
+        # np.copyto(physics.data.mocap_pos[0], [-0.31718881+0.142+0.0115, 0.0, 0.29525084])
+        np.copyto(physics.data.mocap_pos[0], [-0.2088, -0.019, 0.25183])
         np.copyto(physics.data.mocap_quat[0], [1, 0, 0, 0])
         # right
-        np.copyto(physics.data.mocap_pos[1], np.array([0.31718881-0.142-0.0115, 0.0, 0.29525084]))
+        # np.copyto(physics.data.mocap_pos[1], np.array([0.31718881-0.142-0.0115, 0.0, 0.29525084]))
+        np.copyto(physics.data.mocap_pos[1], [0.2088, -0.019, 0.25183])
         np.copyto(physics.data.mocap_quat[1], [1, 0, 0, 0])
 
     def initialize_episode(self, physics: Physics):
@@ -128,6 +130,8 @@ class TrossenAIStationaryEETask(base.Task):
         :return: The joint positions.
         """
         positions = physics.data.qpos.copy()
+        formatted_positions = [f"{pos:.5f}" for pos in positions[:8]]
+        print(f"Joint positions: {formatted_positions}")
         return positions[:16]
 
     def get_velocity(self, physics: Physics) -> np.ndarray:
