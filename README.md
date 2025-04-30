@@ -97,29 +97,35 @@ The data collection process involves two simulation phases:
 
 1. Run `record_sim_episodes.py`
 
-   - Starts `ee_sim_env.py` and executes a scripted policy.
-   - Captures observations in the form of joint positions.
-   - Saves these joint positions for later replay.
+    - Starts `ee_sim_env.py` and executes a scripted policy.
+    - Captures observations in the form of joint positions.
+    - Saves these joint positions for later replay.
+    - Immediately replays the episode in sim_env.py using the recorded joint positions.
+    - During replay, captures:
+      - Camera feeds from 4 different viewpoints
+      - Joint states (actual positions during execution)
+      - Actions (input joint positions)
+      - Reward values indicating success or failure
 
-2. Replay in `sim_env.py`
+2. Save the Data
 
-   - Uses the previously recorded joint positions as input commands.
-   - Replays the episode in the joint-controlled simulation (`sim_env.py`).
-   - Captures additional data, including:
-     - Camera feeds from 4 different viewpoints
-     - Joint states (actual positions during execution)
-     - Actions (input joint positions)
-     - Reward values to determine success or failure
+    - All observations and actions are stored in HDF5 format, with one file per episode.
+    - Each episode is saved as `episode_X.hdf5` inside the `~/.trossen/mujoco/data/` folder.
 
-3. Save the Data
+3. Visualizing the Data
 
-   - All observations and actions are stored in HDF5 format, with one file per episode.
-   - Each episode is saved as `episode_X.hdf5` inside the `~/.trossen/mujoco/data/` folder.
+    - The stored HDF5 files can be converted into videos using `visualize.py`.
 
-4. Visualizing the Data
+4. Sim-to-real
 
-   - The stored HDF5 files can be converted into videos using `visualize.py`.
-   - The resulting videos are saved in MP4 format inside the `ee_sim_episodes_output/` folder.
+    - Run `replay_episode.py`
+    - This script:
+      - Loads the joint position trajectory from a selected HDF5 file.
+      - Sends commands to both arms using IP addresses (--left_ip, --right_ip).
+      - Plays back the motions in real-time based on the saved trajectory.
+      - Monitors position error between commanded and actual joint states.
+      - Returns arms to home and sleep positions after execution.
+
 
 ## 4. Script Arguments Explanation
 

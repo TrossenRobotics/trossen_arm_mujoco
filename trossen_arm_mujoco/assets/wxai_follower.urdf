@@ -198,7 +198,7 @@
   </joint>
   <link name="carriage_right">
     <inertial>
-      <origin rpy="0 0 0" xyz="-0.00889602 0.00403514 0.00457901"/>
+      <origin rpy="0 0 0" xyz="0.00889602 0.00403514 0.00457901"/>
       <mass value="0.05036313"/>
       <inertia ixx="0.00001736" ixy="-0.00000165" ixz="-0.00000104" iyy="0.00000591" iyz="-0.00000172" izz="0.00001378"/>
     </inertial>
@@ -227,7 +227,7 @@
   </joint>
   <link name="carriage_left">
     <inertial>
-      <origin rpy="0 0 0" xyz="-0.00889602 -0.00403515 -0.00457908"/>
+      <origin rpy="0 0 0" xyz="0.00889602 -0.00403515 -0.00457908"/>
       <mass value="0.05036313"/>
       <inertia ixx="0.00001736" ixy="-0.00000165" ixz="-0.00000104" iyy="0.00000591" iyz="-0.00000172" izz="0.00001378"/>
     </inertial>
