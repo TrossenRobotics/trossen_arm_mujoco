@@ -77,7 +77,7 @@ This folder contains all Python modules necessary for running simulations, execu
 - `sim_env.py`
   - Loads `trossen_ai_scene_joint.xml` (position-controlled joints).
   - Uses joint controllers instead of mocap bodies.
-  - Mimics the real robot’s movement with controlled joint actuation.
+  - Replays joint trajectories from `ee_sim_env.py`, enabling clean simulation visuals without mocap bodies visible in the rendered output.
 
 ### 2.2 Scripted Policy Execution
 
@@ -122,7 +122,7 @@ The data collection process involves two simulation phases:
     - This script:
       - Loads the joint position trajectory from a selected HDF5 file.
       - Sends commands to both arms using IP addresses (--left_ip, --right_ip).
-      - Plays back the motions in real-time based on the saved trajectory.
+      - Plays back the motions based on the saved trajectory.
       - Monitors position error between commanded and actual joint states.
       - Returns arms to home and sleep positions after execution.
 
@@ -148,7 +148,7 @@ Arguments:
 - `--num_episodes`: Number of episodes to generate.
 - `--data_dir`: Directory where episodes will be saved (required).
 - `--root_dir`: Directory where the root is (optional). Default: `~/.trossen/mujoco/data/`
-- `--episode_len`: Length of each episode.
+- `--episode_len`: Number of simulation steps of each episode.
 - `--onscreen_render` : Enables on-screen rendering. Default: False (only true if explicitly set)
 - `--inject_noise`: Injects noise into actions. Default: False (only true if explicitly set)
 - `--cam_names`: Comma-separated list of camera names for image collection
@@ -168,16 +168,19 @@ To convert saved episodes to videos, run:
 ```bash
 python trossen_arm_mujoco/scripts/visualize_eps.py \
     --data_dir sim_transfer_cube \
-    --output_dir data/videos \
+    --output_dir videos \
     --fps 50
 ```
 Arguments:
 
-- `--data_dir`: Directory containing `.hdf5` files (required).
-- `--root_dir`: Directory where the root is (optional). Default: `~/.trossen/mujoco/data/`
-- `--output_dir`: Output directory for `.mp4` files. Default: `videos`
+- `--data_dir`: Directory containing .hdf5 files (required), relative to --root_dir if provided.
+- `--root_dir`: Root path prefix for locating data_dir. Default: ~/.trossen/mujoco/data/
+- `--output_dir`: Subdirectory inside data_dir where generated .mp4 videos will be saved. Default: videos
 - `--fps`: Frames per second for the generated videos (default: 50)
 - `--root_dir`: Directory where the root is (optional). Default: `~/.trossen/mujoco/`
+
+**Note:** If you do not specify `--root_dir`, videos will be saved to `~/.trossen/mujoco/data/<data_dir>/<output_dir>`.
+You can customize the output path by changing `--root_dir`, `--data_dir`, or `--output_dir` as needed.
 
 ### c. replay_episode_real.py
 
@@ -225,7 +228,7 @@ Each movement step in the trajectory is defined by:
 - `t`: The time step at which the movement shall occur.
 - `xyz`: The target position of the end effector in 3D space.
 - `quat`: The target orientation of the end effector, represented as a quaternion.
-- `gripper`: The target gripper finger position 0~0.065 where 0 is closed and 0.065 is fully open.
+- `gripper`: The target gripper finger position 0~0.044 where 0 is closed and 0.044 is fully open.
 
 Example:
 
@@ -233,7 +236,7 @@ Example:
 def generate_trajectory(self, ts_first: TimeStep):
     self.left_trajectory = [
         {"t": 0, "xyz": [0, 0, 0.4], "quat": [1, 0, 0, 0], "gripper": 0},
-        {"t": 100, "xyz": [0.1, 0, 0.3], "quat": [1, 0, 0, 0], "gripper": 0.05}
+        {"t": 100, "xyz": [0.1, 0, 0.3], "quat": [1, 0, 0, 0], "gripper": 0.044}
     ]
 ```
 
