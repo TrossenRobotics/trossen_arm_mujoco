@@ -114,11 +114,11 @@ The data collection process involves two simulation phases:
 
 3. Visualizing the Data
 
-    - The stored HDF5 files can be converted into videos using `visualize.py`.
+    - The stored HDF5 files can be converted into videos using `visualize_eps.py`.
 
 4. Sim-to-real
 
-    - Run `replay_episode.py`
+    - Run `replay_episode_real.py`
     - This script:
       - Loads the joint position trajectory from a selected HDF5 file.
       - Sends commands to both arms using IP addresses (--left_ip, --right_ip).
@@ -161,12 +161,12 @@ Arguments:
 
 - All parameters loaded from `constants.py` can be individually overridden via command-line arguments.
 
-### b. visualize_obs.py
+### b. visualize_eps.py
 
 To convert saved episodes to videos, run:
 
 ```bash
-python trossen_arm_mujoco/scripts/visualize_obs.py \
+python trossen_arm_mujoco/scripts/visualize_eps.py \
     --data_dir data/sim_transfer_cube \
     --output_dir data/videos \
     --fps 50
@@ -178,15 +178,15 @@ Arguments:
 - `--fps`: Frames per second for the generated videos (default: 50)
 - `--root_dir`: Directory where the root is (optional). Default: `~/.trossen/mujoco/`
 
-### c. replay_episode.py
+### c. replay_episode_real.py
 
-This script replays recorded joint-space episodes on real Trossen robotic arms using data saved in .hdf5 files. 
+This script replays recorded joint-space episodes on real Trossen robotic arms using data saved in .hdf5 files.
 It configures each arm, plays back the actions with a user-defined frame rate, and returns both arms to a safe rest pose after execution.
 
 To perform sim to real, run:
 
 ```bash
-python trossen_arm_mujoco/scripts/replay_episode.py \
+python trossen_arm_mujoco/scripts/replay_episode_real.py \
     --data_dir data/sim_transfer_cube \
     --episode_idx 0 \
     --fps 10 \

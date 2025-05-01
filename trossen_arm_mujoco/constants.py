@@ -28,11 +28,8 @@
 
 from importlib.resources import files
 import os
-import numpy as np
-import getpass
 
-# Placeholder for the user name
-USER_NAME = "trossen_ai"
+import numpy as np
 
 ROOT_DIR = os.path.expanduser("~/.trossen/mujoco/")
 DATA_DIR = "data/sim_transfer_cube"
@@ -54,8 +51,22 @@ SIM_TASK_CONFIGS = {
 ### Simulation envs fixed constants
 DT = 0.02
 START_ARM_POSE = [
-    0.0, np.pi/12, np.pi/12, 0.0, 0.0, 0.0, 0.044, 0.044,
-    0.0, np.pi/12, np.pi/12, 0.0, 0.0, 0.0, 0.044, 0.044
+    0.0,
+    np.pi / 12,
+    np.pi / 12,
+    0.0,
+    0.0,
+    0.0,
+    0.044,
+    0.044,
+    0.0,
+    np.pi / 12,
+    np.pi / 12,
+    0.0,
+    0.0,
+    0.0,
+    0.044,
+    0.044,
 ]
 
 # Get the path to the assets directory

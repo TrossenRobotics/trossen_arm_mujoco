@@ -1,12 +1,13 @@
+import argparse
+import os
+from pathlib import Path
+import time
+
 import h5py
 import numpy as np
-import time
-from pathlib import Path
-import argparse
 import trossen_arm
-import os
-from trossen_arm_mujoco.constants import ROOT_DIR, DATA_DIR, USER_NAME
-from pathlib import Path
+
+from trossen_arm_mujoco.constants import DATA_DIR, ROOT_DIR
 
 
 def configure_arm(ip_address, home_pose):
@@ -16,7 +17,7 @@ def configure_arm(ip_address, home_pose):
         trossen_arm.Model.wxai_v0,
         trossen_arm.StandardEndEffector.wxai_v0_leader,
         ip_address,
-        True
+        True,
     )
     driver.set_all_modes(trossen_arm.Mode.position)
     driver.set_all_positions(home_pose, 2.0, True)
@@ -36,8 +37,7 @@ def replay_episode(hdf5_path, left_driver, right_driver, home_pose, fps=10):
             print(f"Timestep {t}: Left = {left_action}, Right = {right_action}")
             right_driver.set_all_positions(right_action, 3.0 / fps, False)
             left_driver.set_all_positions(left_action, 3.0 / fps, False)
-            # print("Given actions: " + str(right_action))
-            # print("Actual actions: " + str(right_driver.get_positions()))
+
             diff = right_driver.get_positions() - right_action
             print(f"Position difference: {diff}.3f")
 
@@ -59,7 +59,7 @@ def main(args):
     home_pose = np.array([0.0, np.pi / 12, np.pi / 12, 0.0, 0.0, 0.0, 0.0])
     root_dir = args.root_dir if args.root_dir else ROOT_DIR
     data_dir = args.data_dir if args.data_dir else DATA_DIR
-    hdf5_path = os.path.join(root_dir, USER_NAME, data_dir, f"episode_{args.episode_idx}.hdf5")
+    hdf5_path = os.path.join(root_dir, data_dir, f"episode_{args.episode_idx}.hdf5")
 
     if not Path(hdf5_path).exists():
         print(f"HDF5 file not found at {hdf5_path}")
@@ -77,13 +77,23 @@ def main(args):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Replay HDF5 episode for Trossen arms.")
+    parser = argparse.ArgumentParser(
+        description="Replay HDF5 episode for Trossen arms."
+    )
     parser.add_argument("--data_dir", type=str, help="Dataset directory name.")
     parser.add_argument("--root_dir", type=str, help="Root directory for data.")
-    parser.add_argument("--episode_idx", type=int, default=0, help="Episode index to replay.")
-    parser.add_argument("--fps", type=int, default=10, help="Playback frames per second.")
-    parser.add_argument("--left_ip", type=str, default="192.168.1.5", help="IP address of left arm.")
-    parser.add_argument("--right_ip", type=str, default="192.168.1.4", help="IP address of right arm.")
+    parser.add_argument(
+        "--episode_idx", type=int, default=0, help="Episode index to replay."
+    )
+    parser.add_argument(
+        "--fps", type=int, default=10, help="Playback frames per second."
+    )
+    parser.add_argument(
+        "--left_ip", type=str, default="192.168.1.5", help="IP address of left arm."
+    )
+    parser.add_argument(
+        "--right_ip", type=str, default="192.168.1.4", help="IP address of right arm."
+    )
 
     args = parser.parse_args()
     main(args)

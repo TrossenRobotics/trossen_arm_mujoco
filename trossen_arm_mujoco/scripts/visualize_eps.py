@@ -33,7 +33,8 @@ import re
 import cv2
 import h5py
 import numpy as np
-from trossen_arm_mujoco.constants import ROOT_DIR, DATA_DIR, USER_NAME
+
+from trossen_arm_mujoco.constants import DATA_DIR, ROOT_DIR
 
 
 def load_hdf5(dataset_path: str) -> dict | None:
@@ -109,8 +110,8 @@ def process_directory(args: argparse.Namespace):
     output_dir = args.output_dir
     fps = args.fps
 
-    hdf5_dir = os.path.join(root_dir, USER_NAME, data_dir)
-    output_dir = os.path.join(root_dir, USER_NAME, output_dir)
+    hdf5_dir = os.path.join(root_dir, data_dir)
+    output_dir = os.path.join(root_dir, output_dir)
 
     os.makedirs(output_dir, exist_ok=True)
 

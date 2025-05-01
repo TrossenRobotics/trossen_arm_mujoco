@@ -306,6 +306,7 @@ class PickAndTransferPolicy(BasePolicy):
             },  # stay
         ]
 
+
 def test_policy(
     task_name: str,
     num_episodes: int = 2,
