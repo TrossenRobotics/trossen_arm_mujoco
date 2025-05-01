@@ -86,7 +86,7 @@
                   <geom type="box" rgba="" size="0.0115 0.021 0.021" pos="0.0393206 0 0.0569399" quat="0.984808 0 0.173648 0" />
                   <body name="left/carriage_right" pos="0.0865 -0.023 0" gravcomp="1">
                     <inertial pos="0.00169015 0.00592793 0.00201817" quat="-0.370973 0.740886 -0.0847721 0.553427" mass="0.081271" diaginertia="4.29565e-05 3.87081e-05 2.21528e-05" />
-                    <joint name="left/right_carriage_joint" pos="0 0 0" axis="0 -1 0" type="slide" range="0 0.044" actuatorfrcrange="-400 400" actuatorgravcomp="true"/>
+                    <joint name="left/right_carriage_joint" pos="0 0 0" axis="0 -1 0" type="slide" range="0 0.044" actuatorfrcrange="-400 400" actuatorgravcomp="true" stiffness="50" />
                     <geom type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="carriage_right" class="visual"/>
                     <geom type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="carriage_right" class="collision"/>
                     <geom type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="gripper_right" class="visual"/>
@@ -94,7 +94,7 @@
                   </body>
                   <body name="left/carriage_left" pos="0.0865 0.023 0" gravcomp="1">
                     <inertial pos="0.00169017 -0.00592796 -0.00365701" quat="-0.0382691 0.628022 -0.255101 0.734198" mass="0.081271" diaginertia="4.21112e-05 3.61943e-05 2.40003e-05" />
-                    <joint name="left/left_carriage_joint" pos="0 0 0" axis="0 1 0" type="slide" range="0 0.044" actuatorfrcrange="-400 400" actuatorgravcomp="true"/>
+                    <joint name="left/left_carriage_joint" pos="0 0 0" axis="0 1 0" type="slide" range="0 0.044" actuatorfrcrange="-400 400" actuatorgravcomp="true" stiffness="50" />
                     <geom type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="carriage_left" class="visual"/>
                     <geom type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="carriage_left" class="collision"/>
                     <geom type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="gripper_left" class="visual"/>
@@ -148,7 +148,7 @@
                   <geom type="box" rgba="" size="0.0115 0.021 0.021" pos="0.0393206 0 0.0569399" quat="0.984808 0 0.173648 0" />
                   <body name="right/carriage_right" pos="0.0865 -0.023 0" gravcomp="1">
                     <inertial pos="0.00169015 0.00592793 0.00201817" quat="-0.370973 0.740886 -0.0847721 0.553427" mass="0.081271" diaginertia="4.29565e-05 3.87081e-05 2.21528e-05" />
-                    <joint name="right/right_carriage_joint" pos="0 0 0" axis="0 -1 0" type="slide" range="0 0.044" actuatorfrcrange="-400 400" actuatorgravcomp="true"/>
+                    <joint name="right/right_carriage_joint" pos="0 0 0" axis="0 -1 0" type="slide" range="0 0.044" actuatorfrcrange="-400 400" actuatorgravcomp="true" stiffness="50" />
                     <geom type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="carriage_right" class="visual"/>
                     <geom type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="carriage_right" class="collision"/>
                     <geom type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="gripper_right" class="visual"/>
@@ -156,7 +156,7 @@
                   </body>
                   <body name="right/carriage_left" pos="0.0865 0.023 0" gravcomp="1">
                     <inertial pos="0.00169017 -0.00592796 -0.00365701" quat="-0.0382691 0.628022 -0.255101 0.734198" mass="0.081271" diaginertia="4.21112e-05 3.61943e-05 2.40003e-05" />
-                    <joint name="right/left_carriage_joint" pos="0 0 0" axis="0 1 0" type="slide" range="0 0.044" actuatorfrcrange="-400 400" actuatorgravcomp="true"/>
+                    <joint name="right/left_carriage_joint" pos="0 0 0" axis="0 1 0" type="slide" range="0 0.044" actuatorfrcrange="-400 400" actuatorgravcomp="true" stiffness="50" />
                     <geom type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="carriage_left" class="visual"/>
                     <geom type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="carriage_left" class="collision"/>
                     <geom type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="gripper_left" class="visual"/>
