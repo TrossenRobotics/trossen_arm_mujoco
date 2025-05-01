@@ -119,8 +119,6 @@ class TrossenAIStationaryTask(base.Task):
         :return: The joint positions.
         """
         position = physics.data.qpos.copy()
-        print("=================================")
-        print("Joint positions:", position)
         return position[:16]
 
     def get_velocity(self, physics: Physics) -> np.ndarray:

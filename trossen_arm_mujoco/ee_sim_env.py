@@ -128,8 +128,6 @@ class TrossenAIStationaryEETask(base.Task):
         :return: The joint positions.
         """
         positions = physics.data.qpos.copy()
-        formatted_positions = [f"{pos:.5f}" for pos in positions[:8]]
-        print(f"Joint positions: {formatted_positions}")
         return positions[:16]
 
     def get_velocity(self, physics: Physics) -> np.ndarray:
@@ -160,10 +158,6 @@ class TrossenAIStationaryEETask(base.Task):
             [physics.data.mocap_pos[1], physics.data.mocap_quat[1]]
         ).copy()
         obs["gripper_ctrl"] = physics.data.ctrl.copy()
-
-        pos = physics.named.data.xpos["mocap_right"]
-        print(f"[{pos[0]:.3f}, {pos[1]:.3f}, {pos[2]:.3f}]")
-
         return obs
 
     def get_reward(self, physics: Physics) -> int:

@@ -138,16 +138,16 @@ To generate and save simulation episodes, use:
 ```bash
 python trossen_arm_mujoco/scripts/record_sim_episodes.py \
     --task_name sim_transfer_cube \
+    --data_dir sim_transfer_cube \
     --num_episodes 5 \
-    --data_dir data/sim_transfer_cube \
     --onscreen_render
 ```
 Arguments:
 
 - `--task_name`: Name of the task (default: sim_transfer_cube).
 - `--num_episodes`: Number of episodes to generate.
-- `--data_dir`: Directory where episodes will be saved. Default: `data/sim_transfer_cube`
-- `--root_dir`: Directory where the root is (optional). Default: `~/.trossen/mujoco/`
+- `--data_dir`: Directory where episodes will be saved (required).
+- `--root_dir`: Directory where the root is (optional). Default: `~/.trossen/mujoco/data/`
 - `--episode_len`: Length of each episode.
 - `--onscreen_render` : Enables on-screen rendering. Default: False (only true if explicitly set)
 - `--inject_noise`: Injects noise into actions. Default: False (only true if explicitly set)
@@ -167,13 +167,14 @@ To convert saved episodes to videos, run:
 
 ```bash
 python trossen_arm_mujoco/scripts/visualize_eps.py \
-    --data_dir data/sim_transfer_cube \
+    --data_dir sim_transfer_cube \
     --output_dir data/videos \
     --fps 50
 ```
 Arguments:
 
-- `--data_dir`: Directory containing `.hdf5` files. Default: `data/sim_transfer_cube`
+- `--data_dir`: Directory containing `.hdf5` files (required).
+- `--root_dir`: Directory where the root is (optional). Default: `~/.trossen/mujoco/data/`
 - `--output_dir`: Output directory for `.mp4` files. Default: `videos`
 - `--fps`: Frames per second for the generated videos (default: 50)
 - `--root_dir`: Directory where the root is (optional). Default: `~/.trossen/mujoco/`
@@ -187,7 +188,7 @@ To perform sim to real, run:
 
 ```bash
 python trossen_arm_mujoco/scripts/replay_episode_real.py \
-    --data_dir data/sim_transfer_cube \
+    --data_dir sim_transfer_cube \
     --episode_idx 0 \
     --fps 10 \
     --left_ip 192.168.1.5 \
@@ -196,8 +197,8 @@ python trossen_arm_mujoco/scripts/replay_episode_real.py \
 
 Arguments:
 
-- `--data_dir`: Directory containing `.hdf5` files
-- `--root_dir`: Directory where the root is (optional). Default: `~/.trossen/mujoco/`
+- `--data_dir`: Directory containing `.hdf5` files (required).
+- `--root_dir`: Directory where the root is (optional). Default: `~/.trossen/mujoco/data/`
 - `--episode_idx`: Index of the episode to replay. Default: 0
 - `--fps`: Playback frame rate (Hz). Controls the action replay speed. Default: 10
 - `--left_ip` : IP address of the left Trossen arm. Default: 192.168.1.5

@@ -34,7 +34,7 @@ import cv2
 import h5py
 import numpy as np
 
-from trossen_arm_mujoco.constants import DATA_DIR, ROOT_DIR
+from trossen_arm_mujoco.constants import ROOT_DIR
 
 
 def load_hdf5(dataset_path: str) -> dict | None:
@@ -106,12 +106,11 @@ def process_directory(args: argparse.Namespace):
     :param fps: Frames per second for the output video, defaults to 50.
     """
     root_dir = args.root_dir if args.root_dir else ROOT_DIR
-    data_dir = args.data_dir if args.data_dir else DATA_DIR
-    output_dir = args.output_dir
+    data_dir = os.path.join(root_dir, args.data_dir)
+    output_dir = os.path.join(data_dir, args.output_dir)
     fps = args.fps
 
-    hdf5_dir = os.path.join(root_dir, data_dir)
-    output_dir = os.path.join(root_dir, output_dir)
+    hdf5_dir = data_dir
 
     os.makedirs(output_dir, exist_ok=True)
 
@@ -142,11 +141,13 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--data_dir",
+        required=True,
         help="Path to the directory containing HDF5 dataset files.",
     )
     parser.add_argument(
         "--root_dir",
-        help="Root directory for data saving.",
+        type=str,
+        help="Root directory for saving data.",
     )
     parser.add_argument(
         "--output_dir",

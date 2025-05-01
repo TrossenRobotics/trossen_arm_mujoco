@@ -35,7 +35,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from tqdm import tqdm
 
-from trossen_arm_mujoco.constants import SIM_TASK_CONFIGS
+from trossen_arm_mujoco.constants import ROOT_DIR, SIM_TASK_CONFIGS
 from trossen_arm_mujoco.ee_sim_env import TransferCubeEETask
 from trossen_arm_mujoco.scripted_policy import PickAndTransferPolicy
 from trossen_arm_mujoco.sim_env import BOX_POSE, TransferCubeTask
@@ -56,9 +56,9 @@ def main(args):
     """
 
     task_config = SIM_TASK_CONFIGS.get(args.task_name, {}).copy()
-    root_dir = args.root_dir if args.root_dir else task_config.get("root_dir")
-    data_dir = args.data_dir if args.data_dir else task_config.get("data_dir")
-    hdf5_save_dir = os.path.join(root_dir, data_dir)
+    root_dir = args.root_dir if args.root_dir else ROOT_DIR
+    data_dir = os.path.join(root_dir, args.data_dir)
+    hdf5_save_dir = data_dir
 
     num_episodes = (
         args.num_episodes
@@ -239,14 +239,15 @@ if __name__ == "__main__":
         help="Name of the task.",
     )
     parser.add_argument(
-        "--data_dir",
-        type=str,
-        help="Directory to save episodes.",
-    )
-    parser.add_argument(
         "--root_dir",
         type=str,
-        help="Root directory for data saving.",
+        help="Root directory for saving data.",
+    )
+    parser.add_argument(
+        "--data_dir",
+        type=str,
+        required=True,
+        help="Directory to save episodes.",
     )
     parser.add_argument(
         "--num_episodes",
