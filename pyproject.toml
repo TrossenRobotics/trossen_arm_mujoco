@@ -1,0 +1,48 @@
+[project]
+name = "trossen-arm-mujoco"
+version = "0.0.0"
+description = "Scripts and assets for simulating and training robotic policies using the Trossen AI systems in MuJoCo"
+authors = [
+  { name = "Luke Schmitt" },
+  { name = "Shantanu Parab" },
+  { name = "Shuhang Xu" },
+]
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "dm_control",
+  "dm_env",
+  "h5py",
+  "matplotlib",
+  "numpy",
+  "tqdm",
+  "opencv-python",
+  "pyquaternion",
+  "trossen_arm",
+]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.package-data]
+"*" = ["assets/**", ]
+
+[tool.codespell]
+builtin = "clear,rare,informal,usage,code,names"
+check-filenames = true
+check-hidden = true
+interactive = 0
+quiet = 34
+skip="./build/*,./.venv/*,./.git*,*.toml"
+
+[tool.isort]
+profile = "black"
+force_single_line = false
+line_length = 99
+lexicographical = true
+force_sort_within_sections = true
+
+[tool.setuptools.packages.find]
+include = ["trossen_arm_mujoco"]
+exclude = ["output_csvs"]
