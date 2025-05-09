@@ -1,4 +1,10 @@
-**/__pycache__/
-*output
+__pycache__
+*.egg-info/
 *.mp4
-aloha_data/
+*output
+build/
+trossen_ai_data/
+output_csvs/
+data/
+.mypy_cache/
+.ruff_cache

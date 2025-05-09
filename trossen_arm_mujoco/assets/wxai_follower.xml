@@ -66,8 +66,8 @@
                 <geom type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="link_5" class="visual"/>
                 <geom type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="link_5" class="collision"/>
                 <body name="right/link_6" pos="0.02895 0 -0.0455">
-                  <camera name="camera_left_wrist" pos="0.06231 0.00000 0.05321" euler="-1.57 -1.22 0.0"  resolution="1920 1080" focal="1.93e-3 1.93e-3" sensorsize="0.0037 0.0021" mode="fixed"/>
-                  <inertial pos="0.0447847 0.00141563 0.00919429" quat="0.616976 0.706059 -0.256734 0.234325" mass="0.671874" diaginertia="0.00117101 0.00113104 0.00079411" />
+                  <camera name="cam_left_wrist" pos="0.06231 0.00000 0.05321" euler="-1.57 -1.22 0.0"  resolution="1920 1080" focal="1.93e-3 1.93e-3" sensorsize="0.0037 0.0021" mode="fixed"/>
+                  <inertial pos="0.0449291 0.00141352 0.00918062" quat="0.602152 0.690208 -0.29686 0.27" mass="0.672874" diaginertia="0.00127648 0.0012351 0.000903617" />
                   <joint name="right/joint_5" pos="0 0 0" axis="1 0 0" range="-3.14159 3.14159" actuatorfrcrange="-7 7" />
                   <geom type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="link_6" class="visual"/>
                   <geom type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="link_6" class="collision"/>
