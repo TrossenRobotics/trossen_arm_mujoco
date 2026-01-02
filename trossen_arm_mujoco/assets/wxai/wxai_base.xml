@@ -1,4 +1,4 @@
-<mujoco model="wxai">
+<mujoco model="wxai_base">
   <compiler angle="radian" meshdir="../meshes" texturedir="../" autolimits="true"/>
 
   <option integrator="implicitfast"/>
@@ -32,7 +32,6 @@
   </asset>
 
   <worldbody>
-    <light mode="targetbodycom" target="base_link" pos="1 0 1"/>
     <body name="base_link" pos="0 0 0">
       <inertial pos="-0.00014175 -5.228e-05 0.03175177" quat="0.503748 -0.507380 -0.494230 -0.494510" mass="0.45969858" diaginertia="0.000213926 0.000416701 0.000448963"/>
       <geom class="visual" mesh="base_link"/>
@@ -67,7 +66,7 @@
                   <inertial pos="0.0457277 -7.26e-06 1.402e-05" quat="0.500491 0.4997 -0.500266 0.499542" mass="0.554693" diaginertia="0.001086 0.000824291 0.000487589"/>
                   <joint name="joint_5" pos="0 0 0" axis="1 0 0" range="-3.14159 3.14159"/>
                   <geom class="visual" mesh="link_6"/>
-                  <geom class="collision" type="cylinder" size="0.025 0.05" pos="0 0 0" quat="1 0 1 0"/>
+                  <geom class="collision" type="cylinder" size="0.029 0.05" pos="0 0 0" quat="1 0 1 0"/>
                   <geom class="collision" type="box" size="0.0125 0.094 0.031" pos="0.0685 0 0" quat="1 0 0 0"/>
                   <body name="carriage_right" pos="0.0865 -0.023 0">
                     <inertial pos="0.00169015 0.00592793 0.00201817" quat="-0.370973 0.740886 -0.0847721 0.553427" mass="0.081271" diaginertia="4.29565e-05 3.87081e-05 2.21528e-05"/>
