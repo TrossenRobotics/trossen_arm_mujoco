@@ -14,8 +14,8 @@ This package contains robot descriptions (MJCF) of the Stationary AI bimanual se
 4. Added four cameras:
    - `cam_high` - External overhead camera mounted on frame
    - `cam_low` - External low-angle camera mounted on frame
-   - `cam_left_wrist` - Wrist-mounted camera on left arm
-   - `cam_right_wrist` - Wrist-mounted camera on right arm
+   - `follower_left_cam` - Wrist-mounted camera on left arm
+   - `follower_right_cam` - Wrist-mounted camera on right arm
 5. Added equality constraints for gripper mimic joints (both arms).
 6. Added position-controlled actuators with tuned PD gains (kp/kv) and force limits for all joints, plus armature and frictionloss for realistic motor dynamics.
 7. Added keyframe for home position initialization.
