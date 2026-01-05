@@ -15,5 +15,5 @@ This package contains robot descriptions (MJCF) of the WXAI arms by [Trossen Rob
 4. Added simplified collision geometries using primitive shapes.
 5. Added camera_color_frame site and camera matching the URDF's camera frame position.
 6. Added equality constraint for gripper mimic joint.
-7. Todo: Added position-controlled actuators with tuned PD gains (kp/kv) and force limits for all 6 joints + gripper.
-8. Todo: Added Texture to match with real world
+7. Added position-controlled actuators with PD gains (kp/kv) for all 6 joints + gripper, plus armature and frictionloss for motor dynamics.
+8. Added keyframe for home position initialization.
