@@ -41,7 +41,7 @@ SIM_TASK_CONFIGS = {
         "episode_len": 600,
         "onscreen_render": False,
         "inject_noise": False,
-        "cam_names": ["cam_high", "cam_low", "cam_left_wrist", "cam_right_wrist"],
+        "cam_names": ["cam_high", "cam_low", "follower_left_cam", "follower_right_cam"],
     }
 }
 
