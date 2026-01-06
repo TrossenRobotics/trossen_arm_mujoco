@@ -59,7 +59,7 @@ class TrossenAIStationaryEETask(base.Task):
         super().__init__(random=random)
         self.cam_list = cam_list
         if self.cam_list == []:
-            self.cam_list = ["cam_high", "cam_low", "cam_left_wrist", "cam_right_wrist"]
+            self.cam_list = ["cam_high", "cam_low", "follower_left_cam", "follower_right_cam"]
 
     def before_step(self, action: np.ndarray, physics: Physics) -> None:
         """
@@ -75,10 +75,15 @@ class TrossenAIStationaryEETask(base.Task):
         # set mocap position and quat
         # left
         np.copyto(physics.data.mocap_pos[0], action_left[:3])
-        np.copyto(physics.data.mocap_quat[0], action_left[3:7])
         # right
         np.copyto(physics.data.mocap_pos[1], action_right[:3])
-        np.copyto(physics.data.mocap_quat[1], action_right[3:7])
+
+        # TODO: Use action quaternion instead of current link_6 orientation
+        # Currently using link_6 quat to avoid weld offset direction mismatch
+        left_link6_id = physics.model.body('follower_left_link_6').id
+        right_link6_id = physics.model.body('follower_right_link_6').id
+        np.copyto(physics.data.mocap_quat[0], physics.data.xquat[left_link6_id])
+        np.copyto(physics.data.mocap_quat[1], physics.data.xquat[right_link6_id])
 
         physics.data.qpos[6] = action_left[7]
         physics.data.qpos[7] = action_left[7]
@@ -92,14 +97,16 @@ class TrossenAIStationaryEETask(base.Task):
         :param physics: The simulation physics engine.
         """
         # reset joint position
-        physics.named.data.qpos[:12] = START_ARM_POSE[:6] + START_ARM_POSE[8:14]
+        physics.data.qpos[0:6] = START_ARM_POSE[0:6]
+        physics.data.qpos[8:14] = START_ARM_POSE[8:14]
 
         # reset mocap to align with end effector
-        np.copyto(physics.data.mocap_pos[0], [-0.19657, -0.019, 0.25021])
-        np.copyto(physics.data.mocap_quat[0], [1, 0, 0, 0])
-        # right
-        np.copyto(physics.data.mocap_pos[1], [0.19657, -0.019, 0.25021])
-        np.copyto(physics.data.mocap_quat[1], [1, 0, 0, 0])
+        # left arm
+        np.copyto(physics.data.mocap_pos[0], [-0.019982, 0.194742, 0.270914])
+        np.copyto(physics.data.mocap_quat[0], [0.707107, 0, 0, -0.707107])
+        # right arm
+        np.copyto(physics.data.mocap_pos[1], [-0.019982, -0.194742, 0.270914])
+        np.copyto(physics.data.mocap_quat[1], [0.707107, 0, 0, 0.707107])
 
     def initialize_episode(self, physics: Physics):
         """
@@ -233,15 +240,18 @@ class TransferCubeEETask(TrossenAIStationaryEETask):
             name_geom_2 = physics.model.id2name(id_geom_2, "geom")
             contact_pair = (name_geom_1, name_geom_2)
             all_contact_pairs.append(contact_pair)
-        touch_left_gripper = (
-            "red_box",
-            "left/gripper_follower_left",
-        ) in all_contact_pairs
-        touch_right_gripper = (
-            "red_box",
-            "right/gripper_follower_left",
-        ) in all_contact_pairs
-        touch_table = ("red_box", "table") in all_contact_pairs
+        touch_left_gripper = any(
+            ("red_box" in pair and "follower_left_gripper" in pair[0] + pair[1])
+            for pair in all_contact_pairs
+        )
+        touch_right_gripper = any(
+            ("red_box" in pair and "follower_right_gripper" in pair[0] + pair[1])
+            for pair in all_contact_pairs
+        )
+        touch_table = any(
+            ("red_box" in pair and "tabletop" in pair[0] + pair[1])
+            for pair in all_contact_pairs
+        )
 
         reward = 0
         if touch_right_gripper:
@@ -257,7 +267,7 @@ class TransferCubeEETask(TrossenAIStationaryEETask):
 
 def test_ee_sim_env():
     onscreen_render = True
-    cam_list = ["cam_high", "cam_low", "cam_left_wrist", "cam_right_wrist"]
+    cam_list = ["cam_high", "cam_low", "follower_left_cam", "follower_right_cam"]
     env = make_sim_env(
         TransferCubeEETask,
         task_name="sim_transfer_cube",
