@@ -326,7 +326,7 @@ def test_policy(
         ``False``.
     """
     # setup the environment
-    cam_list = ["cam_high", "cam_low", "follower_left_cam", "follower_right_cam"]
+    cam_list = ["cam_high", "cam_low", "cam_left_wrist", "cam_right_wrist"]
     env = make_sim_env(
         TransferCubeEETask,
         task_name=task_name,

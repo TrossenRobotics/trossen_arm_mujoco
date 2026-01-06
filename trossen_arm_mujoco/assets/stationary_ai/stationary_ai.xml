@@ -102,7 +102,7 @@
                     <geom class="collision" type="box" size="0.0155 0.025 0.025" pos="0.0513206 0 0.0569399" quat="0.984808 0 0.173648 0"/>
                     <geom class="visual" type="box" size="0.0115 0.021 0.021" pos="0.0513206 0 0.0569399" quat="0.984808 0 0.173648 0"/>
                     <site name="follower_left_camera_color_frame" pos="0.05864 0.009 0.05427" quat="0.9848078 0 0.1736482 0" size="0.005"/>
-                    <camera name="follower_left_cam" pos="0.05864 0.009 0.05427" quat="0.5793 0.4056 -0.4056 -0.5793" mode="fixed" fovy="87"/>
+                    <camera name="cam_left_wrist" pos="0.05864 0.009 0.05427" quat="0.5793 0.4056 -0.4056 -0.5793" mode="fixed" fovy="87"/>
                     <body name="follower_left_carriage_right" pos="0.0865 -0.023 0">
                       <inertial pos="0.00169015 0.00592793 0.00201817" quat="-0.370973 0.740886 -0.0847721 0.553427" mass="0.081271" diaginertia="4.29565e-05 3.87081e-05 2.21528e-05"/>
                       <joint name="follower_left_right_carriage_joint" pos="0 0 0" axis="0 -1 0" type="slide" range="0 0.044" armature="0.1" frictionloss="0.1"/>
@@ -168,7 +168,7 @@
                     <geom class="collision" type="box" size="0.0155 0.025 0.025" pos="0.0513206 0 0.0569399" quat="0.984808 0 0.173648 0"/>
                     <geom class="visual" type="box" size="0.0115 0.021 0.021" pos="0.0513206 0 0.0569399" quat="0.984808 0 0.173648 0"/>
                     <site name="follower_right_camera_color_frame" pos="0.05864 0.009 0.05427" quat="0.9848078 0 0.1736482 0" size="0.005"/>
-                    <camera name="follower_right_cam" pos="0.05864 0.009 0.05427" quat="0.5793 0.4056 -0.4056 -0.5793" mode="fixed" fovy="87"/>
+                    <camera name="cam_right_wrist" pos="0.05864 0.009 0.05427" quat="0.5793 0.4056 -0.4056 -0.5793" mode="fixed" fovy="87"/>
                     <body name="follower_right_carriage_right" pos="0.0865 -0.023 0">
                       <inertial pos="0.00169015 0.00592793 0.00201817" quat="-0.370973 0.740886 -0.0847721 0.553427" mass="0.081271" diaginertia="4.29565e-05 3.87081e-05 2.21528e-05"/>
                       <joint name="follower_right_right_carriage_joint" pos="0 0 0" axis="0 -1 0" type="slide" range="0 0.044" armature="0.1" frictionloss="0.1"/>

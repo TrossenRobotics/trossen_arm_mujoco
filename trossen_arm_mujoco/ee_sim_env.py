@@ -59,7 +59,7 @@ class TrossenAIStationaryEETask(base.Task):
         super().__init__(random=random)
         self.cam_list = cam_list
         if self.cam_list == []:
-            self.cam_list = ["cam_high", "cam_low", "follower_left_cam", "follower_right_cam"]
+            self.cam_list = ["cam_high", "cam_low", "cam_left_wrist", "cam_right_wrist"]
 
     def before_step(self, action: np.ndarray, physics: Physics) -> None:
         """
@@ -267,7 +267,7 @@ class TransferCubeEETask(TrossenAIStationaryEETask):
 
 def test_ee_sim_env():
     onscreen_render = True
-    cam_list = ["cam_high", "cam_low", "follower_left_cam", "follower_right_cam"]
+    cam_list = ["cam_high", "cam_low", "cam_left_wrist", "cam_right_wrist"]
     env = make_sim_env(
         TransferCubeEETask,
         task_name="sim_transfer_cube",
