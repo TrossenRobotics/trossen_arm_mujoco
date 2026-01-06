@@ -18,3 +18,7 @@ This package contains robot descriptions (MJCF) of the Mobile AI bimanual setup 
 5. Added equality constraints for gripper mimic joints (both arms).
 6. Added PD gains and force limits for arm actuators, and velocity-controlled wheel actuators.
 7. Added keyframe for home position initialization.
+
+## TODO
+
+- Add texture files for mobile_base_link visual mesh.
