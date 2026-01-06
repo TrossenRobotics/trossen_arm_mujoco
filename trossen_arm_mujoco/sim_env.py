@@ -65,29 +65,35 @@ class TrossenAIStationaryTask(base.Task):
         """
         Processes the action before passing it to the simulation.
 
-        :param action: The action array containing arm and gripper controls.
+        Maps 16-value qpos action to 14-value actuator control.
+        Each gripper has 2 joints in qpos but only 1 actuator (coupled via equality constraint).
+
+        :param action: The action array (16 values) matching qpos layout.
         :param physics: The MuJoCo physics simulation instance.
         """
+        # Input action layout (16 values, matches qpos):
+        #   [0:6]   = left arm joints (6)
+        #   [6:8]   = left gripper joints (2, coupled)
+        #   [8:14]  = right arm joints (6)
+        #   [14:16] = right gripper joints (2, coupled)
+        #
+        # Output ctrl layout (14 values, matches actuators):
+        #   [0:6]  = left arm actuators (6)
+        #   [6]    = left gripper actuator (1)
+        #   [7:13] = right arm actuators (6)
+        #   [13]   = right gripper actuator (1)
+
         left_arm_action = action[:6]
-        right_arm_action = action[8 : 8 + 6]
-        normalized_left_gripper_action = action[6]
-        normalized_right_gripper_action = action[8 + 6]
+        right_arm_action = action[8:14]
+        left_gripper_action = action[6]   # First gripper joint value
+        right_gripper_action = action[14]  # First gripper joint value
 
-        # Assign the processed gripper actions
-        left_gripper_action = normalized_left_gripper_action
-        right_gripper_action = normalized_right_gripper_action
-
-        # Ensure both gripper fingers act oppositely
-        full_left_gripper_action = [left_gripper_action, left_gripper_action]
-        full_right_gripper_action = [right_gripper_action, right_gripper_action]
-
-        # Concatenate the final action array
         env_action = np.concatenate(
             [
                 left_arm_action,
-                full_left_gripper_action,
+                [left_gripper_action],
                 right_arm_action,
-                full_right_gripper_action,
+                [right_gripper_action],
             ]
         )
         super().before_step(env_action, physics)
@@ -252,7 +258,7 @@ def test_sim_teleop():
     """
     # setup the environment
     cam_list = ["cam_high", "cam_low", "cam_left_wrist", "cam_right_wrist"]
-    env = make_sim_env(TransferCubeTask, "trossen_ai_scene_joint.xml")
+    env = make_sim_env(TransferCubeTask, "stationary_ai/scene_joint.xml")
     ts = env.reset()
     episode = [ts]
     # setup plotting

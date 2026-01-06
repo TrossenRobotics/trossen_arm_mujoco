@@ -152,7 +152,8 @@ class PickAndTransferPolicy(BasePolicy):
             axis=[0.0, 1.0, 0.0], degrees=-45
         )
 
-        meet_left_quat = Quaternion(axis=[1.0, 0.0, 0.0], degrees=90)
+        # Rotate left gripper to face right arm (-90° Z) and tilt down (90° X)
+        meet_left_quat = Quaternion(axis=[0.0, 0.0, 1.0], degrees=-90) * Quaternion(axis=[1.0, 0.0, 0.0], degrees=90)
 
         meet_xyz = np.array([0.0, 0.0, 0.3])
 
@@ -165,13 +166,13 @@ class PickAndTransferPolicy(BasePolicy):
             },  # sleep
             {
                 "t": 100,
-                "xyz": meet_xyz + np.array([-0.2, 0, 0]),
+                "xyz": meet_xyz + np.array([0, 0.2, 0]),
                 "quat": meet_left_quat.elements,
                 "gripper": 0.044,
             },  # approach meet position
             {
                 "t": 360,
-                "xyz": meet_xyz + np.array([-0.2, 0, 0]),
+                "xyz": meet_xyz + np.array([0, 0.2, 0]),
                 "quat": meet_left_quat.elements,
                 "gripper": 0.044,
             },  # stay
@@ -195,13 +196,13 @@ class PickAndTransferPolicy(BasePolicy):
             },  # Stay for a while
             {
                 "t": 550,
-                "xyz": meet_xyz + np.array([-0.2, 0, 0]),
+                "xyz": meet_xyz + np.array([0, 0.2, 0]),
                 "quat": meet_left_quat.elements,
                 "gripper": 0.012,
             },  # move left
             {
                 "t": 600,
-                "xyz": meet_xyz + np.array([-0.2, 0, 0]),
+                "xyz": meet_xyz + np.array([0, 0.2, 0]),
                 "quat": np.array([1, 0, 0, 0]),
                 "gripper": 0.012,
             },  # stay
@@ -264,13 +265,13 @@ class PickAndTransferPolicy(BasePolicy):
             },  # Stay there for a while
             {
                 "t": 340,
-                "xyz": meet_xyz + np.array([0.1, 0, 0]),
+                "xyz": meet_xyz + np.array([0, -0.1, 0]),
                 "quat": gripper_pick_quat.elements,
                 "gripper": 0.012,
             },  # approach meet position
             {
                 "t": 360,
-                "xyz": meet_xyz + np.array([0.05, 0, 0]),
+                "xyz": meet_xyz + np.array([0, -0.05, 0]),
                 "quat": gripper_pick_quat.elements,
                 "gripper": 0.012,
             },  # approach meet position
@@ -294,13 +295,13 @@ class PickAndTransferPolicy(BasePolicy):
             },  # open gripper
             {
                 "t": 550,
-                "xyz": meet_xyz + np.array([0.2, 0, 0]),
+                "xyz": meet_xyz + np.array([0, -0.2, 0]),
                 "quat": gripper_pick_quat.elements,
                 "gripper": 0.044,
             },  # move to right
             {
                 "t": 600,
-                "xyz": meet_xyz + np.array([0.2, 0, 0]),
+                "xyz": meet_xyz + np.array([0, -0.2, 0]),
                 "quat": gripper_pick_quat.elements,
                 "gripper": 0.044,
             },  # stay

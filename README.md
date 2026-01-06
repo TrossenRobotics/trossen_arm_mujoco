@@ -52,16 +52,18 @@ This folder contains all required MuJoCo XML configuration files, URDF files, an
 
 ### Key Files:
 
-- `trossen_ai.xml` → Base model definition of the Trossen AI robot.
-- `trossen_ai_scene.xml` → Uses mocap bodies to control the simulated arms.
-- `trossen_ai_scene_joint.xml` → Uses joint controllers similar to real hardware to control the simulated arms.
-- `wxai_follower.urdf` & `wxai_follower.xml` → URDF and XML descriptions of the follower arms.
+- `stationary_ai/` → Contains the Stationary AI robot configuration files:
+  - `scene_mocap.xml` → Uses mocap bodies to control the simulated arms.
+  - `scene_joint.xml` → Uses joint controllers similar to real hardware to control the simulated arms.
+  - `stationary_ai.xml` → Base model definition of the Stationary AI robot.
+  - `stationary_ai_mocap.xml` → Mocap-enabled model with weld constraints.
+- `wxai/` → Contains the WXAI robot configuration files.
 - `meshes/` → Contains STL and OBJ files for the robot components, including arms, cameras, and environmental objects.
 
 ### Motion Capture vs Joint-Controlled Environments:
 
-- Motion Capture (`trossen_ai_scene.xml`): Uses predefined mocap bodies that move the robot arms based on scripted end effector movements.
-- Joint Control (`trossen_ai_scene_joint.xml`): Uses position controllers for each joint, similar to a real-world robot setup.
+- Motion Capture (`stationary_ai/scene_mocap.xml`): Uses predefined mocap bodies that move the robot arms based on scripted end effector movements.
+- Joint Control (`stationary_ai/scene_joint.xml`): Uses position controllers for each joint, similar to a real-world robot setup.
 
 ## 2. Modules ([`trossen_arm_mujoco`](./trossen_arm_mujoco/))
 
@@ -70,12 +72,12 @@ This folder contains all Python modules necessary for running simulations, execu
 ### 2.1 Simulations
 
 - `ee_sim_env.py`
-  - Loads `trossen_ai_scene.xml` (motion capture-based control).
+  - Loads `stationary_ai/scene_mocap.xml` (motion capture-based control).
   - The arms move by following the positions commanded to the mocap bodies.
-  - Used for generating scripted policies that control the robot’s arms in predefined ways.
+  - Used for generating scripted policies that control the robot's arms in predefined ways.
 
 - `sim_env.py`
-  - Loads `trossen_ai_scene_joint.xml` (position-controlled joints).
+  - Loads `stationary_ai/scene_joint.xml` (position-controlled joints).
   - Uses joint controllers instead of mocap bodies.
   - Replays joint trajectories from `ee_sim_env.py`, enabling clean simulation visuals without mocap bodies visible in the rendered output.
 

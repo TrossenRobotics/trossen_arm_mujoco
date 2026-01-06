@@ -1,0 +1,34 @@
+<mujoco model="stationary_ai_scene_joint">
+  <compiler meshdir="../meshes" texturedir="../"/>
+
+  <include file="stationary_ai.xml"/>
+
+  <statistic center="0 0 0.2" extent="0.6" meansize="0.05"/>
+
+  <visual>
+    <headlight diffuse="0.6 0.65 0.75" ambient="0.5 0.5 0.6" specular="0.1 0.1 0.1"/>
+    <rgba haze="0.15 0.25 0.35 1"/>
+    <global azimuth="90" elevation="-20"/>
+    <quality shadowsize="8192"/>
+  </visual>
+
+  <asset>
+    <texture type="skybox" builtin="gradient" rgb1="0.9725 0.9608 0.8706" rgb2="0.5 0.5 0.5" width="512" height="3072"/>
+    <texture type="2d" name="groundplane" builtin="checker" mark="edge" rgb1="0.2 0.3 0.4" rgb2="0.1 0.2 0.3"
+      markrgb="0.8 0.8 0.8" width="300" height="300"/>
+    <material name="groundplane" texture="groundplane" texuniform="true" texrepeat="5 5" reflectance="0.2"/>
+  </asset>
+
+  <worldbody>
+    <light name="top_light_1" pos="0.5 0 1.5" dir="0 0 -1" diffuse="0.7 0.7 0.7" specular="0.3 0.3 0.3" directional="false"/>
+    <light name="top_light_2" pos="-0.5 0 1.5" dir="0 0 -1" diffuse="0.7 0.7 0.7" specular="0.3 0.3 0.3" directional="false"/>
+
+    <body name="box" pos="0.0 0.0 0.0325">
+      <joint name="red_box_joint" type="free" frictionloss="0.01"/>
+      <inertial pos="0 0 0" mass="0.05" diaginertia="0.002 0.002 0.002"/>
+      <geom condim="4" solimp="2 1 0.01" solref="0.01 1" friction="5.0 4 0.01" pos="0 0 0" size="0.0125 0.0125 0.0125" type="box" name="red_box" rgba="1 0 0 1"/>
+    </body>
+
+    <geom name="ground" size="0 0 0.05" type="plane" material="groundplane"/>
+  </worldbody>
+</mujoco>

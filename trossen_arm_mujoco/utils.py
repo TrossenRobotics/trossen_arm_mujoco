@@ -47,9 +47,9 @@ def sample_box_pose() -> np.ndarray:
     :return: A 7D array containing the sampled position ``[x, y, z, w, x, y, z]`` representing the
         cube's position and orientation as a quaternion.
     """
-    x_range = [-0.1, 0.2]
-    y_range = [-0.15, 0.15]
-    z_range = [0.0125, 0.0125]
+    x_range = [-0.15, 0.15]
+    y_range = [-0.2, 0.1]
+    z_range = [0.045, 0.045]
 
     ranges = np.vstack([x_range, y_range, z_range])
     cube_position = np.random.uniform(ranges[:, 0], ranges[:, 1])
@@ -81,7 +81,7 @@ def get_observation_base(
 
 def make_sim_env(
     task_class: base.Task,
-    xml_file: str = "trossen_ai_scene.xml",
+    xml_file: str = "stationary_ai/scene_mocap.xml",
     task_name: str = "sim_transfer_cube",
     onscreen_render: bool = False,
     cam_list: list[str] = [],
@@ -90,7 +90,7 @@ def make_sim_env(
     Create a simulated environment for bimanual robotic manipulation.
 
     :param task_class: The task class for defining simulation behavior.
-    :param xml_file: Path to the robot XML file, defaults to ``'trossen_ai_scene.xml'``.
+    :param xml_file: Path to the robot XML file (e.g., ``'stationary_ai/scene_mocap.xml'``).
     :param task_name: Name of the task, defaults to ``'sim_transfer_cube'``.
     :param onscreen_render: Whether to render the simulation on-screen, defaults to ``False``.
     :param cam_list: List of camera names to be used, defaults to ``[]``.
