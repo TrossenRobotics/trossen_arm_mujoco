@@ -94,7 +94,7 @@ def main(args):
         # setup the environment
         env = make_sim_env(
             TransferCubeEETask,
-            "trossen_ai_scene.xml",
+            "stationary_ai/scene_mocap.xml",
             args.task_name,
             onscreen_render=onscreen_render,
             cam_list=cam_list,
@@ -133,7 +133,7 @@ def main(args):
         print("Replaying joint commands")
         env = make_sim_env(
             TransferCubeTask,
-            "trossen_ai_scene_joint.xml",
+            "stationary_ai/scene_joint.xml",
             cam_list=cam_list,
         )
         BOX_POSE[0] = (
