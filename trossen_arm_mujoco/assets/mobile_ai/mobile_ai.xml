@@ -265,8 +265,8 @@
   </contact>
 
   <actuator>
-    <velocity name="left_wheel" joint="left_wheel" kv="1000" ctrlrange="-720 720" forcerange="-4 4"/>
-    <velocity name="right_wheel" joint="right_wheel" kv="1000" ctrlrange="-720 720" forcerange="-4 4"/>
+    <velocity name="left_wheel" joint="left_wheel" kv="1000" ctrlrange="-12.566370614359172 12.566370614359172" forcerange="-4 4"/>
+    <velocity name="right_wheel" joint="right_wheel" kv="1000" ctrlrange="-12.566370614359172 12.566370614359172" forcerange="-4 4"/>
 
     <position name="follower_left/joint_0" joint="follower_left/joint_0" kp="40" kv="2.5" ctrlrange="-3.05433 3.05433" forcerange="-27 27"/>
     <position name="follower_left/joint_1" joint="follower_left/joint_1" kp="40" kv="2.5" ctrlrange="0 3.14159" forcerange="-27 27"/>
