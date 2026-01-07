@@ -2,7 +2,7 @@
 
 ## Overview
 
-This package contains robot descriptions (MJCF) of the Stationary AI bimanual setup by [Trossen Robotics](https://www.trossenrobotics.com/). It is derived from the [URDF description](https://github.com/TrossenRobotics/trossen_arm_description) and also uses the wxai_base.xml arm model.
+This package contains robot descriptions (MJCF) of the [Trossen Robotics Stationary AI](https://www.trossenrobotics.com/stationary-ai) bimanual setup. It is derived from the [URDF description](https://github.com/TrossenRobotics/trossen_arm_description) and also uses the wxai_base.xml arm model.
 
 - **stationary_ai.xml** - Bimanual WXAI arm setup
 
@@ -16,6 +16,7 @@ This package contains robot descriptions (MJCF) of the Stationary AI bimanual se
    - `cam_low` - External low-angle camera mounted on frame
    - `cam_left_wrist` - Wrist-mounted camera on left arm
    - `cam_right_wrist` - Wrist-mounted camera on right arm
+   - **Note:** MuJoCo cameras are oriented along the +Z axis, while URDF camera frames point along the +X axis. Cameras are rotated +90° around Y, then +90° around Z (in camera frame) to align with URDF.
 5. Added equality constraints for gripper mimic joints (both arms).
 6. Added position-controlled actuators with tuned PD gains (kp/kv) and force limits for all joints, plus armature and frictionloss for realistic motor dynamics.
 7. Added keyframe for home position initialization.
