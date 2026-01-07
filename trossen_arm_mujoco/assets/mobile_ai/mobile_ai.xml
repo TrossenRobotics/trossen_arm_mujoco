@@ -62,7 +62,7 @@
         <geom name="left_wheel_collision" class="collision" type="sphere" size="0.085"/>
       </body>
       <body name="right_wheel_link" pos="0 -0.192 0.0851">
-        <inertial pos="0 0 0" quat="0.707107 0 0 0.707107" mass="0.981755" diaginertia="0.00291162 0.00165793 0.00165793"/>
+        <inertial pos="0 0 0" quat="0.707107 0 0 0.707107" mass="3" diaginertia="0.00291162 0.00165793 0.00165793"/>
         <joint name="right_wheel" pos="0 0 0" axis="0 1 0" actuatorfrcrange="-4 4" frictionloss="0.1" armature="0.005"/>
         <geom class="visual" material="trossen_wheel" mesh="wheel"/>
         <geom name="right_wheel_collision" class="collision" type="sphere" size="0.085"/>
