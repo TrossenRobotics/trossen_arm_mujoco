@@ -16,7 +16,7 @@ This package contains robot descriptions (MJCF) of the [Trossen Robotics Station
    - `cam_low` - External low-angle camera mounted on frame
    - `cam_left_wrist` - Wrist-mounted camera on left arm
    - `cam_right_wrist` - Wrist-mounted camera on right arm
-   - **Note:** MuJoCo cameras are oriented along the +Z axis, while URDF camera frames point along the +X axis. Cameras are rotated +90° around Y, then +90° around Z (in camera frame) to align with URDF.
+   - **Note:** MuJoCo cameras are oriented along the +Z axis, while URDF camera frames point along the +X axis. Cameras are rotated +90° around Y, then +90° around Z (in camera frame) to align with URDF. Camera fovy values are adjusted as they are not specified in URDF.
 5. Added equality constraints for gripper mimic joints (both arms).
-6. Added position-controlled actuators with tuned PD gains (kp/kv) and force limits for all joints, plus armature and frictionloss for realistic motor dynamics.
+6. Added position-controlled actuators with tuned PD gains (kp/kv) and force limits for all joints, plus armature and frictionloss for realistic motor dynamics. **Note:** Actuator parameters (PD gains, armature, frictionloss) are tuned for simulation. MuJoCo's actuator model differs from real hardware due to factors like gravity compensation, solver timestep rates, and control loop differences, making manufacturer specifications not directly applicable.
 7. Added keyframe for home position initialization.
