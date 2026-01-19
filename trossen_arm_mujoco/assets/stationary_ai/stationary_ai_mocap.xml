@@ -41,7 +41,7 @@
     <body name="tabletop_link" pos="0 0 0">
       <inertial pos="-0.0053748816 -0.00042686842 0.014104691" quat="0.135549 0.672695 0.710793 0.154534" mass="15.2" diaginertia="0.301156 0.287827 0.165329"/>
       <geom class="visual" mesh="tabletop_link" material="maple"/>
-      <geom class="collision" type="box" size="0.38 0.61 0.01" pos="0 0 0.01"/>
+      <geom name="tabletop" class="collision" type="box" size="0.38 0.61 0.01" pos="0 0 0.01"/>
       <geom class="visual" pos="0 0 0.02" mesh="frame_link"/>
       <geom class="collision" type="box" size="0.3685 0.0375 0.01" pos="0 0.457 0.03"/>
       <geom class="collision" type="box" size="0.3685 0.0375 0.01" pos="0 -0.457 0.03"/>
@@ -108,18 +108,18 @@
                       <joint name="follower_left_right_carriage_joint" pos="0 0 0" axis="0 -1 0" type="slide" range="0 0.044" armature="0.1" frictionloss="0.1" damping="10884"/>
                       <geom class="visual" mesh="carriage_right"/>
                       <geom class="visual" mesh="gripper_right"/>
-                      <geom class="collision" type="box" size="0.0275 0.005 0.01" pos="0.0286 0.01436 0.0037" quat="0.99257 -0.00451 0.10246 0.06547"/>
-                      <geom class="collision" type="box" size="0.0275 0.005 0.01" pos="0.0285 0.01429 -0.00973" quat="0.98344 0.0133 -0.16893 0.06427"/>
-                      <geom class="collision" type="box" size="0.00732 0.00214 0.00767" pos="0.0622 0.02083 -0.00105" quat="1 0 0 0"/>
+                      <geom name="follower_left_gripper_right_pad_upper" class="collision" type="box" size="0.0275 0.005 0.01" pos="0.0286 0.01436 0.0037" quat="0.99257 -0.00451 0.10246 0.06547"/>
+                      <geom name="follower_left_gripper_right_pad_lower" class="collision" type="box" size="0.0275 0.005 0.01" pos="0.0285 0.01429 -0.00973" quat="0.98344 0.0133 -0.16893 0.06427"/>
+                      <geom name="follower_left_gripper_right_tip" class="collision" type="box" size="0.00732 0.00214 0.00767" pos="0.0622 0.02083 -0.00105" quat="1 0 0 0"/>
                     </body>
                     <body name="follower_left_carriage_left" pos="0.0865 0.023 0" gravcomp="1">
                       <inertial pos="0.00169017 -0.00592796 -0.00365701" quat="-0.0382691 0.628022 -0.255101 0.734198" mass="0.081271" diaginertia="4.21112e-05 3.61943e-05 2.40003e-05"/>
                       <joint name="follower_left_left_carriage_joint" pos="0 0 0" axis="0 1 0" type="slide" range="0 0.044" armature="0.1" frictionloss="0.1" damping="10884"/>
                       <geom class="visual" mesh="carriage_left"/>
                       <geom class="visual" mesh="gripper_left"/>
-                      <geom class="collision" type="box" size="0.0275 0.005 0.01" pos="0.0286 -0.01436 0.0037" quat="0.99257 0.00451 0.10246 -0.06547"/>
-                      <geom class="collision" type="box" size="0.0275 0.005 0.01" pos="0.0285 -0.01429 -0.00973" quat="0.98344 -0.0133 -0.16893 -0.06427"/>
-                      <geom class="collision" type="box" size="0.00732 0.00214 0.00767" pos="0.0622 -0.02083 -0.00105" quat="1 0 0 0"/>
+                      <geom name="follower_left_gripper_left_pad_upper" class="collision" type="box" size="0.0275 0.005 0.01" pos="0.0286 -0.01436 0.0037" quat="0.99257 0.00451 0.10246 -0.06547"/>
+                      <geom name="follower_left_gripper_left_pad_lower" class="collision" type="box" size="0.0275 0.005 0.01" pos="0.0285 -0.01429 -0.00973" quat="0.98344 -0.0133 -0.16893 -0.06427"/>
+                      <geom name="follower_left_gripper_left_tip" class="collision" type="box" size="0.00732 0.00214 0.00767" pos="0.0622 -0.02083 -0.00105" quat="1 0 0 0"/>
                     </body>
                   </body>
                 </body>
@@ -174,18 +174,18 @@
                       <joint name="follower_right_right_carriage_joint" pos="0 0 0" axis="0 -1 0" type="slide" range="0 0.044" armature="0.1" frictionloss="0.1" damping="10884"/>
                       <geom class="visual" mesh="carriage_right"/>
                       <geom class="visual" mesh="gripper_right"/>
-                      <geom class="collision" type="box" size="0.0275 0.005 0.01" pos="0.0286 0.01436 0.0037" quat="0.99257 -0.00451 0.10246 0.06547"/>
-                      <geom class="collision" type="box" size="0.0275 0.005 0.01" pos="0.0285 0.01429 -0.00973" quat="0.98344 0.0133 -0.16893 0.06427"/>
-                      <geom class="collision" type="box" size="0.00732 0.00214 0.00767" pos="0.0622 0.02083 -0.00105" quat="1 0 0 0"/>
+                      <geom name="follower_right_gripper_right_pad_upper" class="collision" type="box" size="0.0275 0.005 0.01" pos="0.0286 0.01436 0.0037" quat="0.99257 -0.00451 0.10246 0.06547"/>
+                      <geom name="follower_right_gripper_right_pad_lower" class="collision" type="box" size="0.0275 0.005 0.01" pos="0.0285 0.01429 -0.00973" quat="0.98344 0.0133 -0.16893 0.06427"/>
+                      <geom name="follower_right_gripper_right_tip" class="collision" type="box" size="0.00732 0.00214 0.00767" pos="0.0622 0.02083 -0.00105" quat="1 0 0 0"/>
                     </body>
                     <body name="follower_right_carriage_left" pos="0.0865 0.023 0" gravcomp="1">
                       <inertial pos="0.00169017 -0.00592796 -0.00365701" quat="-0.0382691 0.628022 -0.255101 0.734198" mass="0.081271" diaginertia="4.21112e-05 3.61943e-05 2.40003e-05"/>
                       <joint name="follower_right_left_carriage_joint" pos="0 0 0" axis="0 1 0" type="slide" range="0 0.044" armature="0.1" frictionloss="0.1" damping="10884"/>
                       <geom class="visual" mesh="carriage_left"/>
                       <geom class="visual" mesh="gripper_left"/>
-                      <geom class="collision" type="box" size="0.0275 0.005 0.01" pos="0.0286 -0.01436 0.0037" quat="0.99257 0.00451 0.10246 -0.06547"/>
-                      <geom class="collision" type="box" size="0.0275 0.005 0.01" pos="0.0285 -0.01429 -0.00973" quat="0.98344 -0.0133 -0.16893 -0.06427"/>
-                      <geom class="collision" type="box" size="0.00732 0.00214 0.00767" pos="0.0622 -0.02083 -0.00105" quat="1 0 0 0"/>
+                      <geom name="follower_right_gripper_left_pad_upper" class="collision" type="box" size="0.0275 0.005 0.01" pos="0.0286 -0.01436 0.0037" quat="0.99257 0.00451 0.10246 -0.06547"/>
+                      <geom name="follower_right_gripper_left_pad_lower" class="collision" type="box" size="0.0275 0.005 0.01" pos="0.0285 -0.01429 -0.00973" quat="0.98344 -0.0133 -0.16893 -0.06427"/>
+                      <geom name="follower_right_gripper_left_tip" class="collision" type="box" size="0.00732 0.00214 0.00767" pos="0.0622 -0.02083 -0.00105" quat="1 0 0 0"/>
                     </body>
                   </body>
                 </body>
