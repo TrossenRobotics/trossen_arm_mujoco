@@ -105,7 +105,7 @@
                     <camera name="cam_left_wrist" pos="0.05864 0.009 0.05427" quat="0.5793 0.4056 -0.4056 -0.5793" mode="fixed" fovy="87"/>
                     <body name="follower_left_carriage_right" pos="0.0865 -0.023 0">
                       <inertial pos="0.00169015 0.00592793 0.00201817" quat="-0.370973 0.740886 -0.0847721 0.553427" mass="0.081271" diaginertia="4.29565e-05 3.87081e-05 2.21528e-05"/>
-                      <joint name="follower_left_right_carriage_joint" pos="0 0 0" axis="0 -1 0" type="slide" range="0 0.044" armature="0.1" frictionloss="0.1"/>
+                      <joint name="follower_left_right_carriage_joint" pos="0 0 0" axis="0 -1 0" type="slide" range="0 0.044" armature="0.1" frictionloss="0.1" />
                       <geom class="visual" mesh="carriage_right"/>
                       <geom class="visual" mesh="gripper_right"/>
                       <geom name="follower_left_gripper_right_pad_upper" class="collision" type="box" size="0.0275 0.005 0.01" pos="0.0286 0.01436 0.0037" quat="0.99257 -0.00451 0.10246 0.06547"/>
@@ -114,7 +114,7 @@
                     </body>
                     <body name="follower_left_carriage_left" pos="0.0865 0.023 0">
                       <inertial pos="0.00169017 -0.00592796 -0.00365701" quat="-0.0382691 0.628022 -0.255101 0.734198" mass="0.081271" diaginertia="4.21112e-05 3.61943e-05 2.40003e-05"/>
-                      <joint name="follower_left_left_carriage_joint" pos="0 0 0" axis="0 1 0" type="slide" range="0 0.044" armature="0.1" frictionloss="0.1"/>
+                      <joint name="follower_left_left_carriage_joint" pos="0 0 0" axis="0 1 0" type="slide" range="0 0.044" armature="0.1" frictionloss="0.1" />
                       <geom class="visual" mesh="carriage_left"/>
                       <geom class="visual" mesh="gripper_left"/>
                       <geom name="follower_left_gripper_left_pad_upper" class="collision" type="box" size="0.0275 0.005 0.01" pos="0.0286 -0.01436 0.0037" quat="0.99257 0.00451 0.10246 -0.06547"/>
@@ -171,7 +171,7 @@
                     <camera name="cam_right_wrist" pos="0.05864 0.009 0.05427" quat="0.5793 0.4056 -0.4056 -0.5793" mode="fixed" fovy="87"/>
                     <body name="follower_right_carriage_right" pos="0.0865 -0.023 0">
                       <inertial pos="0.00169015 0.00592793 0.00201817" quat="-0.370973 0.740886 -0.0847721 0.553427" mass="0.081271" diaginertia="4.29565e-05 3.87081e-05 2.21528e-05"/>
-                      <joint name="follower_right_right_carriage_joint" pos="0 0 0" axis="0 -1 0" type="slide" range="0 0.044" armature="0.1" frictionloss="0.1"/>
+                      <joint name="follower_right_right_carriage_joint" pos="0 0 0" axis="0 -1 0" type="slide" range="0 0.044" armature="0.1" frictionloss="0.1" />
                       <geom class="visual" mesh="carriage_right"/>
                       <geom class="visual" mesh="gripper_right"/>
                       <geom name="follower_right_gripper_right_pad_upper" class="collision" type="box" size="0.0275 0.005 0.01" pos="0.0286 0.01436 0.0037" quat="0.99257 -0.00451 0.10246 0.06547"/>
@@ -180,7 +180,7 @@
                     </body>
                     <body name="follower_right_carriage_left" pos="0.0865 0.023 0">
                       <inertial pos="0.00169017 -0.00592796 -0.00365701" quat="-0.0382691 0.628022 -0.255101 0.734198" mass="0.081271" diaginertia="4.21112e-05 3.61943e-05 2.40003e-05"/>
-                      <joint name="follower_right_left_carriage_joint" pos="0 0 0" axis="0 1 0" type="slide" range="0 0.044" armature="0.1" frictionloss="0.1"/>
+                      <joint name="follower_right_left_carriage_joint" pos="0 0 0" axis="0 1 0" type="slide" range="0 0.044" armature="0.1" frictionloss="0.1" />
                       <geom class="visual" mesh="carriage_left"/>
                       <geom class="visual" mesh="gripper_left"/>
                       <geom name="follower_right_gripper_left_pad_upper" class="collision" type="box" size="0.0275 0.005 0.01" pos="0.0286 -0.01436 0.0037" quat="0.99257 0.00451 0.10246 -0.06547"/>
@@ -203,21 +203,21 @@
   </equality>
 
   <actuator>
-    <position name="follower_left_joint_0" joint="follower_left_joint_0" kp="40" kv="2.5" ctrlrange="-3.05433 3.05433" forcerange="-27 27"/>
-    <position name="follower_left_joint_1" joint="follower_left_joint_1" kp="40" kv="2.5" ctrlrange="0 3.14159" forcerange="-27 27"/>
-    <position name="follower_left_joint_2" joint="follower_left_joint_2" kp="40" kv="2.5" ctrlrange="0 2.35619" forcerange="-27 27"/>
-    <position name="follower_left_joint_3" joint="follower_left_joint_3" kp="20" kv="0.5" ctrlrange="-1.5708 1.5708" forcerange="-7 7"/>
-    <position name="follower_left_joint_4" joint="follower_left_joint_4" kp="10" kv="1" ctrlrange="-1.5708 1.5708" forcerange="-7 7"/>
-    <position name="follower_left_joint_5" joint="follower_left_joint_5" kp="10" kv="1" ctrlrange="-3.14159 3.14159" forcerange="-7 7"/>
-    <position name="follower_left_gripper" joint="follower_left_left_carriage_joint" kp="100" kv="10" ctrlrange="0 0.044" forcerange="-400 400"/>
+    <position name="follower_left_joint_0" joint="follower_left_joint_0" kp="200" kv="10" ctrlrange="-3.05433 3.05433" forcerange="-50 50"/>
+    <position name="follower_left_joint_1" joint="follower_left_joint_1" kp="200" kv="10" ctrlrange="0 3.14159" forcerange="-50 50"/>
+    <position name="follower_left_joint_2" joint="follower_left_joint_2" kp="200" kv="10" ctrlrange="0 2.35619" forcerange="-50 50"/>
+    <position name="follower_left_joint_3" joint="follower_left_joint_3" kp="100" kv="5" ctrlrange="-1.5708 1.5708" forcerange="-20 20"/>
+    <position name="follower_left_joint_4" joint="follower_left_joint_4" kp="50" kv="5" ctrlrange="-1.5708 1.5708" forcerange="-20 20"/>
+    <position name="follower_left_joint_5" joint="follower_left_joint_5" kp="50" kv="5" ctrlrange="-3.14159 3.14159" forcerange="-20 20"/>
+    <position name="follower_left_gripper" joint="follower_left_left_carriage_joint" kp="1000" kv="50" ctrlrange="0 0.044" forcerange="-400 400"/>
 
-    <position name="follower_right_joint_0" joint="follower_right_joint_0" kp="40" kv="2.5" ctrlrange="-3.05433 3.05433" forcerange="-27 27"/>
-    <position name="follower_right_joint_1" joint="follower_right_joint_1" kp="40" kv="2.5" ctrlrange="0 3.14159" forcerange="-27 27"/>
-    <position name="follower_right_joint_2" joint="follower_right_joint_2" kp="40" kv="2.5" ctrlrange="0 2.35619" forcerange="-27 27"/>
-    <position name="follower_right_joint_3" joint="follower_right_joint_3" kp="20" kv="0.5" ctrlrange="-1.5708 1.5708" forcerange="-7 7"/>
-    <position name="follower_right_joint_4" joint="follower_right_joint_4" kp="10" kv="1" ctrlrange="-1.5708 1.5708" forcerange="-7 7"/>
-    <position name="follower_right_joint_5" joint="follower_right_joint_5" kp="10" kv="1" ctrlrange="-3.14159 3.14159" forcerange="-7 7"/>
-    <position name="follower_right_gripper" joint="follower_right_left_carriage_joint" kp="100" kv="10" ctrlrange="0 0.044" forcerange="-400 400"/>
+    <position name="follower_right_joint_0" joint="follower_right_joint_0" kp="200" kv="10" ctrlrange="-3.05433 3.05433" forcerange="-50 50"/>
+    <position name="follower_right_joint_1" joint="follower_right_joint_1" kp="200" kv="10" ctrlrange="0 3.14159" forcerange="-50 50"/>
+    <position name="follower_right_joint_2" joint="follower_right_joint_2" kp="200" kv="10" ctrlrange="0 2.35619" forcerange="-50 50"/>
+    <position name="follower_right_joint_3" joint="follower_right_joint_3" kp="100" kv="5" ctrlrange="-1.5708 1.5708" forcerange="-20 20"/>
+    <position name="follower_right_joint_4" joint="follower_right_joint_4" kp="50" kv="5" ctrlrange="-1.5708 1.5708" forcerange="-20 20"/>
+    <position name="follower_right_joint_5" joint="follower_right_joint_5" kp="50" kv="5" ctrlrange="-3.14159 3.14159" forcerange="-20 20"/>
+    <position name="follower_right_gripper" joint="follower_right_left_carriage_joint" kp="1000" kv="50" ctrlrange="0 0.044" forcerange="-400 400"/>
   </actuator>
 
   <keyframe>

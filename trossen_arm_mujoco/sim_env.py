@@ -73,20 +73,22 @@ class TrossenAIStationaryTask(base.Task):
         """
         # Input action layout (16 values, matches qpos):
         #   [0:6]   = left arm joints (6)
-        #   [6:8]   = left gripper joints (2, coupled)
+        #   [6]     = left gripper right_carriage_joint (coupled)
+        #   [7]     = left gripper left_carriage_joint (actuated)
         #   [8:14]  = right arm joints (6)
-        #   [14:16] = right gripper joints (2, coupled)
+        #   [14]    = right gripper right_carriage_joint (coupled)
+        #   [15]    = right gripper left_carriage_joint (actuated)
         #
         # Output ctrl layout (14 values, matches actuators):
         #   [0:6]  = left arm actuators (6)
-        #   [6]    = left gripper actuator (1)
+        #   [6]    = left gripper actuator (controls left_carriage_joint)
         #   [7:13] = right arm actuators (6)
-        #   [13]   = right gripper actuator (1)
+        #   [13]   = right gripper actuator (controls left_carriage_joint)
 
         left_arm_action = action[:6]
         right_arm_action = action[8:14]
-        left_gripper_action = action[6]   # First gripper joint value
-        right_gripper_action = action[14]  # First gripper joint value
+        left_gripper_action = action[7]   # left_carriage_joint (actuated joint)
+        right_gripper_action = action[15]  # left_carriage_joint (actuated joint)
 
         env_action = np.concatenate(
             [
@@ -225,15 +227,18 @@ class TransferCubeTask(TrossenAIStationaryTask):
             contact_pair = (name_geom_1, name_geom_2)
             all_contact_pairs.append(contact_pair)
 
-        touch_left_gripper = (
-            "red_box",
-            "left/gripper_follower_left",
-        ) in all_contact_pairs
-        touch_right_gripper = (
-            "red_box",
-            "right/gripper_follower_left",
-        ) in all_contact_pairs
-        touch_table = ("red_box", "table") in all_contact_pairs
+        touch_left_gripper = any(
+            ("red_box" in pair and "follower_left_gripper" in pair[0] + pair[1])
+            for pair in all_contact_pairs
+        )
+        touch_right_gripper = any(
+            ("red_box" in pair and "follower_right_gripper" in pair[0] + pair[1])
+            for pair in all_contact_pairs
+        )
+        touch_table = any(
+            ("red_box" in pair and "tabletop" in pair[0] + pair[1])
+            for pair in all_contact_pairs
+        )
 
         reward = 0
         if touch_right_gripper:
