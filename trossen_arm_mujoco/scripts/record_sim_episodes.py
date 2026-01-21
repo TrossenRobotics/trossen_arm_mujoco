@@ -114,8 +114,8 @@ def main(args):
         plt.close()
 
         episode_return = np.sum([ts.reward for ts in episode[1:]])
-        episode_max_reward = np.max([ts.reward for ts in episode[1:]])
-        if episode_max_reward == env.task.max_reward:
+        episode_final_reward = episode[-1].reward
+        if episode_final_reward == env.task.max_reward:
             print(f"{episode_idx=} Successful, {episode_return=}")
         else:
             print(f"{episode_idx=} Failed")
@@ -153,8 +153,8 @@ def main(args):
             if onscreen_render:
                 plt_imgs = set_observation_images(ts.observation, plt_imgs, cam_list)
         episode_return = np.sum([ts.reward for ts in episode_replay[1:]])
-        episode_max_reward = np.max([ts.reward for ts in episode_replay[1:]])
-        if episode_max_reward == env.task.max_reward:
+        episode_final_reward = episode_replay[-1].reward
+        if episode_final_reward == env.task.max_reward:
             success.append(1)
             print(f"{episode_idx=} Successful, {episode_return=}")
         else:

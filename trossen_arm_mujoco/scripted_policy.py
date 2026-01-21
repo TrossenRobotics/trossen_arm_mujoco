@@ -149,11 +149,10 @@ class PickAndTransferPolicy(BasePolicy):
 
         gripper_pick_quat = Quaternion(init_mocap_pose_right[3:])
         gripper_pick_quat = gripper_pick_quat * Quaternion(
-            axis=[0.0, 1.0, 0.0], degrees=-45
+            axis=[1.0, 0.0, 0.0], degrees=-45
         )
 
-        # Rotate left gripper to face right arm (-90° Z) and tilt down (90° X)
-        meet_left_quat = Quaternion(axis=[0.0, 0.0, 1.0], degrees=-90) * Quaternion(axis=[1.0, 0.0, 0.0], degrees=90)
+        meet_left_quat = Quaternion(axis=[0.0, 1.0, 0.0], degrees=-90)
 
         meet_xyz = np.array([0.0, 0.0, 0.3])
 
@@ -247,19 +246,19 @@ class PickAndTransferPolicy(BasePolicy):
             },  # go down
             {
                 "t": 220,
-                "xyz": box_xyz + np.array([0, 0, 0]),
+                "xyz": box_xyz + np.array([0, 0, -0.0125]),
                 "quat": gripper_pick_quat.elements,
                 "gripper": 0.044,
             },  # go down
             {
                 "t": 240,
-                "xyz": box_xyz + np.array([0, 0, 0]),
+                "xyz": box_xyz + np.array([0, 0, -0.0125]),
                 "quat": gripper_pick_quat.elements,
                 "gripper": 0.012,
             },  # close gripper
             {
                 "t": 280,
-                "xyz": box_xyz + np.array([0, 0, 0]),
+                "xyz": box_xyz + np.array([0, 0, -0.0125]),
                 "quat": gripper_pick_quat.elements,
                 "gripper": 0.012,
             },  # Stay there for a while

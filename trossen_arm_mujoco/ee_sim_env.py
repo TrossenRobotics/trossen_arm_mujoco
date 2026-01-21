@@ -75,15 +75,10 @@ class TrossenAIStationaryEETask(base.Task):
         # set mocap position and quat
         # left
         np.copyto(physics.data.mocap_pos[0], action_left[:3])
+        np.copyto(physics.data.mocap_quat[0], action_left[3:7])
         # right
         np.copyto(physics.data.mocap_pos[1], action_right[:3])
-
-        # TODO: Use action quaternion instead of current link_6 orientation
-        # Currently using link_6 quat to avoid weld offset direction mismatch
-        left_link6_id = physics.model.body('follower_left_link_6').id
-        right_link6_id = physics.model.body('follower_right_link_6').id
-        np.copyto(physics.data.mocap_quat[0], physics.data.xquat[left_link6_id])
-        np.copyto(physics.data.mocap_quat[1], physics.data.xquat[right_link6_id])
+        np.copyto(physics.data.mocap_quat[1], action_right[3:7])
 
         physics.data.qpos[6] = action_left[7]
         physics.data.qpos[7] = action_left[7]
@@ -102,11 +97,11 @@ class TrossenAIStationaryEETask(base.Task):
 
         # reset mocap to align with end effector
         # left arm
-        np.copyto(physics.data.mocap_pos[0], [-0.019982, 0.194742, 0.270914])
-        np.copyto(physics.data.mocap_quat[0], [0.707107, 0, 0, -0.707107])
+        np.copyto(physics.data.mocap_pos[0], [-0.019982, 0.212613, 0.202586])
+        np.copyto(physics.data.mocap_quat[0], [1, 0, 0, 0])
         # right arm
-        np.copyto(physics.data.mocap_pos[1], [-0.019982, -0.194742, 0.270914])
-        np.copyto(physics.data.mocap_quat[1], [0.707107, 0, 0, 0.707107])
+        np.copyto(physics.data.mocap_pos[1], [-0.019982, -0.212613, 0.202586])
+        np.copyto(physics.data.mocap_quat[1], [1, 0, 0, 0])
 
     def initialize_episode(self, physics: Physics):
         """
