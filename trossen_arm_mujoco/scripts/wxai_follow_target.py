@@ -119,12 +119,15 @@ class WXAIFollowTarget:
         # Our target_cube is the only mocap body, so it's at index 0
         self.target_mocap_id = 0
 
+        assert self.data is not None
         # Set target initial position using mocap
         self.data.mocap_pos[self.target_mocap_id] = self.target_initial_position
         self.data.mocap_quat[self.target_mocap_id] = self.target_initial_orientation
 
     def forward(self) -> None:
         """Execute one tracking step by commanding end effector to current target pose."""
+        assert self.data is not None
+        assert self.robot is not None
         # Get current target pose from mocap body
         target_position = self.data.mocap_pos[self.target_mocap_id].copy()
         target_orientation = self.data.mocap_quat[self.target_mocap_id].copy()
@@ -149,13 +152,17 @@ class WXAIFollowTarget:
 
         # Reset robot to default pose
         for i, joint_name in enumerate(ARM_JOINT_NAMES):
-            joint_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_JOINT, joint_name)
+            joint_id = mujoco.mj_name2id(
+                self.model, mujoco.mjtObj.mjOBJ_JOINT, joint_name
+            )
             qpos_addr = self.model.jnt_qposadr[joint_id]
             self.data.qpos[qpos_addr] = DEFAULT_DOF_POSITIONS[i]
 
         # Reset gripper
         for joint_name in GRIPPER_JOINT_NAMES:
-            joint_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_JOINT, joint_name)
+            joint_id = mujoco.mj_name2id(
+                self.model, mujoco.mjtObj.mjOBJ_JOINT, joint_name
+            )
             qpos_addr = self.model.jnt_qposadr[joint_id]
             self.data.qpos[qpos_addr] = DEFAULT_DOF_POSITIONS[6]
 
@@ -202,7 +209,9 @@ def main():
     follow_target.reset()
 
     # Launch viewer and run simulation
-    with mujoco.viewer.launch_passive(follow_target.model, follow_target.data) as viewer:
+    with mujoco.viewer.launch_passive(
+        follow_target.model, follow_target.data
+    ) as viewer:
         while viewer.is_running():
             # Execute tracking step
             follow_target.forward()
@@ -224,5 +233,6 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"\n✗ Error: {e}")
         import traceback
+
         traceback.print_exc()
         sys.exit(1)

@@ -104,10 +104,14 @@ class WXAIPickPlace:
             else DEFAULT_CUBE_ORIENTATION.copy()
         )
         self.target_position = (
-            target_position if target_position is not None else DEFAULT_TARGET_POSITION.copy()
+            target_position
+            if target_position is not None
+            else DEFAULT_TARGET_POSITION.copy()
         )
 
-        self.events_dt = events_dt if events_dt is not None else DEFAULT_EVENTS_DT.copy()
+        self.events_dt = (
+            events_dt if events_dt is not None else DEFAULT_EVENTS_DT.copy()
+        )
 
         self.clearance_height = CLEARANCE_HEIGHT
         self.approach_offset = APPROACH_OFFSET.copy()
@@ -155,6 +159,9 @@ class WXAIPickPlace:
         if self.trajectory is None:
             self.generate_pick_place_trajectory()
 
+        assert self.trajectory is not None
+        assert self.robot is not None
+
         if self.trajectory_index < len(self.trajectory):
             goal_position, goal_orientation, _ = self.trajectory[self.trajectory_index]
 
@@ -169,10 +176,14 @@ class WXAIPickPlace:
             self.waypoint_step_count += 1
 
             # Advance waypoint if reached threshold OR timeout
-            if error < POSITION_THRESHOLD or self.waypoint_step_count >= MAX_STEPS_PER_WAYPOINT:
+            if (
+                error < POSITION_THRESHOLD
+                or self.waypoint_step_count >= MAX_STEPS_PER_WAYPOINT
+            ):
                 self.trajectory_index += 1
                 self.waypoint_step_count = 0  # Reset counter for next waypoint
 
+                assert self.robot is not None
                 # Calculate phase boundaries
                 phase_boundaries = [0]
                 cumulative = 0
@@ -215,7 +226,9 @@ class WXAIPickPlace:
 
         # Reset robot to default pose
         for i, joint_name in enumerate(ARM_JOINT_NAMES):
-            joint_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_JOINT, joint_name)
+            joint_id = mujoco.mj_name2id(
+                self.model, mujoco.mjtObj.mjOBJ_JOINT, joint_name
+            )
             qpos_addr = self.model.jnt_qposadr[joint_id]
             self.data.qpos[qpos_addr] = DEFAULT_DOF_POSITIONS[i]
 
@@ -249,22 +262,22 @@ class WXAIPickPlace:
             if body_id == self.cube_body_id:
                 cube_joint_id = i
                 break
-        
+
         if cube_joint_id is None:
             raise RuntimeError("Could not find joint for cube body")
-        
-        # Get qpos address for the cube's freejoint (7 DOF: 3 pos + 4 quat)
+
+        # Get qpos address for the cube's freejoint (7 degrees_of_freedom: 3 pos + 4 quat)
         qpos_addr = self.model.jnt_qposadr[cube_joint_id]
-        
+
         # Set position (x, y, z)
-        self.data.qpos[qpos_addr:qpos_addr + 3] = reset_position
-        
+        self.data.qpos[qpos_addr : qpos_addr + 3] = reset_position
+
         # Set orientation (quaternion w, x, y, z)
-        self.data.qpos[qpos_addr + 3:qpos_addr + 7] = reset_orientation
+        self.data.qpos[qpos_addr + 3 : qpos_addr + 7] = reset_orientation
 
         # Zero out velocities
         qvel_addr = self.model.jnt_dofadr[cube_joint_id]
-        self.data.qvel[qvel_addr:qvel_addr + 6] = 0.0
+        self.data.qvel[qvel_addr : qvel_addr + 6] = 0.0
 
         # Forward kinematics
         mujoco.mj_forward(self.model, self.data)
@@ -276,15 +289,19 @@ class WXAIPickPlace:
             position: Cube position [x, y, z]
             orientation: Cube orientation quaternion [w, x, y, z]
         """
+        assert self.data is not None
+        assert self.cube_body_id is not None
         # Get cube position
         cube_pos = self.data.xpos[self.cube_body_id].copy()
-        
+
         # Get cube orientation (convert rotation matrix to quaternion)
         cube_xmat = self.data.xmat[self.cube_body_id].reshape(3, 3)
         rotation = Rotation.from_matrix(cube_xmat)
         quat_xyzw = rotation.as_quat()  # scipy format: [x, y, z, w]
-        cube_quat = np.array([quat_xyzw[3], quat_xyzw[0], quat_xyzw[1], quat_xyzw[2]])  # [w, x, y, z]
-        
+        cube_quat = np.array(
+            [quat_xyzw[3], quat_xyzw[0], quat_xyzw[1], quat_xyzw[2]]
+        )  # [w, x, y, z]
+
         return cube_pos, cube_quat
 
     def make_trajectory(
@@ -322,14 +339,18 @@ class WXAIPickPlace:
             n_steps = dt[i]
 
             # Convert quaternions to Rotation objects for SLERP
-            rot_start = Rotation.from_quat([start_ori[1], start_ori[2], start_ori[3], start_ori[0]])  # [x,y,z,w]
-            rot_end = Rotation.from_quat([end_ori[1], end_ori[2], end_ori[3], end_ori[0]])  # [x,y,z,w]
+            rot_start = Rotation.from_quat(
+                [start_ori[1], start_ori[2], start_ori[3], start_ori[0]]
+            )  # [x,y,z,w]
+            rot_end = Rotation.from_quat(
+                [end_ori[1], end_ori[2], end_ori[3], end_ori[0]]
+            )  # [x,y,z,w]
 
             # Linear interpolation for position, SLERP for orientation
             for step in range(n_steps):
                 alpha = step / n_steps if n_steps > 0 else 0.0
                 interpolated_pos = start_pos + alpha * (end_pos - start_pos)
-                
+
                 # SLERP for smooth orientation interpolation
                 if alpha == 0.0:
                     interpolated_ori = start_ori
@@ -339,9 +360,13 @@ class WXAIPickPlace:
                     )
                     # Normalize and convert back to [w,x,y,z]
                     quat_xyzw = rot_interp.as_quat()
-                    interpolated_ori = np.array([quat_xyzw[3], quat_xyzw[0], quat_xyzw[1], quat_xyzw[2]])
-                
-                trajectory.append((interpolated_pos, interpolated_ori, cumulative_step + step))
+                    interpolated_ori = np.array(
+                        [quat_xyzw[3], quat_xyzw[0], quat_xyzw[1], quat_xyzw[2]]
+                    )
+
+                trajectory.append(
+                    (interpolated_pos, interpolated_ori, cumulative_step + step)
+                )
 
             cumulative_step += n_steps
 
@@ -371,8 +396,9 @@ class WXAIPickPlace:
         9. Return to home position
         """
         cube_pos, _ = self.get_cube_pose()
+        assert self.robot is not None
         current_ee_pos, _ = self.robot.get_ee_pose()
-        
+
         key_frames = [
             current_ee_pos,
             cube_pos + np.array([0.0, 0.0, self.clearance_height]),
@@ -428,13 +454,14 @@ def main():
 
     # Launch viewer and run simulation with real-time synchronization
     import time
+
     with mujoco.viewer.launch_passive(pick_place.model, pick_place.data) as viewer:
         # Set simulation timestep for real-time sync
         dt = pick_place.model.opt.timestep  # Should be 1/60 = 0.0166... seconds
-        
+
         while viewer.is_running():
             step_start = time.time()
-            
+
             # Execute pick-and-place trajectory
             if not task_completed:
                 pick_place.forward()
@@ -450,7 +477,7 @@ def main():
 
             # Sync viewer
             viewer.sync()
-            
+
             # Real-time synchronization: sleep to match wall clock time
             elapsed = time.time() - step_start
             if elapsed < dt:
@@ -467,5 +494,6 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"\n✗ Error: {e}")
         import traceback
+
         traceback.print_exc()
         sys.exit(1)

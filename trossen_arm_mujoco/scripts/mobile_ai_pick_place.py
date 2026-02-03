@@ -131,8 +131,14 @@ class MobileAIPickPlace:
             else DEFAULT_TARGET_POSITION.copy()
         )
 
-        self.left_events_dt = left_events_dt if left_events_dt is not None else LEFT_ARM_EVENTS_DT.copy()
-        self.right_events_dt = right_events_dt if right_events_dt is not None else RIGHT_ARM_EVENTS_DT.copy()
+        self.left_events_dt = (
+            left_events_dt if left_events_dt is not None else LEFT_ARM_EVENTS_DT.copy()
+        )
+        self.right_events_dt = (
+            right_events_dt
+            if right_events_dt is not None
+            else RIGHT_ARM_EVENTS_DT.copy()
+        )
 
         self.clearance_height = CLEARANCE_HEIGHT
         self.approach_offset = APPROACH_OFFSET.copy()
@@ -152,7 +158,9 @@ class MobileAIPickPlace:
         self.right_trajectory = None
         self.trajectory_index = 0
         self.waypoint_step_count = 0
-        self.current_phase = "driving"  # "driving", "left_arm_pickup", or "right_arm_pickup"
+        self.current_phase = (
+            "driving"  # "driving", "left_arm_pickup", or "right_arm_pickup"
+        )
         self.drive_step_counter = 0
         self.mobile_base_joint_id = None
 
@@ -194,8 +202,11 @@ class MobileAIPickPlace:
         self.mobile_base_joint_id = mujoco.mj_name2id(
             self.model, mujoco.mjtObj.mjOBJ_JOINT, "mobile_base_freejoint"
         )
+        assert self.model is not None
         if self.mobile_base_joint_id >= 0:
-            self.mobile_base_joint_id = self.model.jnt_qposadr[self.mobile_base_joint_id]
+            self.mobile_base_joint_id = self.model.jnt_qposadr[
+                self.mobile_base_joint_id
+            ]
         else:
             print("Warning: Could not find mobile_base_freejoint")
 
@@ -205,6 +216,7 @@ class MobileAIPickPlace:
         Returns:
             bool: True if task is in progress, False if complete.
         """
+        assert self.data is not None
         if self.is_done():
             return False
 
@@ -214,21 +226,26 @@ class MobileAIPickPlace:
                 # Smooth interpolation
                 alpha = self.drive_step_counter / BASE_MOVEMENT_STEPS
                 current_pos = (
-                    BASE_INITIAL_POSITION[0] + alpha * (BASE_TARGET_POSITION[0] - BASE_INITIAL_POSITION[0]),
-                    BASE_INITIAL_POSITION[1] + alpha * (BASE_TARGET_POSITION[1] - BASE_INITIAL_POSITION[1]),
-                    BASE_INITIAL_POSITION[2] + alpha * (BASE_TARGET_POSITION[2] - BASE_INITIAL_POSITION[2])
+                    BASE_INITIAL_POSITION[0]
+                    + alpha * (BASE_TARGET_POSITION[0] - BASE_INITIAL_POSITION[0]),
+                    BASE_INITIAL_POSITION[1]
+                    + alpha * (BASE_TARGET_POSITION[1] - BASE_INITIAL_POSITION[1]),
+                    BASE_INITIAL_POSITION[2]
+                    + alpha * (BASE_TARGET_POSITION[2] - BASE_INITIAL_POSITION[2]),
                 )
-                
+
                 # Set mobile base position
-                self.data.qpos[self.mobile_base_joint_id:self.mobile_base_joint_id+3] = current_pos
-                
+                self.data.qpos[
+                    self.mobile_base_joint_id : self.mobile_base_joint_id + 3
+                ] = current_pos
+
                 self.drive_step_counter += 1
             else:
                 print("Driving complete!")
                 self.current_phase = "left_arm_pickup"
                 self.trajectory_index = 0
                 self.waypoint_step_count = 0
-            
+
             return True
 
         # Generate trajectories on first call
@@ -236,6 +253,11 @@ class MobileAIPickPlace:
             self.generate_left_arm_trajectory()
         if self.right_trajectory is None:
             self.generate_right_arm_trajectory()
+
+        assert self.left_robot is not None
+        assert self.right_robot is not None
+        assert self.left_trajectory is not None
+        assert self.right_trajectory is not None
 
         # Phase 2: Left arm pickup
         if self.current_phase == "left_arm_pickup":
@@ -249,7 +271,10 @@ class MobileAIPickPlace:
 
                 self.waypoint_step_count += 1
 
-                if error < POSITION_THRESHOLD or self.waypoint_step_count >= MAX_STEPS_PER_WAYPOINT:
+                if (
+                    error < POSITION_THRESHOLD
+                    or self.waypoint_step_count >= MAX_STEPS_PER_WAYPOINT
+                ):
                     self.trajectory_index += 1
                     self.waypoint_step_count = 0
 
@@ -261,9 +286,17 @@ class MobileAIPickPlace:
                         phase_boundaries.append(cumulative)
 
                     # Gripper control
-                    if phase_boundaries[2] <= self.trajectory_index < phase_boundaries[3]:
+                    if (
+                        phase_boundaries[2]
+                        <= self.trajectory_index
+                        < phase_boundaries[3]
+                    ):
                         self.left_robot.close_gripper()
-                    elif phase_boundaries[6] <= self.trajectory_index < phase_boundaries[7]:
+                    elif (
+                        phase_boundaries[6]
+                        <= self.trajectory_index
+                        < phase_boundaries[7]
+                    ):
                         self.left_robot.open_gripper()
 
                 # Check if left arm trajectory is complete
@@ -285,7 +318,10 @@ class MobileAIPickPlace:
 
                 self.waypoint_step_count += 1
 
-                if error < POSITION_THRESHOLD or self.waypoint_step_count >= MAX_STEPS_PER_WAYPOINT:
+                if (
+                    error < POSITION_THRESHOLD
+                    or self.waypoint_step_count >= MAX_STEPS_PER_WAYPOINT
+                ):
                     self.trajectory_index += 1
                     self.waypoint_step_count = 0
 
@@ -297,9 +333,17 @@ class MobileAIPickPlace:
                         phase_boundaries.append(cumulative)
 
                     # Gripper control
-                    if phase_boundaries[2] <= self.trajectory_index < phase_boundaries[3]:
+                    if (
+                        phase_boundaries[2]
+                        <= self.trajectory_index
+                        < phase_boundaries[3]
+                    ):
                         self.right_robot.close_gripper()
-                    elif phase_boundaries[6] <= self.trajectory_index < phase_boundaries[7]:
+                    elif (
+                        phase_boundaries[6]
+                        <= self.trajectory_index
+                        < phase_boundaries[7]
+                    ):
                         self.right_robot.open_gripper()
 
         return True
@@ -328,7 +372,9 @@ class MobileAIPickPlace:
 
         # Reset arm joints
         for joint_name in LEFT_ARM_JOINT_NAMES + RIGHT_ARM_JOINT_NAMES:
-            joint_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_JOINT, joint_name)
+            joint_id = mujoco.mj_name2id(
+                self.model, mujoco.mjtObj.mjOBJ_JOINT, joint_name
+            )
             qpos_addr = self.model.jnt_qposadr[joint_id]
             self.data.qpos[qpos_addr] = 0.0
 
@@ -353,8 +399,12 @@ class MobileAIPickPlace:
         if self.cube_body_id is None:
             raise RuntimeError("Cannot reset cube: cube not initialized.")
 
-        reset_position = position if position is not None else self.cube_initial_position
-        reset_orientation = orientation if orientation is not None else self.cube_initial_orientation
+        reset_position = (
+            position if position is not None else self.cube_initial_position
+        )
+        reset_orientation = (
+            orientation if orientation is not None else self.cube_initial_orientation
+        )
 
         cube_joint_id = None
         for i in range(self.model.njnt):
@@ -366,16 +416,18 @@ class MobileAIPickPlace:
             raise RuntimeError("Could not find joint for cube body")
 
         qpos_addr = self.model.jnt_qposadr[cube_joint_id]
-        self.data.qpos[qpos_addr:qpos_addr + 3] = reset_position
-        self.data.qpos[qpos_addr + 3:qpos_addr + 7] = reset_orientation
+        self.data.qpos[qpos_addr : qpos_addr + 3] = reset_position
+        self.data.qpos[qpos_addr + 3 : qpos_addr + 7] = reset_orientation
 
         qvel_addr = self.model.jnt_dofadr[cube_joint_id]
-        self.data.qvel[qvel_addr:qvel_addr + 6] = 0.0
+        self.data.qvel[qvel_addr : qvel_addr + 6] = 0.0
 
         mujoco.mj_forward(self.model, self.data)
 
     def get_cube_pose(self) -> tuple[np.ndarray, np.ndarray]:
         """Get current cube position and orientation."""
+        assert self.data is not None
+        assert self.cube_body_id is not None
         cube_pos = self.data.xpos[self.cube_body_id].copy()
         cube_xmat = self.data.xmat[self.cube_body_id].reshape(3, 3)
         rotation = Rotation.from_matrix(cube_xmat)
@@ -405,13 +457,17 @@ class MobileAIPickPlace:
             end_ori = np.array(orientations[i + 1], dtype=np.float64)
             n_steps = dt[i]
 
-            rot_start = Rotation.from_quat([start_ori[1], start_ori[2], start_ori[3], start_ori[0]])
-            rot_end = Rotation.from_quat([end_ori[1], end_ori[2], end_ori[3], end_ori[0]])
+            rot_start = Rotation.from_quat(
+                [start_ori[1], start_ori[2], start_ori[3], start_ori[0]]
+            )
+            rot_end = Rotation.from_quat(
+                [end_ori[1], end_ori[2], end_ori[3], end_ori[0]]
+            )
 
             for step in range(n_steps):
                 alpha = step / n_steps if n_steps > 0 else 0.0
                 interpolated_pos = start_pos + alpha * (end_pos - start_pos)
-                
+
                 if alpha == 0.0:
                     interpolated_ori = start_ori
                 else:
@@ -419,9 +475,13 @@ class MobileAIPickPlace:
                         rot_start.as_quat() * (1 - alpha) + rot_end.as_quat() * alpha
                     )
                     quat_xyzw = rot_interp.as_quat()
-                    interpolated_ori = np.array([quat_xyzw[3], quat_xyzw[0], quat_xyzw[1], quat_xyzw[2]])
+                    interpolated_ori = np.array(
+                        [quat_xyzw[3], quat_xyzw[0], quat_xyzw[1], quat_xyzw[2]]
+                    )
 
-                trajectory.append((interpolated_pos, interpolated_ori, cumulative_step + step))
+                trajectory.append(
+                    (interpolated_pos, interpolated_ori, cumulative_step + step)
+                )
 
             cumulative_step += n_steps
 
@@ -452,6 +512,7 @@ class MobileAIPickPlace:
         """
         cube_pos, _ = self.get_cube_pose()
         place_pos = self.intermediate_position
+        assert self.left_robot is not None
         left_ee_pos, _ = self.left_robot.get_ee_pose()
 
         key_frames = [
@@ -469,7 +530,9 @@ class MobileAIPickPlace:
 
         orientations = [self.downward_orientation for _ in key_frames]
 
-        self.left_trajectory = self.make_trajectory(key_frames, orientations, self.left_events_dt)
+        self.left_trajectory = self.make_trajectory(
+            key_frames, orientations, self.left_events_dt
+        )
 
     def generate_right_arm_trajectory(self) -> None:
         """Generate right arm pick-place trajectory.
@@ -478,6 +541,7 @@ class MobileAIPickPlace:
         """
         pick_pos = self.intermediate_position
         place_pos = self.target_position
+        assert self.right_robot is not None
         right_ee_pos, _ = self.right_robot.get_ee_pose()
 
         key_frames = [
@@ -495,7 +559,9 @@ class MobileAIPickPlace:
 
         orientations = [self.downward_orientation for _ in key_frames]
 
-        self.right_trajectory = self.make_trajectory(key_frames, orientations, self.right_events_dt)
+        self.right_trajectory = self.make_trajectory(
+            key_frames, orientations, self.right_events_dt
+        )
 
 
 def main():
@@ -555,5 +621,6 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"\n✗ Error: {e}")
         import traceback
+
         traceback.print_exc()
         sys.exit(1)

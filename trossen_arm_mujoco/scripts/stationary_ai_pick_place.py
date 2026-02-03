@@ -57,7 +57,23 @@ LEFT_ARM_HOME_POSITION = np.array([0.0, 0.3, 0.3])
 RIGHT_ARM_HOME_POSITION = np.array([0.0, -0.3, 0.3])
 
 # Phase timing (steps) - 15 phases for dual-arm handoff
-DEFAULT_EVENTS_DT = [1200, 800, 200, 200, 800, 1200, 800, 200, 200, 400, 800, 800, 800, 200, 1200]
+DEFAULT_EVENTS_DT = [
+    1200,
+    800,
+    200,
+    200,
+    800,
+    1200,
+    800,
+    200,
+    200,
+    400,
+    800,
+    800,
+    800,
+    200,
+    1200,
+]
 
 # Trajectory parameters
 CLEARANCE_HEIGHT = 0.15
@@ -72,7 +88,9 @@ RIGHT_ARM_HANDOFF_ORIENTATION = np.array([0.7071068, 0.0, 0.0, 0.7071068])
 RIGHT_ARM_RECEIVE_ORIENTATION = np.array([0.5, 0.5, 0.5, 0.5])
 
 # Scene configuration
-SCENE_XML_PATH = "trossen_arm_mujoco/assets/stationary_ai/scene_stationary_ai_pick_place.xml"
+SCENE_XML_PATH = (
+    "trossen_arm_mujoco/assets/stationary_ai/scene_stationary_ai_pick_place.xml"
+)
 
 # Robot controller configuration
 LEFT_ARM_JOINT_NAMES = [f"follower_left_joint_{i}" for i in range(6)]
@@ -127,7 +145,9 @@ class StationaryAIPickPlace:
             if handoff_position is not None
             else CENTER_HANDOFF_POSITION.copy()
         )
-        self.events_dt = events_dt if events_dt is not None else DEFAULT_EVENTS_DT.copy()
+        self.events_dt = (
+            events_dt if events_dt is not None else DEFAULT_EVENTS_DT.copy()
+        )
 
         self.clearance_height = CLEARANCE_HEIGHT
         self.approach_offset = APPROACH_OFFSET.copy()
@@ -212,6 +232,11 @@ class StationaryAIPickPlace:
         if self.left_trajectory is None or self.right_trajectory is None:
             self.generate_dual_arm_trajectory()
 
+        assert self.left_trajectory is not None
+        assert self.right_trajectory is not None
+        assert self.left_robot is not None
+        assert self.right_robot is not None
+
         if self.trajectory_index < len(self.left_trajectory):
             # Get target poses for both arms
             left_pos, left_ori, _ = self.left_trajectory[self.trajectory_index]
@@ -233,7 +258,10 @@ class StationaryAIPickPlace:
 
             # Advance waypoint
             max_error = max(left_error, right_error)
-            if max_error < POSITION_THRESHOLD or self.waypoint_step_count >= MAX_STEPS_PER_WAYPOINT:
+            if (
+                max_error < POSITION_THRESHOLD
+                or self.waypoint_step_count >= MAX_STEPS_PER_WAYPOINT
+            ):
                 self.trajectory_index += 1
                 self.waypoint_step_count = 0
 
@@ -255,7 +283,9 @@ class StationaryAIPickPlace:
                 elif phase_boundaries[8] <= self.trajectory_index < phase_boundaries[9]:
                     self.left_robot.open_gripper()
                 # Phase 13: Right releases cube
-                elif phase_boundaries[13] <= self.trajectory_index < phase_boundaries[14]:
+                elif (
+                    phase_boundaries[13] <= self.trajectory_index < phase_boundaries[14]
+                ):
                     self.right_robot.open_gripper()
 
         return True
@@ -282,7 +312,9 @@ class StationaryAIPickPlace:
 
         # Reset all arm joints to zero
         for joint_name in LEFT_ARM_JOINT_NAMES + RIGHT_ARM_JOINT_NAMES:
-            joint_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_JOINT, joint_name)
+            joint_id = mujoco.mj_name2id(
+                self.model, mujoco.mjtObj.mjOBJ_JOINT, joint_name
+            )
             qpos_addr = self.model.jnt_qposadr[joint_id]
             self.data.qpos[qpos_addr] = 0.0
 
@@ -305,8 +337,12 @@ class StationaryAIPickPlace:
         if self.cube_body_id is None:
             raise RuntimeError("Cannot reset cube: cube not initialized.")
 
-        reset_position = position if position is not None else self.cube_initial_position
-        reset_orientation = orientation if orientation is not None else self.cube_initial_orientation
+        reset_position = (
+            position if position is not None else self.cube_initial_position
+        )
+        reset_orientation = (
+            orientation if orientation is not None else self.cube_initial_orientation
+        )
 
         # Find cube freejoint
         cube_joint_id = None
@@ -319,16 +355,18 @@ class StationaryAIPickPlace:
             raise RuntimeError("Could not find joint for cube body")
 
         qpos_addr = self.model.jnt_qposadr[cube_joint_id]
-        self.data.qpos[qpos_addr:qpos_addr + 3] = reset_position
-        self.data.qpos[qpos_addr + 3:qpos_addr + 7] = reset_orientation
+        self.data.qpos[qpos_addr : qpos_addr + 3] = reset_position
+        self.data.qpos[qpos_addr + 3 : qpos_addr + 7] = reset_orientation
 
         qvel_addr = self.model.jnt_dofadr[cube_joint_id]
-        self.data.qvel[qvel_addr:qvel_addr + 6] = 0.0
+        self.data.qvel[qvel_addr : qvel_addr + 6] = 0.0
 
         mujoco.mj_forward(self.model, self.data)
 
     def get_cube_pose(self) -> tuple[np.ndarray, np.ndarray]:
         """Get current cube position and orientation."""
+        assert self.data is not None
+        assert self.cube_body_id is not None
         cube_pos = self.data.xpos[self.cube_body_id].copy()
         cube_xmat = self.data.xmat[self.cube_body_id].reshape(3, 3)
         rotation = Rotation.from_matrix(cube_xmat)
@@ -358,13 +396,17 @@ class StationaryAIPickPlace:
             end_ori = np.array(orientations[i + 1], dtype=np.float64)
             n_steps = dt[i]
 
-            rot_start = Rotation.from_quat([start_ori[1], start_ori[2], start_ori[3], start_ori[0]])
-            rot_end = Rotation.from_quat([end_ori[1], end_ori[2], end_ori[3], end_ori[0]])
+            rot_start = Rotation.from_quat(
+                [start_ori[1], start_ori[2], start_ori[3], start_ori[0]]
+            )
+            rot_end = Rotation.from_quat(
+                [end_ori[1], end_ori[2], end_ori[3], end_ori[0]]
+            )
 
             for step in range(n_steps):
                 alpha = step / n_steps if n_steps > 0 else 0.0
                 interpolated_pos = start_pos + alpha * (end_pos - start_pos)
-                
+
                 if alpha == 0.0:
                     interpolated_ori = start_ori
                 else:
@@ -372,9 +414,13 @@ class StationaryAIPickPlace:
                         rot_start.as_quat() * (1 - alpha) + rot_end.as_quat() * alpha
                     )
                     quat_xyzw = rot_interp.as_quat()
-                    interpolated_ori = np.array([quat_xyzw[3], quat_xyzw[0], quat_xyzw[1], quat_xyzw[2]])
+                    interpolated_ori = np.array(
+                        [quat_xyzw[3], quat_xyzw[0], quat_xyzw[1], quat_xyzw[2]]
+                    )
 
-                trajectory.append((interpolated_pos, interpolated_ori, cumulative_step + step))
+                trajectory.append(
+                    (interpolated_pos, interpolated_ori, cumulative_step + step)
+                )
 
             cumulative_step += n_steps
 
@@ -410,6 +456,8 @@ class StationaryAIPickPlace:
         """
         cube_pos, _ = self.get_cube_pose()
 
+        assert self.left_robot is not None
+        assert self.right_robot is not None
         # Left arm key positions
         left_ee_pos, _ = self.left_robot.get_ee_pose()
         left_prepick = cube_pos + np.array([0.0, 0.0, self.clearance_height])
@@ -421,25 +469,29 @@ class StationaryAIPickPlace:
         right_ee_pos, _ = self.right_robot.get_ee_pose()
         right_wait = np.array([0.0, -0.20, 0.25])
         right_pre_handoff = self.handoff_position + np.array([0.0, -0.12, 0.0])
-        right_handoff = self.handoff_position + np.array([0.0, -self.handoff_offset, 0.0])
+        right_handoff = self.handoff_position + np.array(
+            [0.0, -self.handoff_offset, 0.0]
+        )
         right_lifted = right_handoff + np.array([0.0, 0.0, 0.05])
-        right_preplace = self.target_position + np.array([0.0, 0.0, self.clearance_height])
+        right_preplace = self.target_position + np.array(
+            [0.0, 0.0, self.clearance_height]
+        )
         right_place = self.target_position + self.approach_offset
 
         # Left arm trajectory keyframes (16 frames for 15 phases)
         left_key_frames = [
-            left_ee_pos,         # Start
-            left_prepick,        # Phase 0 end: above cube
-            left_prepick,        # Phase 1 end: stay at prepick
-            left_pick,           # Phase 2 end: at pick
-            left_pick,           # Phase 3 end: still at pick (grasping)
-            left_prepick,        # Phase 4 end: lifted
-            left_handoff,        # Phase 5 end: at handoff
-            left_handoff,        # Phase 6 end: stay at handoff
-            left_handoff,        # Phase 7 end: stay at handoff
-            left_handoff,        # Phase 8 end: stay at handoff (releasing)
-            left_retreat,        # Phase 9 end: retreated
-            left_retreat,        # Phase 10-14: stay home
+            left_ee_pos,  # Start
+            left_prepick,  # Phase 0 end: above cube
+            left_prepick,  # Phase 1 end: stay at prepick
+            left_pick,  # Phase 2 end: at pick
+            left_pick,  # Phase 3 end: still at pick (grasping)
+            left_prepick,  # Phase 4 end: lifted
+            left_handoff,  # Phase 5 end: at handoff
+            left_handoff,  # Phase 6 end: stay at handoff
+            left_handoff,  # Phase 7 end: stay at handoff
+            left_handoff,  # Phase 8 end: stay at handoff (releasing)
+            left_retreat,  # Phase 9 end: retreated
+            left_retreat,  # Phase 10-14: stay home
             left_retreat,
             left_retreat,
             left_retreat,
@@ -447,65 +499,69 @@ class StationaryAIPickPlace:
         ]
 
         left_orientations = [
-            LEFT_ARM_DOWNWARD_ORIENTATION,   # Start
-            LEFT_ARM_DOWNWARD_ORIENTATION,   # 0
-            LEFT_ARM_DOWNWARD_ORIENTATION,   # 1
-            LEFT_ARM_DOWNWARD_ORIENTATION,   # 2
-            LEFT_ARM_DOWNWARD_ORIENTATION,   # 3
-            LEFT_ARM_DOWNWARD_ORIENTATION,   # 4
-            LEFT_ARM_HANDOFF_ORIENTATION,    # 5 - rotate for handoff
-            LEFT_ARM_HANDOFF_ORIENTATION,    # 6
-            LEFT_ARM_HANDOFF_ORIENTATION,    # 7
-            LEFT_ARM_HANDOFF_ORIENTATION,    # 8
-            LEFT_ARM_DOWNWARD_ORIENTATION,   # 9 - retreat
-            LEFT_ARM_DOWNWARD_ORIENTATION,   # 10
-            LEFT_ARM_DOWNWARD_ORIENTATION,   # 11
-            LEFT_ARM_DOWNWARD_ORIENTATION,   # 12
-            LEFT_ARM_DOWNWARD_ORIENTATION,   # 13
-            LEFT_ARM_DOWNWARD_ORIENTATION,   # 14
+            LEFT_ARM_DOWNWARD_ORIENTATION,  # Start
+            LEFT_ARM_DOWNWARD_ORIENTATION,  # 0
+            LEFT_ARM_DOWNWARD_ORIENTATION,  # 1
+            LEFT_ARM_DOWNWARD_ORIENTATION,  # 2
+            LEFT_ARM_DOWNWARD_ORIENTATION,  # 3
+            LEFT_ARM_DOWNWARD_ORIENTATION,  # 4
+            LEFT_ARM_HANDOFF_ORIENTATION,  # 5 - rotate for handoff
+            LEFT_ARM_HANDOFF_ORIENTATION,  # 6
+            LEFT_ARM_HANDOFF_ORIENTATION,  # 7
+            LEFT_ARM_HANDOFF_ORIENTATION,  # 8
+            LEFT_ARM_DOWNWARD_ORIENTATION,  # 9 - retreat
+            LEFT_ARM_DOWNWARD_ORIENTATION,  # 10
+            LEFT_ARM_DOWNWARD_ORIENTATION,  # 11
+            LEFT_ARM_DOWNWARD_ORIENTATION,  # 12
+            LEFT_ARM_DOWNWARD_ORIENTATION,  # 13
+            LEFT_ARM_DOWNWARD_ORIENTATION,  # 14
         ]
 
         # Right arm trajectory keyframes
         right_key_frames = [
-            right_ee_pos,        # Start
-            right_wait,          # Phase 0 end: waiting
-            right_wait,          # Phase 1 end
-            right_wait,          # Phase 2 end
-            right_wait,          # Phase 3 end
-            right_wait,          # Phase 4 end
-            right_pre_handoff,   # Phase 5 end: pre-handoff
-            right_handoff,       # Phase 6 end: at handoff
-            right_handoff,       # Phase 7 end: grasping
-            right_handoff,       # Phase 8 end: wait for release
-            right_handoff,       # Phase 9 end
-            right_lifted,        # Phase 10 end: lifted
-            right_preplace,      # Phase 11 end: pre-place
-            right_place,         # Phase 12 end: at place
-            right_place,         # Phase 13 end: releasing
-            self.right_home,     # Phase 14 end: home
+            right_ee_pos,  # Start
+            right_wait,  # Phase 0 end: waiting
+            right_wait,  # Phase 1 end
+            right_wait,  # Phase 2 end
+            right_wait,  # Phase 3 end
+            right_wait,  # Phase 4 end
+            right_pre_handoff,  # Phase 5 end: pre-handoff
+            right_handoff,  # Phase 6 end: at handoff
+            right_handoff,  # Phase 7 end: grasping
+            right_handoff,  # Phase 8 end: wait for release
+            right_handoff,  # Phase 9 end
+            right_lifted,  # Phase 10 end: lifted
+            right_preplace,  # Phase 11 end: pre-place
+            right_place,  # Phase 12 end: at place
+            right_place,  # Phase 13 end: releasing
+            self.right_home,  # Phase 14 end: home
         ]
 
         right_orientations = [
-            RIGHT_ARM_DOWNWARD_ORIENTATION,   # Start
-            RIGHT_ARM_HANDOFF_ORIENTATION,    # 0 - rotate to handoff
-            RIGHT_ARM_HANDOFF_ORIENTATION,    # 1
-            RIGHT_ARM_HANDOFF_ORIENTATION,    # 2
-            RIGHT_ARM_HANDOFF_ORIENTATION,    # 3
-            RIGHT_ARM_HANDOFF_ORIENTATION,    # 4
-            RIGHT_ARM_RECEIVE_ORIENTATION,    # 5 - receive orientation
-            RIGHT_ARM_RECEIVE_ORIENTATION,    # 6
-            RIGHT_ARM_RECEIVE_ORIENTATION,    # 7
-            RIGHT_ARM_RECEIVE_ORIENTATION,    # 8
-            RIGHT_ARM_RECEIVE_ORIENTATION,    # 9
-            RIGHT_ARM_HANDOFF_ORIENTATION,    # 10 - rotate while lifting
-            RIGHT_ARM_DOWNWARD_ORIENTATION,   # 11 - downward for place
-            RIGHT_ARM_DOWNWARD_ORIENTATION,   # 12
-            RIGHT_ARM_DOWNWARD_ORIENTATION,   # 13
-            RIGHT_ARM_DOWNWARD_ORIENTATION,   # 14
+            RIGHT_ARM_DOWNWARD_ORIENTATION,  # Start
+            RIGHT_ARM_HANDOFF_ORIENTATION,  # 0 - rotate to handoff
+            RIGHT_ARM_HANDOFF_ORIENTATION,  # 1
+            RIGHT_ARM_HANDOFF_ORIENTATION,  # 2
+            RIGHT_ARM_HANDOFF_ORIENTATION,  # 3
+            RIGHT_ARM_HANDOFF_ORIENTATION,  # 4
+            RIGHT_ARM_RECEIVE_ORIENTATION,  # 5 - receive orientation
+            RIGHT_ARM_RECEIVE_ORIENTATION,  # 6
+            RIGHT_ARM_RECEIVE_ORIENTATION,  # 7
+            RIGHT_ARM_RECEIVE_ORIENTATION,  # 8
+            RIGHT_ARM_RECEIVE_ORIENTATION,  # 9
+            RIGHT_ARM_HANDOFF_ORIENTATION,  # 10 - rotate while lifting
+            RIGHT_ARM_DOWNWARD_ORIENTATION,  # 11 - downward for place
+            RIGHT_ARM_DOWNWARD_ORIENTATION,  # 12
+            RIGHT_ARM_DOWNWARD_ORIENTATION,  # 13
+            RIGHT_ARM_DOWNWARD_ORIENTATION,  # 14
         ]
 
-        self.left_trajectory = self.make_trajectory(left_key_frames, left_orientations, self.events_dt)
-        self.right_trajectory = self.make_trajectory(right_key_frames, right_orientations, self.events_dt)
+        self.left_trajectory = self.make_trajectory(
+            left_key_frames, left_orientations, self.events_dt
+        )
+        self.right_trajectory = self.make_trajectory(
+            right_key_frames, right_orientations, self.events_dt
+        )
         self.trajectory_index = 0
 
 
@@ -565,5 +621,6 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"\n✗ Error: {e}")
         import traceback
+
         traceback.print_exc()
         sys.exit(1)
