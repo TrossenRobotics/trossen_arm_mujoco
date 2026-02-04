@@ -1,5 +1,5 @@
 <mujoco model="wxai pick place scene">
-  <include file="wxai_base.xml"/>
+  <include file="wxai_follower.xml"/>
 
   <statistic center="0 0 0.1" extent="0.6"/>
 
