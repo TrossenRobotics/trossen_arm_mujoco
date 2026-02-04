@@ -180,11 +180,15 @@ The robot will track the target cube position in real-time.
 <table>
 <tr>
 <td width="50%">
-<video src="demo_videos/wxai_pick_place/overview.mp4" width="100%" controls></video>
+
+https://github.com/TrossenRobotics/trossen_arm_mujoco/demo_videos/wxai_pick_place/overview.mp4
+
 <p align="center"><i>Overview Camera</i></p>
 </td>
 <td width="50%">
-<video src="demo_videos/wxai_pick_place/cam.mp4" width="100%" controls></video>
+
+https://github.com/TrossenRobotics/trossen_arm_mujoco/demo_videos/wxai_pick_place/cam.mp4
+
 <p align="center"><i>Wrist Camera</i></p>
 </td>
 </tr>
@@ -195,7 +199,9 @@ The robot will track the target cube position in real-time.
 <table>
 <tr>
 <td width="100%">
-<video src="demo_videos/wxai_follow_target/overview.mp4" width="100%" controls></video>
+
+https://github.com/TrossenRobotics/trossen_arm_mujoco/demo_videos/wxai_follow_target/overview.mp4
+
 <p align="center"><i>Real-time Target Tracking</i></p>
 </td>
 </tr>
@@ -206,25 +212,35 @@ The robot will track the target cube position in real-time.
 <table>
 <tr>
 <td colspan="4">
-<video src="demo_videos/stationary_ai_pick_place/overview.mp4" width="100%" controls></video>
+
+https://github.com/TrossenRobotics/trossen_arm_mujoco/demo_videos/stationary_ai_pick_place/overview.mp4
+
 <p align="center"><i>Overview Camera</i></p>
 </td>
 </tr>
 <tr>
 <td width="25%">
-<video src="demo_videos/stationary_ai_pick_place/cam_high.mp4" width="100%" controls></video>
+
+https://github.com/TrossenRobotics/trossen_arm_mujoco/demo_videos/stationary_ai_pick_place/cam_high.mp4
+
 <p align="center"><i>High Camera</i></p>
 </td>
 <td width="25%">
-<video src="demo_videos/stationary_ai_pick_place/cam_low.mp4" width="100%" controls></video>
+
+https://github.com/TrossenRobotics/trossen_arm_mujoco/demo_videos/stationary_ai_pick_place/cam_low.mp4
+
 <p align="center"><i>Low Camera</i></p>
 </td>
 <td width="25%">
-<video src="demo_videos/stationary_ai_pick_place/cam_left_wrist.mp4" width="100%" controls></video>
+
+https://github.com/TrossenRobotics/trossen_arm_mujoco/demo_videos/stationary_ai_pick_place/cam_left_wrist.mp4
+
 <p align="center"><i>Left Wrist</i></p>
 </td>
 <td width="25%">
-<video src="demo_videos/stationary_ai_pick_place/cam_right_wrist.mp4" width="100%" controls></video>
+
+https://github.com/TrossenRobotics/trossen_arm_mujoco/demo_videos/stationary_ai_pick_place/cam_right_wrist.mp4
+
 <p align="center"><i>Right Wrist</i></p>
 </td>
 </tr>
@@ -235,21 +251,29 @@ The robot will track the target cube position in real-time.
 <table>
 <tr>
 <td colspan="3">
-<video src="demo_videos/mobile_ai_pick_place/overview.mp4" width="100%" controls></video>
+
+https://github.com/TrossenRobotics/trossen_arm_mujoco/demo_videos/mobile_ai_pick_place/overview.mp4
+
 <p align="center"><i>Overview Camera</i></p>
 </td>
 </tr>
 <tr>
 <td width="33%">
-<video src="demo_videos/mobile_ai_pick_place/cam_high.mp4" width="100%" controls></video>
+
+https://github.com/TrossenRobotics/trossen_arm_mujoco/demo_videos/mobile_ai_pick_place/cam_high.mp4
+
 <p align="center"><i>High Camera</i></p>
 </td>
 <td width="33%">
-<video src="demo_videos/mobile_ai_pick_place/cam_left_wrist.mp4" width="100%" controls></video>
+
+https://github.com/TrossenRobotics/trossen_arm_mujoco/demo_videos/mobile_ai_pick_place/cam_left_wrist.mp4
+
 <p align="center"><i>Left Wrist</i></p>
 </td>
 <td width="33%">
-<video src="demo_videos/mobile_ai_pick_place/cam_right_wrist.mp4" width="100%" controls></video>
+
+https://github.com/TrossenRobotics/trossen_arm_mujoco/demo_videos/mobile_ai_pick_place/cam_right_wrist.mp4
+
 <p align="center"><i>Right Wrist</i></p>
 </td>
 </tr>
