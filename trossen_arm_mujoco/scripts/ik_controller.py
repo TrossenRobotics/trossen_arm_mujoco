@@ -142,8 +142,8 @@ class IKController:
                 self.arm_qpos_indices.append(qpos_adr)
 
                 # Get degree_of_freedom address for this joint
-                dof_adr = model.jnt_dofadr[joint_id]
-                self.arm_dof_indices.append(dof_adr)
+                dof_addr = model.jnt_dofadr[joint_id]
+                self.arm_dof_indices.append(dof_addr)
 
                 # Get actuator ID for this joint (assumes actuator name matches joint name)
                 try:
