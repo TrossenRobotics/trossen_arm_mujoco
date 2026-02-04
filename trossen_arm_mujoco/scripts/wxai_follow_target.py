@@ -196,7 +196,7 @@ def main():
     print("Controls:")
     print("  - Double-click the target cube to select it")
     print("  - Ctrl + Right-click drag to move the cube")
-    print("  - Press ESC to exit")
+    print()
     print()
     print("=" * 70)
     print()
@@ -212,6 +212,12 @@ def main():
     with mujoco.viewer.launch_passive(
         follow_target.model, follow_target.data
     ) as viewer:
+        # Set viewer camera for better initial view
+        viewer.cam.lookat[:] = [0.3, 0.0, 0.15]
+        viewer.cam.distance = 1.0
+        viewer.cam.azimuth = 135
+        viewer.cam.elevation = -20
+
         while viewer.is_running():
             # Execute tracking step
             follow_target.forward()

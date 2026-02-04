@@ -355,10 +355,13 @@ class WXAIPickPlace:
                 if alpha == 0.0:
                     interpolated_ori = start_ori
                 else:
-                    rot_interp = Rotation.from_quat(
-                        rot_start.as_quat() * (1 - alpha) + rot_end.as_quat() * alpha
-                    )
-                    # Normalize and convert back to [w,x,y,z]
+                    # Normalized linear interpolation for quaternions
+                    q = rot_start.as_quat() * (1 - alpha) + rot_end.as_quat() * alpha
+                    norm = np.linalg.norm(q)
+                    if norm > 0.0:
+                        q = q / norm
+                    rot_interp = Rotation.from_quat(q)
+                    # Convert back to [w,x,y,z]
                     quat_xyzw = rot_interp.as_quat()
                     interpolated_ori = np.array(
                         [quat_xyzw[3], quat_xyzw[0], quat_xyzw[1], quat_xyzw[2]]
@@ -439,7 +442,6 @@ def main():
     print("  8. Retreat with clearance")
     print("  9. Return to home position")
     print()
-    print("Press ESC to exit")
     print("=" * 70)
     print()
 
@@ -456,6 +458,12 @@ def main():
     import time
 
     with mujoco.viewer.launch_passive(pick_place.model, pick_place.data) as viewer:
+        # Set viewer to full screen
+        viewer.cam.lookat[:] = [0.3, 0.0, 0.15]
+        viewer.cam.distance = 1.0
+        viewer.cam.azimuth = 135
+        viewer.cam.elevation = -20
+
         # Set simulation timestep for real-time sync
         dt = pick_place.model.opt.timestep  # Should be 1/60 = 0.0166... seconds
 

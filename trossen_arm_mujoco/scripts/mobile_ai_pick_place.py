@@ -225,13 +225,8 @@ class MobileAIPickPlace:
             if self.drive_step_counter < BASE_MOVEMENT_STEPS:
                 # Smooth interpolation
                 alpha = self.drive_step_counter / BASE_MOVEMENT_STEPS
-                current_pos = (
-                    BASE_INITIAL_POSITION[0]
-                    + alpha * (BASE_TARGET_POSITION[0] - BASE_INITIAL_POSITION[0]),
-                    BASE_INITIAL_POSITION[1]
-                    + alpha * (BASE_TARGET_POSITION[1] - BASE_INITIAL_POSITION[1]),
-                    BASE_INITIAL_POSITION[2]
-                    + alpha * (BASE_TARGET_POSITION[2] - BASE_INITIAL_POSITION[2]),
+                current_pos = BASE_INITIAL_POSITION + alpha * (
+                    BASE_TARGET_POSITION - BASE_INITIAL_POSITION
                 )
 
                 # Set mobile base position
@@ -471,9 +466,12 @@ class MobileAIPickPlace:
                 if alpha == 0.0:
                     interpolated_ori = start_ori
                 else:
-                    rot_interp = Rotation.from_quat(
-                        rot_start.as_quat() * (1 - alpha) + rot_end.as_quat() * alpha
-                    )
+                    # Normalized linear interpolation for quaternions
+                    q = rot_start.as_quat() * (1 - alpha) + rot_end.as_quat() * alpha
+                    norm = np.linalg.norm(q)
+                    if norm > 0.0:
+                        q = q / norm
+                    rot_interp = Rotation.from_quat(q)
                     quat_xyzw = rot_interp.as_quat()
                     interpolated_ori = np.array(
                         [quat_xyzw[3], quat_xyzw[0], quat_xyzw[1], quat_xyzw[2]]
@@ -579,7 +577,6 @@ def main():
     print("  3. Right arm: Pick cube from center")
     print("  4. Right arm: Place cube at right side")
     print()
-    print("Press ESC to exit")
     print("=" * 70)
     print()
 
@@ -590,6 +587,12 @@ def main():
     task_completed = False
 
     with mujoco.viewer.launch_passive(pick_place.model, pick_place.data) as viewer:
+        # Set viewer camera for better initial view
+        viewer.cam.lookat[:] = [1.0, 0.0, 0.9]
+        viewer.cam.distance = 2.5
+        viewer.cam.azimuth = 135
+        viewer.cam.elevation = -15
+
         dt = pick_place.model.opt.timestep
 
         while viewer.is_running():

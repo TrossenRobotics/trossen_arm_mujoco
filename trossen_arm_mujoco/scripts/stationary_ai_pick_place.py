@@ -58,21 +58,21 @@ RIGHT_ARM_HOME_POSITION = np.array([0.0, -0.3, 0.3])
 
 # Phase timing (steps) - 15 phases for dual-arm handoff
 DEFAULT_EVENTS_DT = [
-    1200,
-    800,
-    200,
-    200,
-    800,
-    1200,
-    800,
-    200,
-    200,
-    400,
-    800,
-    800,
-    800,
-    200,
-    1200,
+    600,  # 0: Left to pre-pick
+    300,  # 1: Left rotate at pre-pick
+    200,  # 2: Left descend to pick
+    200,  # 3: Left grasp (increased hold time for secure grasp)
+    400,  # 4: Left lift
+    600,  # 5: Both to handoff
+    300,  # 6: Right approach
+    200,  # 7: Right grasp (increased hold time for secure grasp)
+    200,  # 8: Left release (increased hold time to ensure transfer)
+    400,  # 9: Left retreat
+    400,  # 10: Right lift
+    600,  # 11: Right to pre-place
+    400,  # 12: Right descend
+    200,  # 13: Right release
+    600,  # 14: Both return home
 ]
 
 # Trajectory parameters
@@ -101,8 +101,8 @@ RIGHT_GRIPPER_JOINT_NAMES = ["follower_right_left_carriage_joint"]
 # IK configuration
 IK_SCALE = 1.0
 IK_DAMPING = 0.03
-POSITION_THRESHOLD = 0.07
-MAX_STEPS_PER_WAYPOINT = 200
+POSITION_THRESHOLD = 0.12  # Tuned for IK controller with 2x orientation error
+MAX_STEPS_PER_WAYPOINT = 250
 
 
 class StationaryAIPickPlace:
@@ -256,21 +256,26 @@ class StationaryAIPickPlace:
 
             self.waypoint_step_count += 1
 
+            # Calculate phase boundaries
+            phase_boundaries = [0]
+            cumulative = 0
+            for duration in self.events_dt:
+                cumulative += duration
+                phase_boundaries.append(cumulative)
+
+            # Track both arms during coordination, only active arm during solo phases
+            if self.trajectory_index >= phase_boundaries[10]:
+                relevant_error = right_error  # Right arm solo
+            else:
+                relevant_error = max(left_error, right_error)  # Both arms
+
             # Advance waypoint
-            max_error = max(left_error, right_error)
             if (
-                max_error < POSITION_THRESHOLD
+                relevant_error < POSITION_THRESHOLD
                 or self.waypoint_step_count >= MAX_STEPS_PER_WAYPOINT
             ):
                 self.trajectory_index += 1
                 self.waypoint_step_count = 0
-
-                # Calculate phase boundaries
-                phase_boundaries = [0]
-                cumulative = 0
-                for duration in self.events_dt:
-                    cumulative += duration
-                    phase_boundaries.append(cumulative)
 
                 # Gripper control based on phase
                 # Phase 3: Left grasps cube
@@ -410,9 +415,12 @@ class StationaryAIPickPlace:
                 if alpha == 0.0:
                     interpolated_ori = start_ori
                 else:
-                    rot_interp = Rotation.from_quat(
-                        rot_start.as_quat() * (1 - alpha) + rot_end.as_quat() * alpha
-                    )
+                    # Normalized linear interpolation for quaternions
+                    q = rot_start.as_quat() * (1 - alpha) + rot_end.as_quat() * alpha
+                    norm = np.linalg.norm(q)
+                    if norm > 0.0:
+                        q = q / norm
+                    rot_interp = Rotation.from_quat(q)
                     quat_xyzw = rot_interp.as_quat()
                     interpolated_ori = np.array(
                         [quat_xyzw[3], quat_xyzw[0], quat_xyzw[1], quat_xyzw[2]]
@@ -579,7 +587,6 @@ def main():
     print("  Phases 5-9: Handoff from left to right arm")
     print("  Phases 10-14: Right arm places cube")
     print()
-    print("Press ESC to exit")
     print("=" * 70)
     print()
 
@@ -590,6 +597,12 @@ def main():
     task_completed = False
 
     with mujoco.viewer.launch_passive(pick_place.model, pick_place.data) as viewer:
+        # Set viewer camera for better initial view
+        viewer.cam.lookat[:] = [0.0, 0.0, 0.15]
+        viewer.cam.distance = 1.2
+        viewer.cam.azimuth = 135
+        viewer.cam.elevation = -20
+
         dt = pick_place.model.opt.timestep
 
         while viewer.is_running():

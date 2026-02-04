@@ -329,7 +329,7 @@ class IKController:
             q_diff = self._quat_multiply(q_target, q_current_conj)
 
             # Orientation error
-            orientation_error = q_diff[1:4] * np.sign(q_diff[0])
+            orientation_error = 2 * q_diff[1:4] * np.sign(q_diff[0])
 
             # Combine position and orientation error
             error = np.concatenate([position_error, orientation_error])
