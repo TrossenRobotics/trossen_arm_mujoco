@@ -30,6 +30,6 @@
     </body>
 
     <!-- Target position marker (on right arm side at y=-0.25) -->
-    <site name="target_site" pos="0.0 -0.25 0.025" size="0.03" rgba="0 1 0 0.5"/>
+    <site name="target_site" pos="0.0 -0.25 0.025" size="0.0001" rgba="0 1 0 0.5"/>
   </worldbody>
 </mujoco>

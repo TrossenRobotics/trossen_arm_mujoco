@@ -67,7 +67,7 @@
                   <geom class="collision" type="cylinder" size="0.029 0.05" pos="0 0 0" quat="1 0 1 0"/>
                   <geom class="collision" type="box" size="0.0125 0.094 0.031" pos="0.0685 0 0" quat="1 0 0 0"/>
                   <!-- End-effector site at gripper tip -->
-                  <site name="ee_site" pos="0.156 0 0" size="0.01"/>
+                  <site name="ee_site" pos="0.156 0 0" size="0.001"/>
                   <body name="carriage_right" pos="0.0865 -0.023 0" gravcomp="1">
                     <inertial pos="0.00169015 0.00592793 0.00201817" quat="-0.370973 0.740886 -0.0847721 0.553427" mass="0.081271" diaginertia="4.29565e-05 3.87081e-05 2.21528e-05"/>
                     <joint name="right_carriage_joint" pos="0 0 0" axis="0 -1 0" type="slide" range="0 0.044" armature="0.1" frictionloss="0.1" actuatorgravcomp="true"/>

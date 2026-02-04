@@ -68,7 +68,7 @@
                   <geom class="collision" type="cylinder" size="0.029 0.05" pos="0 0 0" quat="1 0 1 0"/>
                   <geom class="collision" type="box" size="0.0125 0.094 0.031" pos="0.0685 0 0" quat="1 0 0 0"/>
                   <!-- End-effector site at gripper tip -->
-                  <site name="ee_site" pos="0.156 0 0" size="0.01"/>
+                  <site name="ee_site" pos="0.156 0 0" size="0.001"/>
                   <geom class="visual" pos="0.012 0 0" quat="1 0 0 0" mesh="camera_mount_d405"/>
                   <geom class="collision" type="box" size="0.0155 0.025 0.025" pos="0.0513206 0 0.0569399" quat="0.984808 0 0.173648 0"/>
                   <geom class="visual" type="box" size="0.0115 0.021 0.021" pos="0.0513206 0 0.0569399" quat="0.984808 0 0.173648 0"/>

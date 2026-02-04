@@ -23,7 +23,7 @@
     <!-- Target cube: kinematic body (not affected by gravity), blue color like IsaacSim -->
     <body name="target_cube" pos="0.3 0.0 0.2" mocap="true">
       <geom name="target_cube_visual" type="box" size="0.02575 0.02575 0.02575" rgba="0 0 1 0.7" contype="0" conaffinity="0"/>
-      <site name="target_site" pos="0 0 0" size="0.005" rgba="1 0 0 1"/>
+      <site name="target_site" pos="0 0 0" size="0.0001" rgba="1 0 0 1"/>
     </body>
   </worldbody>
 </mujoco>

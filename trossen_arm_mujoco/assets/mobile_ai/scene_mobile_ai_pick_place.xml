@@ -37,11 +37,11 @@
     <!-- Cube to pick (on left side of table) -->
     <body name="cube" pos="1.0 0.3 0.825">
       <freejoint/>
-      <geom name="cube_geom" type="box" size="0.025 0.025 0.025" rgba="0 0 1 0.8" mass="0.001"/>
+      <geom name="cube_geom" type="box" size="0.025 0.025 0.025" rgba="0 0 1 0.8" mass="0.0001"/>
       <site name="cube_center" pos="0 0 0" size="0.005" rgba="1 0 0 0"/>
     </body>
 
     <!-- Target position marker (on right side of table) -->
-    <site name="target_site" pos="1.0 -0.3 0.825" size="0.03" rgba="0 1 0 0.5"/>
+    <site name="target_site" pos="1.0 -0.3 0.825" size="0.0001" rgba="0 1 0 0.5"/>
   </worldbody>
 </mujoco>
