@@ -35,16 +35,13 @@ Usage:
 
 from __future__ import annotations
 
-import os
 import sys
 
 import mujoco
 import mujoco.viewer
 import numpy as np
 
-# Add parent directory to path for imports
-sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
-from src.controller import Controller
+from trossen_arm_mujoco.src.controller import Controller, RobotType
 
 # Default target configuration
 DEFAULT_TARGET_POSITION = np.array([0.3, 0.0, 0.2])
@@ -87,10 +84,10 @@ class WXAIFollowTarget:
             else DEFAULT_TARGET_ORIENTATION.copy()
         )
 
-        self.model = None
-        self.data = None
-        self.robot = None
-        self.target_body_id = None
+        self.model: mujoco.MjModel | None = None
+        self.data: mujoco.MjData | None = None
+        self.robot: Controller | None = None
+        self.target_body_id: int | None = None
 
     def setup_scene(self) -> None:
         """Initialize simulation scene with robot, target cube, and environment."""
@@ -102,7 +99,7 @@ class WXAIFollowTarget:
         self.robot = Controller(
             model=self.model,
             data=self.data,
-            robot_type="wxai",
+            robot_type=RobotType.WXAI,
             arm_joint_names=ARM_JOINT_NAMES,
             gripper_joint_names=GRIPPER_JOINT_NAMES,
             ik_scale=IK_SCALE,
@@ -149,28 +146,24 @@ class WXAIFollowTarget:
             raise RuntimeError("Cannot reset robot: robot not initialized.")
         if self.target_body_id is None:
             raise RuntimeError("Cannot reset target: target not initialized.")
+        assert self.model is not None
+        assert self.data is not None
 
         # Reset robot to default pose
         for i, joint_name in enumerate(ARM_JOINT_NAMES):
-            joint_id = mujoco.mj_name2id(
-                self.model, mujoco.mjtObj.mjOBJ_JOINT, joint_name
-            )
+            joint_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_JOINT, joint_name)
             qpos_addr = self.model.jnt_qposadr[joint_id]
             self.data.qpos[qpos_addr] = DEFAULT_DOF_POSITIONS[i]
 
         # Reset gripper
         for joint_name in GRIPPER_JOINT_NAMES:
-            joint_id = mujoco.mj_name2id(
-                self.model, mujoco.mjtObj.mjOBJ_JOINT, joint_name
-            )
+            joint_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_JOINT, joint_name)
             qpos_addr = self.model.jnt_qposadr[joint_id]
             self.data.qpos[qpos_addr] = DEFAULT_DOF_POSITIONS[6]
 
         # Reset target to initial or specified pose
         reset_position = (
-            target_position
-            if target_position is not None
-            else self.target_initial_position
+            target_position if target_position is not None else self.target_initial_position
         )
         reset_orientation = (
             target_orientation
@@ -209,9 +202,7 @@ def main():
     follow_target.reset()
 
     # Launch viewer and run simulation
-    with mujoco.viewer.launch_passive(
-        follow_target.model, follow_target.data
-    ) as viewer:
+    with mujoco.viewer.launch_passive(follow_target.model, follow_target.data) as viewer:
         # Set viewer camera for better initial view
         viewer.cam.lookat[:] = [0.3, 0.0, 0.15]
         viewer.cam.distance = 1.0

@@ -35,7 +35,6 @@ Usage:
 
 from __future__ import annotations
 
-import os
 import sys
 
 import mujoco
@@ -43,9 +42,7 @@ import mujoco.viewer
 import numpy as np
 from scipy.spatial.transform import Rotation
 
-# Add parent directory to path for imports
-sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
-from src.controller import Controller
+from trossen_arm_mujoco.src.controller import Controller, RobotType
 
 # Default configuration constants
 DEFAULT_CUBE_SIZE = np.array([0.05, 0.05, 0.05])
@@ -104,24 +101,20 @@ class WXAIPickPlace:
             else DEFAULT_CUBE_ORIENTATION.copy()
         )
         self.target_position = (
-            target_position
-            if target_position is not None
-            else DEFAULT_TARGET_POSITION.copy()
+            target_position if target_position is not None else DEFAULT_TARGET_POSITION.copy()
         )
 
-        self.events_dt = (
-            events_dt if events_dt is not None else DEFAULT_EVENTS_DT.copy()
-        )
+        self.events_dt = events_dt if events_dt is not None else DEFAULT_EVENTS_DT.copy()
 
         self.clearance_height = CLEARANCE_HEIGHT
         self.approach_offset = APPROACH_OFFSET.copy()
         self.home_position = DEFAULT_HOME_POSITION.copy()
 
-        self.model = None
-        self.data = None
-        self.robot = None
-        self.cube_body_id = None
-        self.trajectory = None
+        self.model: mujoco.MjModel | None = None
+        self.data: mujoco.MjData | None = None
+        self.robot: Controller | None = None
+        self.cube_body_id: int | None = None
+        self.trajectory: list[tuple[np.ndarray, np.ndarray, int]] | None = None
         self.trajectory_index = 0
         self.waypoint_step_count = 0
 
@@ -135,7 +128,7 @@ class WXAIPickPlace:
         self.robot = Controller(
             model=self.model,
             data=self.data,
-            robot_type="wxai",
+            robot_type=RobotType.WXAI,
             arm_joint_names=ARM_JOINT_NAMES,
             gripper_joint_names=GRIPPER_JOINT_NAMES,
             ik_scale=IK_SCALE,
@@ -143,9 +136,7 @@ class WXAIPickPlace:
         )
 
         # Get cube body ID
-        self.cube_body_id = mujoco.mj_name2id(
-            self.model, mujoco.mjtObj.mjOBJ_BODY, "cube"
-        )
+        self.cube_body_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_BODY, "cube")
 
     def forward(self) -> bool:
         """Execute one simulation step of the pick-and-place trajectory.
@@ -176,10 +167,7 @@ class WXAIPickPlace:
             self.waypoint_step_count += 1
 
             # Advance waypoint if reached threshold OR timeout
-            if (
-                error < POSITION_THRESHOLD
-                or self.waypoint_step_count >= MAX_STEPS_PER_WAYPOINT
-            ):
+            if error < POSITION_THRESHOLD or self.waypoint_step_count >= MAX_STEPS_PER_WAYPOINT:
                 self.trajectory_index += 1
                 self.waypoint_step_count = 0  # Reset counter for next waypoint
 
@@ -206,9 +194,7 @@ class WXAIPickPlace:
         Returns:
             bool: True if all trajectory waypoints have been executed.
         """
-        return self.trajectory is not None and self.trajectory_index >= len(
-            self.trajectory
-        )
+        return self.trajectory is not None and self.trajectory_index >= len(self.trajectory)
 
     def reset(
         self,
@@ -223,12 +209,12 @@ class WXAIPickPlace:
         """Reset robot to default pose and clear trajectory."""
         if self.robot is None:
             raise RuntimeError("Cannot reset robot: robot not initialized.")
+        assert self.model is not None
+        assert self.data is not None
 
         # Reset robot to default pose
         for i, joint_name in enumerate(ARM_JOINT_NAMES):
-            joint_id = mujoco.mj_name2id(
-                self.model, mujoco.mjtObj.mjOBJ_JOINT, joint_name
-            )
+            joint_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_JOINT, joint_name)
             qpos_addr = self.model.jnt_qposadr[joint_id]
             self.data.qpos[qpos_addr] = DEFAULT_DOF_POSITIONS[i]
 
@@ -247,10 +233,10 @@ class WXAIPickPlace:
         """Reset cube to specified or initial pose."""
         if self.cube_body_id is None:
             raise RuntimeError("Cannot reset cube: cube not initialized.")
+        assert self.model is not None
+        assert self.data is not None
 
-        reset_position = (
-            position if position is not None else self.cube_initial_position
-        )
+        reset_position = position if position is not None else self.cube_initial_position
         reset_orientation = (
             orientation if orientation is not None else self.cube_initial_orientation
         )
@@ -367,9 +353,7 @@ class WXAIPickPlace:
                         [quat_xyzw[3], quat_xyzw[0], quat_xyzw[1], quat_xyzw[2]]
                     )
 
-                trajectory.append(
-                    (interpolated_pos, interpolated_ori, cumulative_step + step)
-                )
+                trajectory.append((interpolated_pos, interpolated_ori, cumulative_step + step))
 
             cumulative_step += n_steps
 

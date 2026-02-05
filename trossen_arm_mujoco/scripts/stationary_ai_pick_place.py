@@ -35,7 +35,6 @@ Usage:
 
 from __future__ import annotations
 
-import os
 import sys
 import time
 
@@ -44,9 +43,7 @@ import mujoco.viewer
 import numpy as np
 from scipy.spatial.transform import Rotation
 
-# Add parent directory to path for imports
-sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
-from src.controller import Controller, RobotType
+from trossen_arm_mujoco.src.controller import Controller, RobotType
 
 # Default configuration constants
 DEFAULT_CUBE_POSITION = np.array([0.0, 0.25, 0.045])
@@ -88,9 +85,7 @@ RIGHT_ARM_HANDOFF_ORIENTATION = np.array([0.7071068, 0.0, 0.0, 0.7071068])
 RIGHT_ARM_RECEIVE_ORIENTATION = np.array([0.5, 0.5, 0.5, 0.5])
 
 # Scene configuration
-SCENE_XML_PATH = (
-    "trossen_arm_mujoco/assets/stationary_ai/scene_stationary_ai_pick_place.xml"
-)
+SCENE_XML_PATH = "trossen_arm_mujoco/assets/stationary_ai/scene_stationary_ai_pick_place.xml"
 
 # Robot controller configuration
 LEFT_ARM_JOINT_NAMES = [f"follower_left_joint_{i}" for i in range(6)]
@@ -136,18 +131,12 @@ class StationaryAIPickPlace:
             else DEFAULT_CUBE_ORIENTATION.copy()
         )
         self.target_position = (
-            target_position
-            if target_position is not None
-            else DEFAULT_TARGET_POSITION.copy()
+            target_position if target_position is not None else DEFAULT_TARGET_POSITION.copy()
         )
         self.handoff_position = (
-            handoff_position
-            if handoff_position is not None
-            else CENTER_HANDOFF_POSITION.copy()
+            handoff_position if handoff_position is not None else CENTER_HANDOFF_POSITION.copy()
         )
-        self.events_dt = (
-            events_dt if events_dt is not None else DEFAULT_EVENTS_DT.copy()
-        )
+        self.events_dt = events_dt if events_dt is not None else DEFAULT_EVENTS_DT.copy()
 
         self.clearance_height = CLEARANCE_HEIGHT
         self.approach_offset = APPROACH_OFFSET.copy()
@@ -156,15 +145,15 @@ class StationaryAIPickPlace:
         self.right_home = RIGHT_ARM_HOME_POSITION.copy()
 
         # MuJoCo components
-        self.model = None
-        self.data = None
-        self.left_robot = None
-        self.right_robot = None
-        self.cube_body_id = None
+        self.model: mujoco.MjModel | None = None
+        self.data: mujoco.MjData | None = None
+        self.left_robot: Controller | None = None
+        self.right_robot: Controller | None = None
+        self.cube_body_id: int | None = None
 
         # Trajectory state
-        self.left_trajectory = None
-        self.right_trajectory = None
+        self.left_trajectory: list[tuple[np.ndarray, np.ndarray, int]] | None = None
+        self.right_trajectory: list[tuple[np.ndarray, np.ndarray, int]] | None = None
         self.trajectory_index = 0
         self.waypoint_step_count = 0
         self.current_phase = 0
@@ -216,9 +205,7 @@ class StationaryAIPickPlace:
         )
 
         # Get cube body ID
-        self.cube_body_id = mujoco.mj_name2id(
-            self.model, mujoco.mjtObj.mjOBJ_BODY, "cube"
-        )
+        self.cube_body_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_BODY, "cube")
 
     def forward(self) -> bool:
         """Execute one simulation step of the dual-arm handoff sequence.
@@ -288,9 +275,7 @@ class StationaryAIPickPlace:
                 elif phase_boundaries[8] <= self.trajectory_index < phase_boundaries[9]:
                     self.left_robot.open_gripper()
                 # Phase 13: Right releases cube
-                elif (
-                    phase_boundaries[13] <= self.trajectory_index < phase_boundaries[14]
-                ):
+                elif phase_boundaries[13] <= self.trajectory_index < phase_boundaries[14]:
                     self.right_robot.open_gripper()
 
         return True
@@ -314,12 +299,12 @@ class StationaryAIPickPlace:
         """Reset both arms to home pose and clear trajectories."""
         if self.left_robot is None or self.right_robot is None:
             raise RuntimeError("Cannot reset robot: controllers not initialized.")
+        assert self.model is not None
+        assert self.data is not None
 
         # Reset all arm joints to zero
         for joint_name in LEFT_ARM_JOINT_NAMES + RIGHT_ARM_JOINT_NAMES:
-            joint_id = mujoco.mj_name2id(
-                self.model, mujoco.mjtObj.mjOBJ_JOINT, joint_name
-            )
+            joint_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_JOINT, joint_name)
             qpos_addr = self.model.jnt_qposadr[joint_id]
             self.data.qpos[qpos_addr] = 0.0
 
@@ -341,10 +326,10 @@ class StationaryAIPickPlace:
         """Reset cube to specified or initial pose."""
         if self.cube_body_id is None:
             raise RuntimeError("Cannot reset cube: cube not initialized.")
+        assert self.model is not None
+        assert self.data is not None
 
-        reset_position = (
-            position if position is not None else self.cube_initial_position
-        )
+        reset_position = position if position is not None else self.cube_initial_position
         reset_orientation = (
             orientation if orientation is not None else self.cube_initial_orientation
         )
@@ -404,9 +389,7 @@ class StationaryAIPickPlace:
             rot_start = Rotation.from_quat(
                 [start_ori[1], start_ori[2], start_ori[3], start_ori[0]]
             )
-            rot_end = Rotation.from_quat(
-                [end_ori[1], end_ori[2], end_ori[3], end_ori[0]]
-            )
+            rot_end = Rotation.from_quat([end_ori[1], end_ori[2], end_ori[3], end_ori[0]])
 
             for step in range(n_steps):
                 alpha = step / n_steps if n_steps > 0 else 0.0
@@ -426,9 +409,7 @@ class StationaryAIPickPlace:
                         [quat_xyzw[3], quat_xyzw[0], quat_xyzw[1], quat_xyzw[2]]
                     )
 
-                trajectory.append(
-                    (interpolated_pos, interpolated_ori, cumulative_step + step)
-                )
+                trajectory.append((interpolated_pos, interpolated_ori, cumulative_step + step))
 
             cumulative_step += n_steps
 
@@ -477,13 +458,9 @@ class StationaryAIPickPlace:
         right_ee_pos, _ = self.right_robot.get_ee_pose()
         right_wait = np.array([0.0, -0.20, 0.25])
         right_pre_handoff = self.handoff_position + np.array([0.0, -0.12, 0.0])
-        right_handoff = self.handoff_position + np.array(
-            [0.0, -self.handoff_offset, 0.0]
-        )
+        right_handoff = self.handoff_position + np.array([0.0, -self.handoff_offset, 0.0])
         right_lifted = right_handoff + np.array([0.0, 0.0, 0.05])
-        right_preplace = self.target_position + np.array(
-            [0.0, 0.0, self.clearance_height]
-        )
+        right_preplace = self.target_position + np.array([0.0, 0.0, self.clearance_height])
         right_place = self.target_position + self.approach_offset
 
         # Left arm trajectory keyframes (16 frames for 15 phases)
