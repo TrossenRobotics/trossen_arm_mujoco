@@ -45,7 +45,7 @@ from scipy.spatial.transform import Rotation
 
 # Add parent directory to path for imports
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
-from scripts.ik_controller import IKController
+from src.controller import Controller
 
 # Default configuration constants
 DEFAULT_CUBE_SIZE = np.array([0.05, 0.05, 0.05])
@@ -132,7 +132,7 @@ class WXAIPickPlace:
         self.data = mujoco.MjData(self.model)
 
         # Initialize robot controller
-        self.robot = IKController(
+        self.robot = Controller(
             model=self.model,
             data=self.data,
             robot_type="wxai",
@@ -476,7 +476,7 @@ def main():
 
             # Check if task is done
             if pick_place.is_done() and not task_completed:
-                print("\n✓ Task complete!")
+                print("\nTask complete!")
                 print("\nYou can manually reset the cube or close the viewer.")
                 task_completed = True
 
@@ -491,7 +491,7 @@ def main():
             if elapsed < dt:
                 time.sleep(dt - elapsed)
 
-    print("\n✓ Pick-and-place demo completed")
+    print("\nPick-and-place demo completed")
 
 
 if __name__ == "__main__":
@@ -500,7 +500,7 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print("\n\nStopping pick-and-place demo...")
     except Exception as e:
-        print(f"\n✗ Error: {e}")
+        print(f"\nError: {e}")
         import traceback
 
         traceback.print_exc()

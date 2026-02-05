@@ -46,7 +46,7 @@ from scipy.spatial.transform import Rotation
 
 # Add parent directory to path for imports
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
-from scripts.ik_controller import IKController, RobotType
+from src.controller import Controller, RobotType
 
 # Default configuration constants
 DEFAULT_CUBE_POSITION = np.array([1.0, 0.3, 0.825])
@@ -170,7 +170,7 @@ class MobileAIPickPlace:
         self.data = mujoco.MjData(self.model)
 
         # Initialize left arm controller
-        self.left_robot = IKController(
+        self.left_robot = Controller(
             model=self.model,
             data=self.data,
             robot_type=RobotType.MOBILE_AI,
@@ -182,7 +182,7 @@ class MobileAIPickPlace:
         )
 
         # Initialize right arm controller
-        self.right_robot = IKController(
+        self.right_robot = Controller(
             model=self.model,
             data=self.data,
             robot_type=RobotType.MOBILE_AI,
@@ -602,7 +602,7 @@ def main():
                 pick_place.forward()
 
             if pick_place.is_done() and not task_completed:
-                print("\n✓ Task complete!")
+                print("\nTask complete!")
                 print("\nSequential dual-arm pick-and-place finished successfully.")
                 task_completed = True
 
@@ -613,7 +613,7 @@ def main():
             if elapsed < dt:
                 time.sleep(dt - elapsed)
 
-    print("\n✓ Mobile AI pick-and-place demo completed")
+    print("\nMobile AI pick-and-place demo completed")
 
 
 if __name__ == "__main__":
@@ -622,7 +622,7 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print("\n\nStopping dual-arm pick-and-place demo...")
     except Exception as e:
-        print(f"\n✗ Error: {e}")
+        print(f"\nError: {e}")
         import traceback
 
         traceback.print_exc()

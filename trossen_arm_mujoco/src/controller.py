@@ -56,7 +56,7 @@ DEFAULT_IK_SCALE = 0.5
 DEFAULT_IK_DAMPING = 0.03
 
 
-class IKController:
+class Controller:
     """IK controller for Trossen AI robots.
 
     Uses damped least squares differential IK to compute joint velocities
@@ -235,12 +235,9 @@ class IKController:
         # Get site orientation (rotation matrix)
         xmat = self.data.site(self.ee_site_id).xmat.reshape(3, 3)
 
-        # Convert rotation matrix to quaternion
+        # Convert rotation matrix to quaternion [w, x, y, z]
         rotation = Rotation.from_matrix(xmat)
-        quat_xyzw = rotation.as_quat()  # scipy format: [x, y, z, w]
-        orientation = np.array(
-            [quat_xyzw[3], quat_xyzw[0], quat_xyzw[1], quat_xyzw[2]]
-        )  # [w, x, y, z]
+        orientation = rotation.as_quat(scalar_first=True)
 
         return position, orientation
 
@@ -429,67 +426,3 @@ class IKController:
         z = w1 * z2 + x1 * y2 - y1 * x2 + z1 * w2
 
         return np.array([w, x, y, z])
-
-
-class DualArmIKController:
-    """IK controller for dual-arm robots (Stationary AI, Mobile AI).
-
-    Manages two independent IK controllers, one for each arm.
-    """
-
-    def __init__(
-        self,
-        model: mujoco.MjModel,
-        data: mujoco.MjData,
-        robot_type: RobotType,
-        left_ee_site_name: str = "left_ee_site",
-        right_ee_site_name: str = "right_ee_site",
-        left_arm_joint_names: list = None,
-        right_arm_joint_names: list = None,
-        left_gripper_joint_names: list = None,
-        right_gripper_joint_names: list = None,
-        ik_scale: float = DEFAULT_IK_SCALE,
-        ik_damping: float = DEFAULT_IK_DAMPING,
-    ):
-        """Initialize dual-arm IK controller.
-
-        Args:
-            model: MuJoCo model
-            data: MuJoCo data
-            robot_type: STATIONARY_AI or MOBILE_AI
-            left_ee_site_name: Name of left arm end effector site
-            right_ee_site_name: Name of right arm end effector site
-            left_arm_joint_names: Left arm joint names
-            right_arm_joint_names: Right arm joint names
-            left_gripper_joint_names: Left gripper joint names
-            right_gripper_joint_names: Right gripper joint names
-            ik_scale: IK scaling factor
-            ik_damping: IK damping factor
-        """
-        self.model = model
-        self.data = data
-        self.robot_type = robot_type
-
-        # Create left arm controller
-        self.left_controller = IKController(
-            model=model,
-            data=data,
-            robot_type=robot_type,
-            ee_site_name=left_ee_site_name,
-            arm_joint_names=left_arm_joint_names,
-            gripper_joint_names=left_gripper_joint_names,
-            ik_scale=ik_scale,
-            ik_damping=ik_damping,
-        )
-
-        # Create right arm controller
-        self.right_controller = IKController(
-            model=model,
-            data=data,
-            robot_type=robot_type,
-            ee_site_name=right_ee_site_name,
-            arm_joint_names=right_arm_joint_names,
-            gripper_joint_names=right_gripper_joint_names,
-            ik_scale=ik_scale,
-            ik_damping=ik_damping,
-        )

@@ -44,7 +44,7 @@ import numpy as np
 
 # Add parent directory to path for imports
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
-from scripts.ik_controller import IKController
+from src.controller import Controller
 
 # Default target configuration
 DEFAULT_TARGET_POSITION = np.array([0.3, 0.0, 0.2])
@@ -99,7 +99,7 @@ class WXAIFollowTarget:
         self.data = mujoco.MjData(self.model)
 
         # Initialize robot controller
-        self.robot = IKController(
+        self.robot = Controller(
             model=self.model,
             data=self.data,
             robot_type="wxai",
@@ -228,7 +228,7 @@ def main():
             # Sync viewer
             viewer.sync()
 
-    print("\n✓ Follow target demo completed")
+    print("\nFollow target demo completed")
 
 
 if __name__ == "__main__":
@@ -237,7 +237,7 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print("\n\nStopping follow target demo...")
     except Exception as e:
-        print(f"\n✗ Error: {e}")
+        print(f"\nError: {e}")
         import traceback
 
         traceback.print_exc()
