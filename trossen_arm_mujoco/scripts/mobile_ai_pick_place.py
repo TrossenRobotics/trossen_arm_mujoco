@@ -76,10 +76,10 @@ DOWNWARD_ORIENTATION = np.array([0.70710678, 0.0, 0.70710678, 0.0])
 SCENE_XML_PATH = "trossen_arm_mujoco/assets/mobile_ai/scene_mobile_ai_pick_place.xml"
 
 # Robot controller configuration
-LEFT_ARM_JOINT_NAMES = [f"follower_left/joint_{i}" for i in range(6)]
-LEFT_GRIPPER_JOINT_NAMES = ["follower_left/left_carriage_joint"]
-RIGHT_ARM_JOINT_NAMES = [f"follower_right/joint_{i}" for i in range(6)]
-RIGHT_GRIPPER_JOINT_NAMES = ["follower_right/left_carriage_joint"]
+LEFT_ARM_JOINT_NAMES = [f"follower_left_joint_{i}" for i in range(6)]
+LEFT_GRIPPER_JOINT_NAMES = ["follower_left_left_carriage_joint"]
+RIGHT_ARM_JOINT_NAMES = [f"follower_right_joint_{i}" for i in range(6)]
+RIGHT_GRIPPER_JOINT_NAMES = ["follower_right_left_carriage_joint"]
 
 # IK configuration
 IK_SCALE = 1.0
@@ -174,7 +174,7 @@ class MobileAIPickPlace:
             model=self.model,
             data=self.data,
             robot_type=RobotType.MOBILE_AI,
-            ee_site_name="follower_left/ee_site",
+            ee_site_name="follower_left_ee_site",
             arm_joint_names=LEFT_ARM_JOINT_NAMES,
             gripper_joint_names=LEFT_GRIPPER_JOINT_NAMES,
             ik_scale=IK_SCALE,
@@ -186,7 +186,7 @@ class MobileAIPickPlace:
             model=self.model,
             data=self.data,
             robot_type=RobotType.MOBILE_AI,
-            ee_site_name="follower_right/ee_site",
+            ee_site_name="follower_right_ee_site",
             arm_joint_names=RIGHT_ARM_JOINT_NAMES,
             gripper_joint_names=RIGHT_GRIPPER_JOINT_NAMES,
             ik_scale=IK_SCALE,

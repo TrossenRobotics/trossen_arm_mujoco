@@ -178,7 +178,7 @@ class IKController:
                 # Get actuator ID - gripper actuator name varies by robot type
                 # WXAI: "left_gripper"
                 # Stationary AI: "follower_left_gripper" or "follower_right_gripper"
-                # Mobile AI: "follower_left/gripper" or "follower_right/gripper"
+                # Mobile AI: "follower_left_gripper" or "follower_right_gripper"
                 if robot_type == RobotType.WXAI:
                     gripper_actuator_name = "left_gripper"
                 elif robot_type == RobotType.STATIONARY_AI:
@@ -188,11 +188,11 @@ class IKController:
                     else:
                         gripper_actuator_name = "follower_right_gripper"
                 elif robot_type == RobotType.MOBILE_AI:
-                    # Pattern: follower_left/left_carriage_joint -> follower_left/gripper
+                    # Pattern: follower_left_left_carriage_joint -> follower_left_gripper
                     if "follower_left" in joint_name:
-                        gripper_actuator_name = "follower_left/gripper"
+                        gripper_actuator_name = "follower_left_gripper"
                     else:
-                        gripper_actuator_name = "follower_right/gripper"
+                        gripper_actuator_name = "follower_right_gripper"
                 else:
                     # Fallback: try to infer from joint name
                     gripper_actuator_name = joint_name.replace(
