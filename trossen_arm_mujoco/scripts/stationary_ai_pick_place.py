@@ -156,24 +156,6 @@ class StationaryAIPickPlace:
         self.right_trajectory: list[tuple[np.ndarray, np.ndarray, int]] | None = None
         self.trajectory_index = 0
         self.waypoint_step_count = 0
-        self.current_phase = 0
-        self.phase_names = [
-            "Left to prepick, Right waits",
-            "Left descends to prepick",
-            "Left descends to pick",
-            "Left grasps cube",
-            "Left lifts cube",
-            "Both arms move to handoff",
-            "Right approaches for receive",
-            "Right grasps cube",
-            "Left releases cube",
-            "Left retreats",
-            "Right lifts with cube",
-            "Right moves to pre-place",
-            "Right descends to place",
-            "Right releases cube",
-            "Both arms return home",
-        ]
 
     def setup_scene(self) -> None:
         """Initialize simulation scene with robot, cube, and environment."""
