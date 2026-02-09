@@ -99,13 +99,12 @@ class MobileAIPickPlace:
     ):
         """Initialize sequential dual-arm pick-and-place task.
 
-        Args:
-            left_events_dt: Time deltas for left arm phases.
-            right_events_dt: Time deltas for right arm phases.
-            cube_initial_position: Initial cube position.
-            cube_initial_orientation: Initial cube orientation.
-            intermediate_position: Middle position where left places/right picks.
-            target_position: Final target position.
+        :param left_events_dt: Time deltas for left arm phases.
+        :param right_events_dt: Time deltas for right arm phases.
+        :param cube_initial_position: Initial cube position.
+        :param cube_initial_orientation: Initial cube orientation.
+        :param intermediate_position: Middle position where left places/right picks.
+        :param target_position: Final target position.
         """
         self.cube_initial_position = (
             cube_initial_position
@@ -200,8 +199,7 @@ class MobileAIPickPlace:
     def forward(self) -> bool:
         """Execute one simulation step of the sequential pick-and-place.
 
-        Returns:
-            bool: True if task is in progress, False if complete.
+        :return: True if task is in progress, False if complete.
         """
         assert self.data is not None
         if self.is_done():

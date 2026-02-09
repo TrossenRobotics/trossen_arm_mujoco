@@ -76,15 +76,14 @@ class Controller:
     ):
         """Initialize IK controller.
 
-        Args:
-            model: MuJoCo model
-            data: MuJoCo data
-            robot_type: Type of robot (WXAI, STATIONARY_AI, or MOBILE_AI)
-            ee_site_name: Name of end effector site in the model
-            arm_joint_names: List of arm joint names for IK. If None, uses defaults.
-            gripper_joint_names: List of gripper joint names. If None, uses defaults.
-            ik_scale: Scaling factor for IK joint velocity (0.0-1.0)
-            ik_damping: Damping for singularity robustness (0.0-0.1)
+        :param model: MuJoCo model
+        :param data: MuJoCo data
+        :param robot_type: Type of robot (WXAI, STATIONARY_AI, or MOBILE_AI)
+        :param ee_site_name: Name of end effector site in the model
+        :param arm_joint_names: List of arm joint names for IK. If None, uses defaults.
+        :param gripper_joint_names: List of gripper joint names. If None, uses defaults.
+        :param ik_scale: Scaling factor for IK joint velocity (0.0-1.0)
+        :param ik_damping: Damping for singularity robustness (0.0-0.1)
         """
         self.model = model
         self.data = data
@@ -99,9 +98,7 @@ class Controller:
 
         # Get end effector site ID
         try:
-            self.ee_site_id = mujoco.mj_name2id(
-                model, mujoco.mjtObj.mjOBJ_SITE, ee_site_name
-            )
+            self.ee_site_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_SITE, ee_site_name)
         except Exception as e:
             raise ValueError(f"End effector site '{ee_site_name}' not found: {e}")
 
@@ -132,9 +129,7 @@ class Controller:
 
         for joint_name in arm_joint_names if arm_joint_names is not None else []:
             try:
-                joint_id = mujoco.mj_name2id(
-                    model, mujoco.mjtObj.mjOBJ_JOINT, joint_name
-                )
+                joint_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_JOINT, joint_name)
                 self.arm_joint_ids.append(joint_id)
 
                 # Get qpos address for this joint
@@ -163,13 +158,9 @@ class Controller:
         self.gripper_qpos_indices = []
         self.gripper_actuator_ids = []
 
-        for joint_name in (
-            gripper_joint_names if gripper_joint_names is not None else []
-        ):
+        for joint_name in gripper_joint_names if gripper_joint_names is not None else []:
             try:
-                joint_id = mujoco.mj_name2id(
-                    model, mujoco.mjtObj.mjOBJ_JOINT, joint_name
-                )
+                joint_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_JOINT, joint_name)
                 self.gripper_joint_ids.append(joint_id)
 
                 qpos_adr = model.jnt_qposadr[joint_id]
@@ -195,9 +186,7 @@ class Controller:
                         gripper_actuator_name = "follower_right_gripper"
                 else:
                     # Fallback: try to infer from joint name
-                    gripper_actuator_name = joint_name.replace(
-                        "left_carriage_joint", "gripper"
-                    )
+                    gripper_actuator_name = joint_name.replace("left_carriage_joint", "gripper")
                     gripper_actuator_name = gripper_actuator_name.replace(
                         "right_carriage_joint", "gripper"
                     )
@@ -208,9 +197,7 @@ class Controller:
                     )
                     self.gripper_actuator_ids.append(actuator_id)
                 except Exception:
-                    print(
-                        f"Warning: Gripper actuator '{gripper_actuator_name}' not found"
-                    )
+                    print(f"Warning: Gripper actuator '{gripper_actuator_name}' not found")
                     self.gripper_actuator_ids.append(-1)
 
             except Exception as e:
@@ -225,9 +212,8 @@ class Controller:
     def get_ee_pose(self) -> Tuple[np.ndarray, np.ndarray]:
         """Get current end effector pose.
 
-        Returns:
-            position: End effector position [x, y, z]
-            orientation: End effector orientation as quaternion [w, x, y, z]
+        :return: Tuple of (position, orientation) where position is end effector
+            position [x, y, z] and orientation is quaternion [w, x, y, z]
         """
         # Get site position
         position = self.data.site(self.ee_site_id).xpos.copy()
@@ -244,16 +230,14 @@ class Controller:
     def get_arm_joint_positions(self) -> np.ndarray:
         """Get current arm joint positions.
 
-        Returns:
-            Joint positions array
+        :return: Joint positions array
         """
         return np.array([self.data.qpos[idx] for idx in self.arm_qpos_indices])
 
     def set_arm_joint_positions(self, joint_positions: np.ndarray) -> None:
         """Set arm joint target positions via actuators.
 
-        Args:
-            joint_positions: Target joint positions
+        :param joint_positions: Target joint positions
         """
         for i, actuator_id in enumerate(self.arm_actuator_ids):
             if actuator_id >= 0:
@@ -262,8 +246,7 @@ class Controller:
     def get_gripper_position(self) -> float:
         """Get current gripper position.
 
-        Returns:
-            Gripper position (opening width in meters)
+        :return: Gripper position (opening width in meters)
         """
         if len(self.gripper_qpos_indices) == 0:
             return 0.0
@@ -272,8 +255,7 @@ class Controller:
     def set_gripper_position(self, position: float) -> None:
         """Set gripper target position via actuator.
 
-        Args:
-            position: Gripper opening width (0.022 = closed, 0.044 = open)
+        :param position: Gripper opening width (0.022 = closed, 0.044 = open)
         """
         for actuator_id in self.gripper_actuator_ids:
             if actuator_id >= 0:
@@ -295,14 +277,11 @@ class Controller:
     ) -> np.ndarray:
         """Compute one step of differential IK using damped least squares.
 
-        Args:
-            target_position: Target end effector position [x, y, z]
-            target_orientation: Target orientation as quaternion [w, x, y, z].
-                              If None, only position control is used.
-            position_only: If True, ignore orientation even if provided
-
-        Returns:
-            Joint position delta to apply
+        :param target_position: Target end effector position [x, y, z]
+        :param target_orientation: Target orientation as quaternion [w, x, y, z].
+            If None, only position control is used.
+        :param position_only: If True, ignore orientation even if provided
+        :return: Joint position delta to apply
         """
         # Get current end effector pose
         current_position, current_orientation = self.get_ee_pose()
@@ -318,9 +297,7 @@ class Controller:
             q_current = current_orientation
 
             # Quaternion conjugate (inverse for unit quaternions)
-            q_current_conj = np.array(
-                [q_current[0], -q_current[1], -q_current[2], -q_current[3]]
-            )
+            q_current_conj = np.array([q_current[0], -q_current[1], -q_current[2], -q_current[3]])
 
             # Quaternion multiplication: q_target * q_current_conj
             q_diff = self._quat_multiply(q_target, q_current_conj)
@@ -335,9 +312,7 @@ class Controller:
             error = position_error
 
         # Get Jacobian for end effector site
-        mujoco.mj_jacSite(
-            self.model, self.data, self.jac_pos, self.jac_rot, self.ee_site_id
-        )
+        mujoco.mj_jacSite(self.model, self.data, self.jac_pos, self.jac_rot, self.ee_site_id)
 
         # Extract Jacobian for arm joints only
         if target_orientation is not None and not position_only:
@@ -381,13 +356,10 @@ class Controller:
         Computes and applies one IK step. Should be called repeatedly
         until target is reached.
 
-        Args:
-            target_position: Target position [x, y, z]
-            target_orientation: Target orientation quaternion [w, x, y, z]
-            position_only: If True, only control position
-
-        Returns:
-            Position error magnitude (meters)
+        :param target_position: Target position [x, y, z]
+        :param target_orientation: Target orientation quaternion [w, x, y, z]
+        :param position_only: If True, only control position
+        :return: Position error magnitude (meters)
         """
         # Compute IK step
         dq = self.compute_ik_step(target_position, target_orientation, position_only)
@@ -410,12 +382,9 @@ class Controller:
     def _quat_multiply(self, q1: np.ndarray, q2: np.ndarray) -> np.ndarray:
         """Multiply two quaternions [w, x, y, z].
 
-        Args:
-            q1: First quaternion [w, x, y, z]
-            q2: Second quaternion [w, x, y, z]
-
-        Returns:
-            Product quaternion [w, x, y, z]
+        :param q1: First quaternion [w, x, y, z]
+        :param q2: Second quaternion [w, x, y, z]
+        :return: Product quaternion [w, x, y, z]
         """
         w1, x1, y1, z1 = q1
         w2, x2, y2, z2 = q2

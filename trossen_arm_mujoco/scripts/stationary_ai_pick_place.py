@@ -113,12 +113,11 @@ class StationaryAIPickPlace:
     ):
         """Initialize dual-arm pick-and-place task.
 
-        Args:
-            events_dt: Time deltas for each phase of the task.
-            cube_initial_position: Initial cube position [x, y, z].
-            cube_initial_orientation: Initial cube orientation [w, x, y, z].
-            target_position: Target place position [x, y, z].
-            handoff_position: Center position for handoff [x, y, z].
+        :param events_dt: Time deltas for each phase of the task.
+        :param cube_initial_position: Initial cube position [x, y, z].
+        :param cube_initial_orientation: Initial cube orientation [w, x, y, z].
+        :param target_position: Target place position [x, y, z].
+        :param handoff_position: Center position for handoff [x, y, z].
         """
         self.cube_initial_position = (
             cube_initial_position
@@ -192,8 +191,7 @@ class StationaryAIPickPlace:
     def forward(self) -> bool:
         """Execute one simulation step of the dual-arm handoff sequence.
 
-        Returns:
-            bool: True if sequence is in progress, False if complete.
+        :return: True if sequence is in progress, False if complete.
         """
         if self.is_done():
             return False

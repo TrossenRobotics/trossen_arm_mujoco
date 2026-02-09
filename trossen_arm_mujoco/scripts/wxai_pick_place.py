@@ -84,11 +84,10 @@ class WXAIPickPlace:
     ):
         """Initialize pick-and-place task.
 
-        Args:
-            events_dt: List of time deltas for events in the task sequence.
-            cube_initial_position: Initial position [x, y, z] of the cube in meters.
-            cube_initial_orientation: Initial orientation quaternion [w, x, y, z] of the cube.
-            target_position: Target position [x, y, z] for placing the cube in meters.
+        :param events_dt: List of time deltas for events in the task sequence.
+        :param cube_initial_position: Initial position [x, y, z] of the cube in meters.
+        :param cube_initial_orientation: Initial orientation quaternion [w, x, y, z] of the cube.
+        :param target_position: Target position [x, y, z] for placing the cube in meters.
         """
         self.cube_initial_position = (
             cube_initial_position
@@ -141,8 +140,7 @@ class WXAIPickPlace:
     def forward(self) -> bool:
         """Execute one simulation step of the pick-and-place trajectory.
 
-        Returns:
-            bool: True if trajectory is in progress, False if complete.
+        :return: True if trajectory is in progress, False if complete.
         """
         if self.is_done():
             return False
@@ -191,8 +189,7 @@ class WXAIPickPlace:
     def is_done(self) -> bool:
         """Check if pick-and-place task is complete.
 
-        Returns:
-            bool: True if all trajectory waypoints have been executed.
+        :return: True if all trajectory waypoints have been executed.
         """
         return self.trajectory is not None and self.trajectory_index >= len(self.trajectory)
 
@@ -271,9 +268,8 @@ class WXAIPickPlace:
     def get_cube_pose(self) -> tuple[np.ndarray, np.ndarray]:
         """Get current cube position and orientation.
 
-        Returns:
-            position: Cube position [x, y, z]
-            orientation: Cube orientation quaternion [w, x, y, z]
+        :return: Tuple of (position, orientation) where position is [x, y, z]
+            and orientation is quaternion [w, x, y, z]
         """
         assert self.data is not None
         assert self.cube_body_id is not None
@@ -298,16 +294,11 @@ class WXAIPickPlace:
     ) -> list[tuple[np.ndarray, np.ndarray, int]]:
         """Generate smooth trajectory via linear interpolation between keyframes.
 
-        Args:
-            key_frames: Position waypoints [x, y, z] in meters. Length must be len(dt) + 1.
-            orientations: Orientation quaternions [w, x, y, z] for each keyframe.
-            dt: Duration in steps for each trajectory segment.
-
-        Returns:
-            List of (position, orientation, cumulative_step) tuples.
-
-        Raises:
-            ValueError: If array lengths are incompatible.
+        :param key_frames: Position waypoints [x, y, z] in meters. Length must be len(dt) + 1.
+        :param orientations: Orientation quaternions [w, x, y, z] for each keyframe.
+        :param dt: Duration in steps for each trajectory segment.
+        :return: List of (position, orientation, cumulative_step) tuples.
+        :raises ValueError: If array lengths are incompatible.
         """
         if len(key_frames) != len(dt) + 1:
             raise ValueError(f"Expected {len(dt) + 1} keyframes for {len(dt)} segments")
