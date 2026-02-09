@@ -13,7 +13,7 @@
 # See https://github.com/pre-commit/pre-commit
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+    rev: v4.6.0
     hooks:
     - id: check-added-large-files
     - id: check-case-conflict
@@ -26,24 +26,24 @@ repos:
     - id: trailing-whitespace
 
 -   repo: https://github.com/codespell-project/codespell
-    rev: v2.4.1
+    rev: v2.2.6
     hooks:
     -   id: codespell
         additional_dependencies:
         -   tomli
 
 -   repo: https://github.com/pycqa/isort
-    rev: 6.0.1
+    rev: 5.13.2
     hooks:
       - id: isort
 
 -   repo: https://github.com/asottile/pyupgrade
-    rev: v3.19.1
+    rev: v3.15.2
     hooks:
     -   id: pyupgrade
 
 -   repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.11.3
+    rev: v0.4.4
     hooks:
       - id: ruff
         args: [--fix]

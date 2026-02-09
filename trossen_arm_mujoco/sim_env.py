@@ -87,7 +87,7 @@ class TrossenAIStationaryTask(base.Task):
 
         left_arm_action = action[:6]
         right_arm_action = action[8:14]
-        left_gripper_action = action[7]   # left_carriage_joint (actuated joint)
+        left_gripper_action = action[7]  # left_carriage_joint (actuated joint)
         right_gripper_action = action[15]  # left_carriage_joint (actuated joint)
 
         env_action = np.concatenate(

@@ -1,7 +1,7 @@
 __pycache__
 *.egg-info/
-*.mp4
 *output
+*.mp4
 build/
 trossen_ai_data/
 output_csvs/
