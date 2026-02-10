@@ -51,24 +51,27 @@ trossen_arm_mujoco/assets/
 ├── wxai/
 │   ├── wxai_base.xml              # WidowX AI base model
 │   ├── wxai_follower.xml          # WidowX AI follower arm with camera
+│   ├── scene.xml                  # Basic visualization scene
 │   ├── scene_wxai_pick_place.xml  # Pick-and-place scene
 │   └── scene_wxai_follow_target.xml # Target following scene
 ├── stationary_ai/
 │   ├── stationary_ai.xml          # Dual-arm stationary platform
 │   ├── stationary_ai_mocap.xml    # Mocap-enabled model with weld constraints
+│   ├── scene.xml                  # Basic visualization scene
 │   ├── scene_stationary_ai_pick_place.xml # Pick-and-place with handoff
 │   ├── scene_joint.xml            # Joint-controlled setup
 │   └── scene_mocap.xml            # Motion capture-controlled setup
 └── mobile_ai/
     ├── mobile_ai.xml              # Mobile base + dual-arm
+    ├── scene.xml                  # Basic visualization scene
     └── scene_mobile_ai_pick_place.xml # Mobile pick-and-place
 ```
 
 ### Asset Details
 
 **WidowX AI** - Single-arm manipulator:
-- Base model (`wxai_base.xml`): 6-DOF arm without camera
-- Follower model (`wxai_follower.xml`): 6-DOF arm + parallel jaw gripper
+- Base model (`wxai_base.xml`): 6-DOF arm
+- Follower model (`wxai_follower.xml`): 6-DOF arm with camera
 
 **Stationary AI** - Dual-arm stationary platform:
 - Dual WXAI arms on shared base
@@ -174,7 +177,7 @@ The robot will track the target cube position in real-time.
 
 ## Controller API
 
-The differential inverse kinematics controller (`IKController` in [`ik_controller.py`](./trossen_arm_mujoco/scripts/ik_controller.py)) provides Cartesian end-effector control for all Trossen AI robots.
+The differential inverse kinematics controller (`Controller` in [`controller.py`](./trossen_arm_mujoco/src/controller.py)) provides Cartesian end-effector control for all Trossen AI robots.
 
 ### Key Features
 
@@ -186,13 +189,13 @@ The differential inverse kinematics controller (`IKController` in [`ik_controlle
 ### Basic Usage
 
 ```python
-from trossen_arm_mujoco.scripts.ik_controller import IKController
+from trossen_arm_mujoco.src.controller import Controller, RobotType
 
 # Initialize controller
-robot = IKController(
+robot = Controller(
     model=mujoco_model,
     data=mujoco_data,
-    robot_type="wxai",  # or "stationary_ai", "mobile_ai"
+    robot_type=RobotType.WXAI,  # or RobotType.STATIONARY_AI, RobotType.MOBILE_AI
     arm_joint_names=["joint_1", "joint_2", ...],
     gripper_joint_names=["left_carriage_joint"],
     ik_scale=1.0,
