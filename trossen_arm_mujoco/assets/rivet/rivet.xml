@@ -1,0 +1,355 @@
+<mujoco model="rivet">
+  <compiler angle="radian" meshdir="../meshes" texturedir="../" autolimits="true"/>
+
+  <option integrator="implicitfast"/>
+
+  <default>
+    <default class="visual">
+      <geom type="mesh" group="2" contype="0" conaffinity="0"/>
+    </default>
+    <!-- TODO(abhismirai42): collision uses the same simplified meshes (convex-hulled by the engine) as a placeholder;
+         replace with hand-tuned primitives-->
+    <default class="collision">
+      <geom type="mesh" group="3" mass="0" density="0"/>
+    </default>
+  </default>
+
+  <asset>
+    <material name="color_0" rgba="0.2627 0.2824 0.302 1"/>
+    <material name="color_1" rgba="0.3725 0.6549 0.2392 1"/>
+    <material name="color_2" rgba="0.8667 0.3216 0.1569 1"/>
+    <material name="color_3" rgba="0.9176 0.9176 0.9176 1"/>
+    <material name="color_5" rgba="0.0 0.7059 1.0 1"/>
+    <material name="color_6" rgba="0.902 0.902 0.902 1"/>
+    <!-- rivet base parts -->
+    <material name="color_8" rgba="0.302 0.302 0.302 1"/>
+
+    <mesh name="rivet_base_link" file="rivet/base_link.obj" />
+    <mesh name="rivet_camera" file="rivet/camera.obj" />
+    <mesh name="carriage_lift_link" file="rivet/carriage_lift_link.obj" />
+    <mesh name="swivel" file="rivet/swivel.obj" />
+    <mesh name="wheel" file="rivet/wheel.obj" />
+
+    <mesh name="base_link" file="wxpro_mesh/base_link.obj"/>
+    <mesh name="base_link_color_1" file="wxpro_mesh/base_link_color_1.obj"/>
+    <mesh name="base_link_color_3" file="wxpro_mesh/base_link_color_3.obj"/>
+    <mesh name="base_link_color_0" file="wxpro_mesh/base_link_color_0.obj"/>
+    <mesh name="base_link_color_2" file="wxpro_mesh/base_link_color_2.obj"/>
+    <mesh name="link_1" file="wxpro_mesh/link_1.obj"/>
+    <mesh name="link_2" file="wxpro_mesh/link_2.obj"/>
+    <mesh name="link_2_color_0" file="wxpro_mesh/link_2_color_0.obj"/>
+    <mesh name="link_2_color_5" file="wxpro_mesh/link_2_color_5.obj"/>
+    <mesh name="link_3" file="wxpro_mesh/link_3.obj"/>
+    <mesh name="link_3_color_0" file="wxpro_mesh/link_3_color_0.obj"/>
+    <mesh name="link_3_color_6" file="wxpro_mesh/link_3_color_6.obj"/>
+    <mesh name="link_3_color_5" file="wxpro_mesh/link_3_color_5.obj"/>
+    <mesh name="link_4" file="wxpro_mesh/link_4.obj"/>
+    <mesh name="link_5" file="wxpro_mesh/link_5.obj"/>
+    <mesh name="link_6" file="wxpro_mesh/link_6.obj"/>
+    <mesh name="carriage_right" file="wxpro_mesh/carriage_right.obj"/>
+    <mesh name="carriage_left" file="wxpro_mesh/carriage_left.obj"/>
+    <mesh name="gripper_right" file="wxpro_mesh/gripper_right.obj"/>
+    <mesh name="gripper_right_color_0" file="wxpro_mesh/gripper_right_color_0.obj"/>
+    <mesh name="gripper_right_color_5" file="wxpro_mesh/gripper_right_color_5.obj"/>
+    <mesh name="gripper_left" file="wxpro_mesh/gripper_left.obj"/>
+    <mesh name="gripper_left_color_0" file="wxpro_mesh/gripper_left_color_0.obj"/>
+    <mesh name="gripper_left_color_5" file="wxpro_mesh/gripper_left_color_5.obj"/>
+    <mesh name="camera_mount" file="wxpro_mesh/camera_mount.obj"/>
+    <mesh name="camera" file="wxpro_mesh/camera.obj"/>
+  </asset>
+
+  <worldbody>
+    <body name="base_link" pos="0 0 0.1285">
+      <freejoint name="base_freejoint"/>
+      <geom class="visual" mesh="rivet_base_link" material="color_8"/>
+      <geom class="collision" mesh="rivet_base_link"/>
+      <inertial pos="-0.00387668 -0.0332838 0.198466" mass="73.7606"
+        fullinertia="6.32878 5.76624 2.94862 -0.0384037 -0.00555349 -0.51839"/>
+
+      <body name="carriage_lift_link" pos="-0.000125 0.165 0.595105">
+        <!-- TODO(abhismirai42): range is a placeholder, not the real lift-actuator stroke -->
+        <joint name="carriage_lift_joint" type="slide" pos="0 0 0" axis="0 0 1" range="-1 1"/>
+        <geom class="visual" mesh="carriage_lift_link" material="color_8"/>
+        <geom class="collision" mesh="carriage_lift_link"/>
+        <inertial pos="0 0.0543177 0.0192157" mass="2.69782"
+          fullinertia="0.0103103 0.102184 0.0952441 0.0 0.0 -0.000235492"/>
+
+        <body name="camera" pos="0 0.0786917 0.351299" quat="0.9762960 -0.2164395 0 0">
+          <geom class="visual" mesh="rivet_camera" material="color_0"/>
+          <geom class="collision" mesh="rivet_camera"/>
+          <inertial pos="0 0.0181899 0" mass="0.0982026"
+            fullinertia="0.0000174033 0.0000756992 0.0000778027 0.0 0.0 0.0"/>
+        </body>
+
+        <!-- follower_left arm -->
+        <body name="follower_left_base_link" pos="-0.275 0.0615 0.031" quat="0.7071068 0 0 0.7071068">
+          <geom class="visual" mesh="base_link_color_1" material="color_1"/>
+          <geom class="visual" mesh="base_link_color_3" material="color_3"/>
+          <geom class="visual" mesh="base_link_color_0" material="color_0"/>
+          <geom class="visual" mesh="base_link_color_2" material="color_2"/>
+          <geom class="collision" mesh="base_link"/>
+          <inertial pos="-0.00615208 0.00004245 0.05031879" mass="1.01890997" fullinertia="0.00159523 0.00194612 0.00171486 0.00000435 -0.0000731 -0.00000116"/>
+          <body name="follower_left_link_1" pos="0 0 0.096">
+            <joint name="follower_left_joint_0" pos="0 0 0" axis="0 0 1" range="-3.05432619 3.05432619"/>
+            <geom class="visual" mesh="link_1" material="color_0"/>
+            <geom class="collision" mesh="link_1"/>
+            <inertial pos="0.00269514 -0.00016097 0.01933509" mass="0.25186508" fullinertia="0.00035496 0.00019037 0.00033701 0.00000196 -0.00004191 -0.00000057"/>
+            <body name="follower_left_link_2" pos="0.02 0 0.0535">
+              <joint name="follower_left_joint_1" pos="0 0 0" axis="0 1 0" range="0 3.14159265"/>
+              <geom class="visual" mesh="link_2_color_0" material="color_0"/>
+              <geom class="visual" mesh="link_2_color_5" material="color_5"/>
+              <geom class="collision" mesh="link_2"/>
+              <inertial pos="-0.1012236 -0.00183082 0.00500847" mass="1.73323784" fullinertia="0.00124418 0.02572488 0.02574169 0.00018835 0.0008078 -0.00001351"/>
+              <body name="follower_left_link_3" pos="-0.274 0 0.0095">
+                <joint name="follower_left_joint_2" pos="0 0 0" axis="0 -1 0" range="0 2.35619449"/>
+                <geom class="visual" mesh="link_3_color_0" material="color_0"/>
+                <geom class="visual" mesh="link_3_color_6" material="color_6"/>
+                <geom class="visual" mesh="link_3_color_5" material="color_5"/>
+                <geom class="collision" mesh="link_3"/>
+                <inertial pos="0.15078963 -0.00011014 0.055404" mass="0.95073232" fullinertia="0.00082328 0.01003685 0.01001162 0.00000511 -0.00066824 -0.00000307"/>
+                <body name="follower_left_link_4" pos="0.245 0 0.06">
+                  <joint name="follower_left_joint_3" pos="0 0 0" axis="0 -1 0" range="-1.57079633 1.57079633"/>
+                  <geom class="visual" mesh="link_4" material="color_0"/>
+                  <geom class="collision" mesh="link_4"/>
+                  <inertial pos="0.05224276 -0.00099433 0.05517984" mass="0.44927258" fullinertia="0.00053844 0.0006614 0.00055157 -0.00002118 -0.00024825 -0.00002265"/>
+                  <body name="follower_left_link_5" pos="0.065 0 0.048">
+                    <joint name="follower_left_joint_4" pos="0 0 0" axis="0 0 -1" range="-1.57079633 1.57079633"/>
+                    <geom class="visual" mesh="link_5" material="color_0"/>
+                    <geom class="collision" mesh="link_5"/>
+                    <inertial pos="-0.00579062 0 -0.02720844" mass="0.07121851" fullinertia="0.00004021 0.00003792 0.00001254 0 -0.00000666 0"/>
+                    <body name="follower_left_link_6" pos="-0.012 0 -0.048">
+                      <joint name="follower_left_joint_5" pos="0 0 0" axis="1 0 0" range="-3.14159265 3.14159265"/>
+                      <geom class="visual" mesh="link_6" material="color_0"/>
+                      <geom class="collision" mesh="link_6"/>
+                      <inertial pos="0.06129266 -0.00002029 -0.00026366" mass="0.84380465" fullinertia="0.00046982 0.00127174 0.00130342 -0.00000111 -0.00001431 -0.00000064"/>
+                      <site name="follower_left_ee_site" pos="0.22 0 0" size="0.003"/>
+                      <body name="follower_left_camera_mount" pos="0.104 0 0">
+                        <geom class="visual" mesh="camera_mount" material="color_0"/>
+                        <geom class="collision" mesh="camera_mount"/>
+                        <inertial pos="-0.01095 0 0.03905" mass="0.0496" fullinertia="0.0000188 0.0000105 0.0000123 0 0 0"/>
+                        <body name="follower_left_camera" pos="-0.002173 0 0.001068">
+                          <geom class="visual" mesh="camera" material="color_0"/>
+                          <geom class="collision" mesh="camera"/>
+                          <inertial pos="-0.00555 0 0.07215" mass="0.0695" fullinertia="0.0000195 0.0000192 0.0000202 0 0 0"/>
+                        </body>
+                      </body>
+                      <body name="follower_left_carriage_right" pos="0.1285 -0.0225 0" quat="0.7071068 0 0 0.7071068">
+                        <joint name="follower_left_right_carriage_joint" pos="0 0 0" axis="-1 0 0" type="slide" range="0 0.044"/>
+                        <geom class="visual" mesh="carriage_right" material="color_0"/>
+                        <geom class="collision" mesh="carriage_right"/>
+                        <inertial pos="-0.01045045 0.03368951 0.01622436" mass="0.06140653" fullinertia="0.00003532 0.00000891 0.00003018 0.00000483 0.00000179 -0.00000886"/>
+                        <body name="follower_left_gripper_right" pos="0 0 0" quat="0.7071068 0.7071068 0 0">
+                          <geom class="visual" mesh="gripper_right_color_0" material="color_0"/>
+                          <geom class="visual" mesh="gripper_right_color_5" material="color_5"/>
+                          <geom class="collision" mesh="gripper_right"/>
+                          <inertial pos="0.00275423 0.00000726 0.0205991" mass="0.03751074" fullinertia="0.00002087 0.00002044 0.00000456 0 -0.00000338 0"/>
+                        </body>
+                      </body>
+                      <body name="follower_left_carriage_left" pos="0.1285 0.0225 0" quat="0 0.7071068 -0.7071068 0">
+                        <joint name="follower_left_left_carriage_joint" pos="0 0 0" axis="-1 0 0" type="slide" range="0 0.044"/>
+                        <geom class="visual" mesh="carriage_left" material="color_0"/>
+                        <geom class="collision" mesh="carriage_left"/>
+                        <inertial pos="-0.01045045 -0.03368951 -0.01622436" mass="0.06140653" fullinertia="0.00003532 0.00000891 0.00003018 -0.00000483 -0.00000179 -0.00000886"/>
+                        <body name="follower_left_gripper_left" pos="0 0 0" quat="0.7071068 0.7071068 0 0">
+                          <geom class="visual" mesh="gripper_left_color_0" material="color_0"/>
+                          <geom class="visual" mesh="gripper_left_color_5" material="color_5"/>
+                          <geom class="collision" mesh="gripper_left"/>
+                          <inertial pos="0.00275423 0.00000726 0.0205991" mass="0.03751074" fullinertia="0.00002087 0.00002044 0.00000456 0 -0.00000338 0"/>
+                        </body>
+                      </body>
+                    </body>
+                  </body>
+                </body>
+              </body>
+            </body>
+          </body>
+        </body>
+
+        <!-- follower_right arm -->
+        <body name="follower_right_base_link" pos="0.275 0.0615 0.031" quat="0.7071068 0 0 0.7071068">
+          <geom class="visual" mesh="base_link_color_1" material="color_1"/>
+          <geom class="visual" mesh="base_link_color_3" material="color_3"/>
+          <geom class="visual" mesh="base_link_color_0" material="color_0"/>
+          <geom class="visual" mesh="base_link_color_2" material="color_2"/>
+          <geom class="collision" mesh="base_link"/>
+          <inertial pos="-0.00615208 0.00004245 0.05031879" mass="1.01890997" fullinertia="0.00159523 0.00194612 0.00171486 0.00000435 -0.0000731 -0.00000116"/>
+          <body name="follower_right_link_1" pos="0 0 0.096">
+            <joint name="follower_right_joint_0" pos="0 0 0" axis="0 0 1" range="-3.05432619 3.05432619"/>
+            <geom class="visual" mesh="link_1" material="color_0"/>
+            <geom class="collision" mesh="link_1"/>
+            <inertial pos="0.00269514 -0.00016097 0.01933509" mass="0.25186508" fullinertia="0.00035496 0.00019037 0.00033701 0.00000196 -0.00004191 -0.00000057"/>
+            <body name="follower_right_link_2" pos="0.02 0 0.0535">
+              <joint name="follower_right_joint_1" pos="0 0 0" axis="0 1 0" range="0 3.14159265"/>
+              <geom class="visual" mesh="link_2_color_0" material="color_0"/>
+              <geom class="visual" mesh="link_2_color_5" material="color_5"/>
+              <geom class="collision" mesh="link_2"/>
+              <inertial pos="-0.1012236 -0.00183082 0.00500847" mass="1.73323784" fullinertia="0.00124418 0.02572488 0.02574169 0.00018835 0.0008078 -0.00001351"/>
+              <body name="follower_right_link_3" pos="-0.274 0 0.0095">
+                <joint name="follower_right_joint_2" pos="0 0 0" axis="0 -1 0" range="0 2.35619449"/>
+                <geom class="visual" mesh="link_3_color_0" material="color_0"/>
+                <geom class="visual" mesh="link_3_color_6" material="color_6"/>
+                <geom class="visual" mesh="link_3_color_5" material="color_5"/>
+                <geom class="collision" mesh="link_3"/>
+                <inertial pos="0.15078963 -0.00011014 0.055404" mass="0.95073232" fullinertia="0.00082328 0.01003685 0.01001162 0.00000511 -0.00066824 -0.00000307"/>
+                <body name="follower_right_link_4" pos="0.245 0 0.06">
+                  <joint name="follower_right_joint_3" pos="0 0 0" axis="0 -1 0" range="-1.57079633 1.57079633"/>
+                  <geom class="visual" mesh="link_4" material="color_0"/>
+                  <geom class="collision" mesh="link_4"/>
+                  <inertial pos="0.05224276 -0.00099433 0.05517984" mass="0.44927258" fullinertia="0.00053844 0.0006614 0.00055157 -0.00002118 -0.00024825 -0.00002265"/>
+                  <body name="follower_right_link_5" pos="0.065 0 0.048">
+                    <joint name="follower_right_joint_4" pos="0 0 0" axis="0 0 -1" range="-1.57079633 1.57079633"/>
+                    <geom class="visual" mesh="link_5" material="color_0"/>
+                    <geom class="collision" mesh="link_5"/>
+                    <inertial pos="-0.00579062 0 -0.02720844" mass="0.07121851" fullinertia="0.00004021 0.00003792 0.00001254 0 -0.00000666 0"/>
+                    <body name="follower_right_link_6" pos="-0.012 0 -0.048">
+                      <joint name="follower_right_joint_5" pos="0 0 0" axis="1 0 0" range="-3.14159265 3.14159265"/>
+                      <geom class="visual" mesh="link_6" material="color_0"/>
+                      <geom class="collision" mesh="link_6"/>
+                      <inertial pos="0.06129266 -0.00002029 -0.00026366" mass="0.84380465" fullinertia="0.00046982 0.00127174 0.00130342 -0.00000111 -0.00001431 -0.00000064"/>
+                      <site name="follower_right_ee_site" pos="0.22 0 0" size="0.003"/>
+                      <body name="follower_right_camera_mount" pos="0.104 0 0">
+                        <geom class="visual" mesh="camera_mount" material="color_0"/>
+                        <geom class="collision" mesh="camera_mount"/>
+                        <inertial pos="-0.01095 0 0.03905" mass="0.0496" fullinertia="0.0000188 0.0000105 0.0000123 0 0 0"/>
+                        <body name="follower_right_camera" pos="-0.002173 0 0.001068">
+                          <geom class="visual" mesh="camera" material="color_0"/>
+                          <geom class="collision" mesh="camera"/>
+                          <inertial pos="-0.00555 0 0.07215" mass="0.0695" fullinertia="0.0000195 0.0000192 0.0000202 0 0 0"/>
+                        </body>
+                      </body>
+                      <body name="follower_right_carriage_right" pos="0.1285 -0.0225 0" quat="0.7071068 0 0 0.7071068">
+                        <joint name="follower_right_right_carriage_joint" pos="0 0 0" axis="-1 0 0" type="slide" range="0 0.044"/>
+                        <geom class="visual" mesh="carriage_right" material="color_0"/>
+                        <geom class="collision" mesh="carriage_right"/>
+                        <inertial pos="-0.01045045 0.03368951 0.01622436" mass="0.06140653" fullinertia="0.00003532 0.00000891 0.00003018 0.00000483 0.00000179 -0.00000886"/>
+                        <body name="follower_right_gripper_right" pos="0 0 0" quat="0.7071068 0.7071068 0 0">
+                          <geom class="visual" mesh="gripper_right_color_0" material="color_0"/>
+                          <geom class="visual" mesh="gripper_right_color_5" material="color_5"/>
+                          <geom class="collision" mesh="gripper_right"/>
+                          <inertial pos="0.00275423 0.00000726 0.0205991" mass="0.03751074" fullinertia="0.00002087 0.00002044 0.00000456 0 -0.00000338 0"/>
+                        </body>
+                      </body>
+                      <body name="follower_right_carriage_left" pos="0.1285 0.0225 0" quat="0 0.7071068 -0.7071068 0">
+                        <joint name="follower_right_left_carriage_joint" pos="0 0 0" axis="-1 0 0" type="slide" range="0 0.044"/>
+                        <geom class="visual" mesh="carriage_left" material="color_0"/>
+                        <geom class="collision" mesh="carriage_left"/>
+                        <inertial pos="-0.01045045 -0.03368951 -0.01622436" mass="0.06140653" fullinertia="0.00003532 0.00000891 0.00003018 -0.00000483 -0.00000179 -0.00000886"/>
+                        <body name="follower_right_gripper_left" pos="0 0 0" quat="0.7071068 0.7071068 0 0">
+                          <geom class="visual" mesh="gripper_left_color_0" material="color_0"/>
+                          <geom class="visual" mesh="gripper_left_color_5" material="color_5"/>
+                          <geom class="collision" mesh="gripper_left"/>
+                          <inertial pos="0.00275423 0.00000726 0.0205991" mass="0.03751074" fullinertia="0.00002087 0.00002044 0.00000456 0 -0.00000338 0"/>
+                        </body>
+                      </body>
+                    </body>
+                  </body>
+                </body>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+
+      <body name="swivel_1" pos="0.000125 -0.24 0.003">
+        <joint name="swivel_steer_1" pos="0 0 0" axis="0 0 1" range="-3.14159265 3.14159265"/>
+        <geom class="visual" mesh="swivel" material="color_8"/>
+        <geom class="collision" mesh="swivel"/>
+        <inertial pos="0 0 -0.0395608" mass="0.619024" fullinertia="0.000923685 0.00137238 0.00117765 0.0 0.0 0.0"/>
+        <body name="wheel_1" pos="0 0 -0.078">
+          <joint name="swivel_drive_1" pos="0 0 0" axis="-1 0 0"/>
+          <geom class="visual" mesh="wheel" material="color_8"/>
+          <geom class="collision" type="cylinder" size="0.0535 0.0205" pos="0 0 0" quat="1 0 1 0"/>
+          <inertial pos="0 0 0" mass="0.330766" fullinertia="0.000500429 0.000294662 0.000294662 0.0 0.0 0.0"/>
+        </body>
+      </body>
+
+      <body name="swivel_2" pos="-0.189875 0.24 0.003">
+        <joint name="swivel_steer_2" pos="0 0 0" axis="0 0 1" range="-3.14159265 3.14159265"/>
+        <geom class="visual" mesh="swivel" material="color_8"/>
+        <geom class="collision" mesh="swivel"/>
+        <inertial pos="0 0 -0.0395608" mass="0.619024" fullinertia="0.000923685 0.00137238 0.00117765 0.0 0.0 0.0"/>
+        <body name="wheel_2" pos="0 0 -0.078">
+          <joint name="swivel_drive_2" pos="0 0 0" axis="-1 0 0"/>
+          <geom class="visual" mesh="wheel" material="color_8"/>
+          <geom class="collision" type="cylinder" size="0.0535 0.0205" pos="0 0 0" quat="1 0 1 0"/>
+          <inertial pos="0 0 0" mass="0.330766" fullinertia="0.000500429 0.000294662 0.000294662 0.0 0.0 0.0"/>
+        </body>
+      </body>
+
+      <body name="swivel_3" pos="0.190125 0.24 0.003">
+        <joint name="swivel_steer_3" pos="0 0 0" axis="0 0 1" range="-3.14159265 3.14159265"/>
+        <geom class="visual" mesh="swivel" material="color_8"/>
+        <geom class="collision" mesh="swivel"/>
+        <inertial pos="0 0 -0.0395608" mass="0.619024" fullinertia="0.000923685 0.00137238 0.00117765 0.0 0.0 0.0"/>
+        <body name="wheel_3" pos="0 0 -0.078">
+          <joint name="swivel_drive_3" pos="0 0 0" axis="-1 0 0"/>
+          <geom class="visual" mesh="wheel" material="color_8"/>
+          <geom class="collision" type="cylinder" size="0.0535 0.0205" pos="0 0 0" quat="1 0 1 0"/>
+          <inertial pos="0 0 0" mass="0.330766" fullinertia="0.000500429 0.000294662 0.000294662 0.0 0.0 0.0"/>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+
+  <equality>
+    <joint joint1="follower_left_right_carriage_joint" joint2="follower_left_left_carriage_joint" polycoef="0 1 0 0 0"/>
+    <joint joint1="follower_right_right_carriage_joint" joint2="follower_right_left_carriage_joint" polycoef="0 1 0 0 0"/>
+  </equality>
+
+  <!-- TODO(abhismirai42): update mesh collision -->
+  <contact>
+    <exclude body1="base_link" body2="swivel_1"/>
+    <exclude body1="base_link" body2="swivel_2"/>
+    <exclude body1="base_link" body2="swivel_3"/>
+    <exclude body1="swivel_1" body2="wheel_1"/>
+    <exclude body1="swivel_2" body2="wheel_2"/>
+    <exclude body1="swivel_3" body2="wheel_3"/>
+    <exclude body1="base_link" body2="wheel_1"/>
+    <exclude body1="base_link" body2="wheel_2"/>
+    <exclude body1="base_link" body2="wheel_3"/>
+
+    <exclude body1="carriage_lift_link" body2="follower_left_link_1"/>
+    <exclude body1="carriage_lift_link" body2="follower_right_link_1"/>
+    <exclude body1="carriage_lift_link" body2="follower_left_link_2"/>
+    <exclude body1="carriage_lift_link" body2="follower_right_link_2"/>
+    <exclude body1="follower_left_link_4" body2="follower_left_link_6"/>
+    <exclude body1="follower_right_link_4" body2="follower_right_link_6"/>
+
+    <exclude body1="follower_left_carriage_right" body2="follower_left_carriage_left"/>
+    <exclude body1="follower_right_carriage_right" body2="follower_right_carriage_left"/>
+  </contact>
+
+  <actuator>
+    <!-- TODO(abhismirai42): placeholder gains copied from wxpro.xml; forcerange = urdf effort limit -->
+    <position name="follower_left_joint_0" joint="follower_left_joint_0" kp="200" kv="10" ctrlrange="-3.05432619 3.05432619" forcerange="-27 27"/>
+    <position name="follower_left_joint_1" joint="follower_left_joint_1" kp="200" kv="10" ctrlrange="0 3.14159265" forcerange="-27 27"/>
+    <position name="follower_left_joint_2" joint="follower_left_joint_2" kp="200" kv="10" ctrlrange="0 2.35619449" forcerange="-27 27"/>
+    <position name="follower_left_joint_3" joint="follower_left_joint_3" kp="70" kv="5" ctrlrange="-1.57079633 1.57079633" forcerange="-7 7"/>
+    <position name="follower_left_joint_4" joint="follower_left_joint_4" kp="20" kv="5" ctrlrange="-1.57079633 1.57079633" forcerange="-7 7"/>
+    <position name="follower_left_joint_5" joint="follower_left_joint_5" kp="10" kv="5" ctrlrange="-3.14159265 3.14159265" forcerange="-7 7"/>
+    <position name="follower_left_gripper" joint="follower_left_left_carriage_joint" kp="1000" kv="50" ctrlrange="0 0.044" forcerange="-400 400"/>
+
+    <position name="follower_right_joint_0" joint="follower_right_joint_0" kp="200" kv="10" ctrlrange="-3.05432619 3.05432619" forcerange="-27 27"/>
+    <position name="follower_right_joint_1" joint="follower_right_joint_1" kp="200" kv="10" ctrlrange="0 3.14159265" forcerange="-27 27"/>
+    <position name="follower_right_joint_2" joint="follower_right_joint_2" kp="200" kv="10" ctrlrange="0 2.35619449" forcerange="-27 27"/>
+    <position name="follower_right_joint_3" joint="follower_right_joint_3" kp="70" kv="5" ctrlrange="-1.57079633 1.57079633" forcerange="-7 7"/>
+    <position name="follower_right_joint_4" joint="follower_right_joint_4" kp="20" kv="5" ctrlrange="-1.57079633 1.57079633" forcerange="-7 7"/>
+    <position name="follower_right_joint_5" joint="follower_right_joint_5" kp="10" kv="5" ctrlrange="-3.14159265 3.14159265" forcerange="-7 7"/>
+    <position name="follower_right_gripper" joint="follower_right_left_carriage_joint" kp="1000" kv="50" ctrlrange="0 0.044" forcerange="-400 400"/>
+
+    <!-- TODO(abhismirai42): placeholder gains/limits; no real lift-actuator or drive-motor specs available yet -->
+    <position name="carriage_lift_joint" joint="carriage_lift_joint" kp="2000" kv="200" ctrlrange="-1 1" forcerange="-500 500"/>
+    <position name="swivel_steer_1" joint="swivel_steer_1" kp="50" kv="5" ctrlrange="-3.14159265 3.14159265" forcerange="-10 10"/>
+    <position name="swivel_steer_2" joint="swivel_steer_2" kp="50" kv="5" ctrlrange="-3.14159265 3.14159265" forcerange="-10 10"/>
+    <position name="swivel_steer_3" joint="swivel_steer_3" kp="50" kv="5" ctrlrange="-3.14159265 3.14159265" forcerange="-10 10"/>
+    <velocity name="swivel_drive_1" joint="swivel_drive_1" kv="1000" ctrlrange="-18.691589 18.691589" forcerange="-4 4"/>
+    <velocity name="swivel_drive_2" joint="swivel_drive_2" kv="1000" ctrlrange="-18.691589 18.691589" forcerange="-4 4"/>
+    <velocity name="swivel_drive_3" joint="swivel_drive_3" kv="1000" ctrlrange="-18.691589 18.691589" forcerange="-4 4"/>
+  </actuator>
+
+  <keyframe>
+    <key name="home"
+      qpos="0 0 0.1285 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0"
+      ctrl="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0"/>
+  </keyframe>
+</mujoco>
