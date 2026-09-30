@@ -26,8 +26,8 @@
 
     <mesh name="rivet_base_link" file="rivet/base_link.obj" />
     <mesh name="rivet_camera" file="rivet/camera.obj" />
-    <mesh name="carriage_lift_link" file="rivet/carriage_lift_link.obj" />
-    <mesh name="swivel" file="rivet/swivel.obj" />
+    <mesh name="lift_link" file="rivet/lift_link.obj" />
+    <mesh name="pivot_link" file="rivet/pivot_link.obj" />
     <mesh name="wheel" file="rivet/wheel.obj" />
 
     <mesh name="base_link" file="wxpro_mesh/base_link.obj"/>
@@ -66,10 +66,10 @@
       <inertial pos="-0.0332838 0.00387668 0.198466" mass="73.7606"
         fullinertia="5.76624 6.32878 2.94862 0.0 -0.51839 0.00555349"/>
 
-      <body name="carriage_lift_link" pos="0.165 0.0 0.181">
-        <joint name="carriage_lift_joint" type="slide" pos="0 0 0" axis="0 0 1" range="0.0 0.858"/>
-        <geom class="visual" mesh="carriage_lift_link" material="color_8"/>
-        <geom class="collision" mesh="carriage_lift_link"/>
+      <body name="lift_link" pos="0.165 0.0 0.181">
+        <joint name="lift" type="slide" pos="0 0 0" axis="0 0 1" range="0.0 0.858"/>
+        <geom class="visual" mesh="lift_link" material="color_8"/>
+        <geom class="collision" mesh="lift_link"/>
         <inertial pos="0.0543177 0 0.0192157" mass="2.69782"
           fullinertia="0.102184 0.0103103 0.0952441 0.0 -0.000235492 0.0"/>
 
@@ -249,39 +249,39 @@
         </body>
       </body>
 
-      <body name="swivel_1" pos="-0.24 0.0 0.003">
-        <joint name="swivel_joint_1" pos="0 0 0" axis="0 0 1"/>
-        <geom class="visual" mesh="swivel" material="color_8"/>
-        <geom class="collision" mesh="swivel"/>
+      <body name="b_pivot_link" pos="-0.24 0.0 0.003">
+        <joint name="b_pivot" pos="0 0 0" axis="0 0 1"/>
+        <geom class="visual" mesh="pivot_link" material="color_8"/>
+        <geom class="collision" mesh="pivot_link"/>
         <inertial pos="0 0 -0.0395608" mass="0.619024" fullinertia="0.00137238 0.000923685 0.00117765 0.0 0.0 0.0"/>
-        <body name="wheel_1" pos="0 0 -0.078">
-          <joint name="wheel_joint_1" pos="0 0 0" axis="0 1 0"/>
+        <body name="b_drive_link" pos="0 0 -0.078">
+          <joint name="b_drive" pos="0 0 0" axis="0 1 0"/>
           <geom class="visual" mesh="wheel" material="color_8"/>
           <geom class="collision" type="cylinder" size="0.0535 0.0205" pos="0 0 0" quat="1 1 0 0"/>
           <inertial pos="0 0 0" mass="0.330766" fullinertia="0.000294662 0.000500429 0.000294662 0.0 0.0 0.0"/>
         </body>
       </body>
 
-      <body name="swivel_2" pos="0.24 -0.190 0.003">
-        <joint name="swivel_joint_2" pos="0 0 0" axis="0 0 1"/>
-        <geom class="visual" mesh="swivel" material="color_8"/>
-        <geom class="collision" mesh="swivel"/>
+      <body name="fr_pivot_link" pos="0.24 -0.190 0.003">
+        <joint name="fr_pivot" pos="0 0 0" axis="0 0 1"/>
+        <geom class="visual" mesh="pivot_link" material="color_8"/>
+        <geom class="collision" mesh="pivot_link"/>
         <inertial pos="0 0 -0.0395608" mass="0.619024" fullinertia="0.00137238 0.000923685 0.00117765 0.0 0.0 0.0"/>
-        <body name="wheel_2" pos="0 0 -0.078">
-          <joint name="wheel_joint_2" pos="0 0 0" axis="0 1 0"/>
+        <body name="fr_drive_link" pos="0 0 -0.078">
+          <joint name="fr_drive" pos="0 0 0" axis="0 1 0"/>
           <geom class="visual" mesh="wheel" material="color_8"/>
           <geom class="collision" type="cylinder" size="0.0535 0.0205" pos="0 0 0" quat="1 1 0 0"/>
           <inertial pos="0 0 0" mass="0.330766" fullinertia="0.000294662 0.000500429 0.000294662 0.0 0.0 0.0"/>
         </body>
       </body>
 
-      <body name="swivel_3" pos="0.24 0.190 0.003">
-        <joint name="swivel_joint_3" pos="0 0 0" axis="0 0 1"/>
-        <geom class="visual" mesh="swivel" material="color_8"/>
-        <geom class="collision" mesh="swivel"/>
+      <body name="fl_pivot_link" pos="0.24 0.190 0.003">
+        <joint name="fl_pivot" pos="0 0 0" axis="0 0 1"/>
+        <geom class="visual" mesh="pivot_link" material="color_8"/>
+        <geom class="collision" mesh="pivot_link"/>
         <inertial pos="0 0 -0.0395608" mass="0.619024" fullinertia="0.00137238 0.000923685 0.00117765 0.0 0.0 0.0"/>
-        <body name="wheel_3" pos="0 0 -0.078">
-          <joint name="wheel_joint_3" pos="0 0 0" axis="0 1 0"/>
+        <body name="fl_drive_link" pos="0 0 -0.078">
+          <joint name="fl_drive" pos="0 0 0" axis="0 1 0"/>
           <geom class="visual" mesh="wheel" material="color_8"/>
           <geom class="collision" type="cylinder" size="0.0535 0.0205" pos="0 0 0" quat="1 1 0 0"/>
           <inertial pos="0 0 0" mass="0.330766" fullinertia="0.000294662 0.000500429 0.000294662 0.0 0.0 0.0"/>
@@ -297,20 +297,20 @@
 
   <!-- TODO(abhismirai42): update mesh collision -->
   <contact>
-    <exclude body1="base_link" body2="swivel_1"/>
-    <exclude body1="base_link" body2="swivel_2"/>
-    <exclude body1="base_link" body2="swivel_3"/>
-    <exclude body1="swivel_1" body2="wheel_1"/>
-    <exclude body1="swivel_2" body2="wheel_2"/>
-    <exclude body1="swivel_3" body2="wheel_3"/>
-    <exclude body1="base_link" body2="wheel_1"/>
-    <exclude body1="base_link" body2="wheel_2"/>
-    <exclude body1="base_link" body2="wheel_3"/>
+    <exclude body1="base_link" body2="b_pivot_link"/>
+    <exclude body1="base_link" body2="fr_pivot_link"/>
+    <exclude body1="base_link" body2="fl_pivot_link"/>
+    <exclude body1="b_pivot_link" body2="b_drive_link"/>
+    <exclude body1="fr_pivot_link" body2="fr_drive_link"/>
+    <exclude body1="fl_pivot_link" body2="fl_drive_link"/>
+    <exclude body1="base_link" body2="b_drive_link"/>
+    <exclude body1="base_link" body2="fr_drive_link"/>
+    <exclude body1="base_link" body2="fl_drive_link"/>
 
-    <exclude body1="carriage_lift_link" body2="follower_right_link_1"/>
-    <exclude body1="carriage_lift_link" body2="follower_left_link_1"/>
-    <exclude body1="carriage_lift_link" body2="follower_right_link_2"/>
-    <exclude body1="carriage_lift_link" body2="follower_left_link_2"/>
+    <exclude body1="lift_link" body2="follower_right_link_1"/>
+    <exclude body1="lift_link" body2="follower_left_link_1"/>
+    <exclude body1="lift_link" body2="follower_right_link_2"/>
+    <exclude body1="lift_link" body2="follower_left_link_2"/>
     <exclude body1="follower_right_link_4" body2="follower_right_link_6"/>
     <exclude body1="follower_left_link_4" body2="follower_left_link_6"/>
 
@@ -337,13 +337,13 @@
     <position name="follower_left_gripper" joint="follower_left_left_carriage_joint" kp="1000" kv="50" ctrlrange="0 0.044" forcerange="-400 400"/>
 
     <!-- TODO(abhismirai42): placeholder gains/limits; no real lift-actuator or drive-motor specs available yet -->
-    <position name="carriage_lift_joint" joint="carriage_lift_joint" kp="2000" kv="200" ctrlrange="0.0 0.858" forcerange="-500 500"/>
-    <position name="swivel_joint_1" joint="swivel_joint_1" kp="50" kv="5" ctrlrange="-3.14159265 3.14159265" forcerange="-10 10"/>
-    <position name="swivel_joint_2" joint="swivel_joint_2" kp="50" kv="5" ctrlrange="-3.14159265 3.14159265" forcerange="-10 10"/>
-    <position name="swivel_joint_3" joint="swivel_joint_3" kp="50" kv="5" ctrlrange="-3.14159265 3.14159265" forcerange="-10 10"/>
-    <velocity name="wheel_joint_1" joint="wheel_joint_1" kv="1000" ctrlrange="-18.691589 18.691589" forcerange="-4 4"/>
-    <velocity name="wheel_joint_2" joint="wheel_joint_2" kv="1000" ctrlrange="-18.691589 18.691589" forcerange="-4 4"/>
-    <velocity name="wheel_joint_3" joint="wheel_joint_3" kv="1000" ctrlrange="-18.691589 18.691589" forcerange="-4 4"/>
+    <position name="lift" joint="lift" kp="2000" kv="200" ctrlrange="0.0 0.858" forcerange="-500 500"/>
+    <position name="b_pivot" joint="b_pivot" kp="50" kv="5" ctrlrange="-3.14159265 3.14159265" forcerange="-10 10"/>
+    <position name="fr_pivot" joint="fr_pivot" kp="50" kv="5" ctrlrange="-3.14159265 3.14159265" forcerange="-10 10"/>
+    <position name="fl_pivot" joint="fl_pivot" kp="50" kv="5" ctrlrange="-3.14159265 3.14159265" forcerange="-10 10"/>
+    <velocity name="b_drive" joint="b_drive" kv="1000" ctrlrange="-18.691589 18.691589" forcerange="-4 4"/>
+    <velocity name="fr_drive" joint="fr_drive" kv="1000" ctrlrange="-18.691589 18.691589" forcerange="-4 4"/>
+    <velocity name="fl_drive" joint="fl_drive" kv="1000" ctrlrange="-18.691589 18.691589" forcerange="-4 4"/>
   </actuator>
 
   <keyframe>
