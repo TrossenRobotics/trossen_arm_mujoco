@@ -1,0 +1,166 @@
+<mujoco model="wxheavy">
+  <compiler angle="radian" meshdir="../meshes" texturedir="../" autolimits="true"/>
+
+  <option integrator="implicitfast"/>
+
+  <default>
+    <default class="visual">
+      <geom type="mesh" group="2" contype="0" conaffinity="0"/>
+    </default>
+    <!-- TODO(abhismirai42): collision uses the same simplified meshes (convex-hulled by the engine) as a placeholder;
+         replace with hand-tuned primitives-->
+    <default class="collision">
+      <geom type="mesh" group="3" mass="0" density="0"/>
+    </default>
+  </default>
+
+  <asset>
+    <material name="color_0" rgba="0.2627 0.2824 0.302 1"/>
+    <material name="color_1" rgba="0.3725 0.6549 0.2392 1"/>
+    <material name="color_2" rgba="0.8667 0.3216 0.1569 1"/>
+    <material name="color_3" rgba="0.9176 0.9176 0.9176 1"/>
+    <material name="color_5" rgba="0.0 0.7059 1.0 1"/>
+    <material name="color_6" rgba="0.902 0.902 0.902 1"/>
+    <material name="zed_camera" rgba="0.25 0.25 0.25 1"/>
+
+    <mesh name="base_link" file="wxheavy/base_link.obj"/>
+    <mesh name="base_link_color_1" file="wxheavy/base_link_color_1.obj"/>
+    <mesh name="base_link_color_3" file="wxheavy/base_link_color_3.obj"/>
+    <mesh name="base_link_color_0" file="wxheavy/base_link_color_0.obj"/>
+    <mesh name="base_link_color_2" file="wxheavy/base_link_color_2.obj"/>
+    <mesh name="link_1" file="wxheavy/link_1.obj"/>
+    <mesh name="link_2" file="wxheavy/link_2.obj"/>
+    <mesh name="link_2_color_0" file="wxheavy/link_2_color_0.obj"/>
+    <mesh name="link_2_color_5" file="wxheavy/link_2_color_5.obj"/>
+    <mesh name="link_3" file="wxheavy/link_3.obj"/>
+    <mesh name="link_3_color_0" file="wxheavy/link_3_color_0.obj"/>
+    <mesh name="link_3_color_6" file="wxheavy/link_3_color_6.obj"/>
+    <mesh name="link_3_color_5" file="wxheavy/link_3_color_5.obj"/>
+    <mesh name="link_4" file="wxheavy/link_4.obj"/>
+    <mesh name="link_5" file="wxheavy/link_5.obj"/>
+    <mesh name="link_6" file="wxheavy/link_6.obj"/>
+    <mesh name="carriage_right" file="wxheavy/carriage_right.obj"/>
+    <mesh name="carriage_left" file="wxheavy/carriage_left.obj"/>
+    <mesh name="gripper_right" file="wxheavy/gripper_right.obj"/>
+    <mesh name="gripper_right_color_0" file="wxheavy/gripper_right_color_0.obj"/>
+    <mesh name="gripper_right_color_5" file="wxheavy/gripper_right_color_5.obj"/>
+    <mesh name="gripper_left" file="wxheavy/gripper_left.obj"/>
+    <mesh name="gripper_left_color_0" file="wxheavy/gripper_left_color_0.obj"/>
+    <mesh name="gripper_left_color_5" file="wxheavy/gripper_left_color_5.obj"/>
+    <mesh name="camera_mount" file="wxheavy/camera_mount.obj"/>
+    <mesh name="zedxnano" file="peripherals/zedxnano.stl"/>
+  </asset>
+
+  <worldbody>
+    <body name="base_link" pos="0 0 0">
+      <geom class="visual" mesh="base_link_color_1" material="color_1"/>
+      <geom class="visual" mesh="base_link_color_3" material="color_3"/>
+      <geom class="visual" mesh="base_link_color_0" material="color_0"/>
+      <geom class="visual" mesh="base_link_color_2" material="color_2"/>
+      <geom class="collision" mesh="base_link"/>
+      <inertial pos="-0.01019070 -0.00000943 0.04760850" mass="1.36323000" fullinertia="0.00231528 0.00313916 0.00320515 -0.00000086 -0.00021389 0.00000031"/>
+      <body name="link_1" pos="0 0 0.109">
+        <joint name="joint_0" pos="0 0 0" axis="0 0 1" range="-2.87979327 2.87979327"/>
+        <geom class="visual" mesh="link_1" material="color_0"/>
+        <geom class="collision" mesh="link_1"/>
+        <inertial pos="0.02328170 0 0.03956140" mass="0.71976300" fullinertia="0.00112465 0.00080447 0.00119080 0 -0.00014720 0"/>
+        <body name="link_2" pos="0.032576 0 0.0485">
+          <joint name="joint_1" pos="0 0 0" axis="0 1 0" range="0 3.83972435"/>
+          <geom class="visual" mesh="link_2_color_0" material="color_0"/>
+          <geom class="visual" mesh="link_2_color_5" material="color_5"/>
+          <geom class="collision" mesh="link_2"/>
+          <inertial pos="-0.25315200 0 0" mass="1.31276000" fullinertia="0.00094059 0.02273520 0.02309920 0 0 0"/>
+          <body name="link_3" pos="-0.43 0 0">
+            <joint name="joint_2" pos="0 0 0" axis="0 -1 0" range="0 3.75245789"/>
+            <geom class="visual" mesh="link_3_color_0" material="color_0"/>
+            <geom class="visual" mesh="link_3_color_6" material="color_6"/>
+            <geom class="visual" mesh="link_3_color_5" material="color_5"/>
+            <geom class="collision" mesh="link_3"/>
+            <inertial pos="0.21528200 0.00022546 0.06284670" mass="1.65476000" fullinertia="0.00114570 0.02861630 0.02887320 -0.00007094 -0.00077583 -0.00000084"/>
+            <body name="link_4" pos="0.405655 0 0.0651">
+              <joint name="joint_3" pos="0 0 0" axis="0 -1 0" range="-1.57079633 1.57079633"/>
+              <geom class="visual" mesh="link_4" material="color_0"/>
+              <geom class="collision" mesh="link_4"/>
+              <inertial pos="0.04792001 0 0.05741396" mass="0.69237200" fullinertia="0.00111193 0.00102592 0.00092026 0 -0.00035591 0"/>
+              <body name="link_5" pos="0.065 0 0.048">
+                <joint name="joint_4" pos="0 0 0" axis="0 0 -1" range="-1.57079633 1.57079633"/>
+                <geom class="visual" mesh="link_5" material="color_0"/>
+                <geom class="collision" mesh="link_5"/>
+                <inertial pos="-0.00579062 0 -0.02720844" mass="0.07121851" fullinertia="0.00004021 0.00003792 0.00001254 0 -0.00000666 0"/>
+                <body name="link_6" pos="-0.012 0 -0.048">
+                  <joint name="joint_5" pos="0 0 0" axis="1 0 0" range="-2.00712864 2.00712864"/>
+                  <geom class="visual" mesh="link_6" material="color_0"/>
+                  <geom class="collision" mesh="link_6"/>
+                  <inertial pos="0.06129266 -0.00002029 -0.00026366" mass="0.84380465" fullinertia="0.00046982 0.00127174 0.00130342 -0.00000111 -0.00001431 -0.00000064"/>
+                  <site name="ee_site" pos="0.22 0 0" size="0.003"/>
+                  <body name="camera_mount" pos="0.102 0 0">
+                    <geom class="visual" mesh="camera_mount" material="color_0"/>
+                    <geom class="collision" mesh="camera_mount"/>
+                    <inertial pos="-0.00493731 0 0.04433580" mass="0.00853488" fullinertia="0.00000273 0.00000118 0.00000196 0 0.00000030 0"/>
+                  </body>
+                  <body name="wrist_camera_link" pos="0.0933 0 0.05677" quat="0.9762960 0 0.2164395 0">
+                    <body name="wrist_camera_center" pos="0 0 0.01525">
+                      <geom class="visual" mesh="zedxnano" material="zed_camera" pos="0 0 -0.01525"/>
+                      <geom class="collision" mesh="zedxnano" pos="0 0 -0.01525"/>
+                      <inertial pos="0 0 0" mass="0.075" diaginertia="1.6839063e-05 1.2954312e-05 1.816525e-05"/>
+                      <site name="wrist_left_camera_frame" pos="-0.01 0.009 0" size="0.002"/>
+                      <site name="wrist_right_camera_frame" pos="-0.01 -0.009 0" size="0.002"/>
+                    </body>
+                  </body>
+                  <body name="carriage_right" pos="0.1285 -0.0225 0" quat="0.7071068 0 0 0.7071068">
+                    <joint name="right_carriage_joint" pos="0 0 0" axis="-1 0 0" type="slide" range="0 0.045"/>
+                    <geom class="visual" mesh="carriage_right" material="color_0"/>
+                    <geom class="collision" mesh="carriage_right"/>
+                    <inertial pos="0.01255019 0.00449652 0.00963255" mass="0.06140653" fullinertia="0.0000091193 0.0000310840 0.0000224261 -0.0000005807 -0.0000082661 -0.0000004457"/>
+                    <body name="gripper_right" pos="0 0 0" quat="0.7071068 0.7071068 0 0">
+                      <geom class="visual" mesh="gripper_right_color_0" material="color_0"/>
+                      <geom class="visual" mesh="gripper_right_color_5" material="color_5"/>
+                      <geom class="collision" mesh="gripper_right"/>
+                      <inertial pos="0.00275423 0.00000726 0.0205991" mass="0.03751074" fullinertia="0.00002087 0.00002044 0.00000456 0 -0.00000338 0"/>
+                    </body>
+                  </body>
+                  <body name="carriage_left" pos="0.1285 0.0225 0" quat="0 0.7071068 -0.7071068 0">
+                    <joint name="left_carriage_joint" pos="0 0 0" axis="-1 0 0" type="slide" range="0 0.045"/>
+                    <geom class="visual" mesh="carriage_left" material="color_0"/>
+                    <geom class="collision" mesh="carriage_left"/>
+                    <inertial pos="0.01255019 0.00449652 0.00963255" mass="0.06140653" fullinertia="0.0000091193 0.0000310840 0.0000224261 -0.0000005807 -0.0000082661 -0.0000004457"/>
+                    <body name="gripper_left" pos="0 0 0" quat="0.7071068 0.7071068 0 0">
+                      <geom class="visual" mesh="gripper_left_color_0" material="color_0"/>
+                      <geom class="visual" mesh="gripper_left_color_5" material="color_5"/>
+                      <geom class="collision" mesh="gripper_left"/>
+                      <inertial pos="0.00275423 0.00000726 0.0205991" mass="0.03751074" fullinertia="0.00002087 0.00002044 0.00000456 0 -0.00000338 0"/>
+                    </body>
+                  </body>
+                </body>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+    </body>
+
+  </worldbody>
+
+  <equality>
+    <joint joint1="right_carriage_joint" joint2="left_carriage_joint" polycoef="0 1 0 0 0"/>
+  </equality>
+
+  <!-- TODO(abhismirai42): update mesh collision -->
+  <contact>
+    <exclude body1="base_link" body2="link_1"/>
+    <exclude body1="link_4" body2="link_6"/>
+    <exclude body1="camera_mount" body2="wrist_camera_center"/>
+    <exclude body1="carriage_right" body2="carriage_left"/>
+  </contact>
+
+  <actuator>
+    <!-- TODO(abhismirai42): placeholder gains confirm against heavy arm actuator specs -->
+    <position name="joint_0" joint="joint_0" kp="200" kv="10" ctrlrange="-2.87979327 2.87979327" forcerange="-97 97"/>
+    <position name="joint_1" joint="joint_1" kp="200" kv="10" ctrlrange="0 3.83972435" forcerange="-194 194"/>
+    <position name="joint_2" joint="joint_2" kp="200" kv="10" ctrlrange="0 3.75245789" forcerange="-97 97"/>
+    <position name="joint_3" joint="joint_3" kp="70" kv="5" ctrlrange="-1.57079633 1.57079633" forcerange="-27 27"/>
+    <position name="joint_4" joint="joint_4" kp="20" kv="5" ctrlrange="-1.57079633 1.57079633" forcerange="-7 7"/>
+    <position name="joint_5" joint="joint_5" kp="10" kv="5" ctrlrange="-2.00712864 2.00712864" forcerange="-7 7"/>
+    <position name="gripper" joint="left_carriage_joint" kp="1000" kv="50" ctrlrange="0 0.045" forcerange="-400 400"/>
+  </actuator>
+</mujoco>
