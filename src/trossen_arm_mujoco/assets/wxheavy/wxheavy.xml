@@ -87,12 +87,12 @@
                 <geom class="visual" mesh="link_5" material="color_0"/>
                 <geom class="collision" mesh="link_5"/>
                 <inertial pos="-0.00579062 0 -0.02720844" mass="0.07121851" fullinertia="0.00004021 0.00003792 0.00001254 0 -0.00000666 0"/>
-                <body name="link_6" pos="-0.012 0 -0.048">
+                <body name="link_6" pos="-0.009 0 -0.048">
                   <joint name="joint_5" pos="0 0 0" axis="1 0 0" range="-2.00712864 2.00712864"/>
                   <geom class="visual" mesh="link_6" material="color_0"/>
                   <geom class="collision" mesh="link_6"/>
                   <inertial pos="0.06129266 -0.00002029 -0.00026366" mass="0.84380465" fullinertia="0.00046982 0.00127174 0.00130342 -0.00000111 -0.00001431 -0.00000064"/>
-                  <site name="ee_site" pos="0.22 0 0" size="0.003"/>
+                  <site name="ee_site" pos="0.218 0 0" size="0.003"/>
                   <body name="camera_mount" pos="0.102 0 0">
                     <geom class="visual" mesh="camera_mount" material="color_0"/>
                     <geom class="collision" mesh="camera_mount"/>
@@ -107,7 +107,7 @@
                       <site name="wrist_right_camera_frame" pos="-0.01 -0.009 0" size="0.002"/>
                     </body>
                   </body>
-                  <body name="carriage_right" pos="0.1285 -0.0225 0" quat="0.7071068 0 0 0.7071068">
+                  <body name="carriage_right" pos="0.1265 -0.0225 0" quat="0.7071068 0 0 0.7071068">
                     <joint name="right_carriage_joint" pos="0 0 0" axis="-1 0 0" type="slide" range="0 0.045"/>
                     <geom class="visual" mesh="carriage_right" material="color_0"/>
                     <geom class="collision" mesh="carriage_right"/>
@@ -119,7 +119,7 @@
                       <inertial pos="0.00275423 0.00000726 0.0205991" mass="0.03751074" fullinertia="0.00002087 0.00002044 0.00000456 0 -0.00000338 0"/>
                     </body>
                   </body>
-                  <body name="carriage_left" pos="0.1285 0.0225 0" quat="0 0.7071068 -0.7071068 0">
+                  <body name="carriage_left" pos="0.1265 0.0225 0" quat="0 0.7071068 -0.7071068 0">
                     <joint name="left_carriage_joint" pos="0 0 0" axis="-1 0 0" type="slide" range="0 0.045"/>
                     <geom class="visual" mesh="carriage_left" material="color_0"/>
                     <geom class="collision" mesh="carriage_left"/>
