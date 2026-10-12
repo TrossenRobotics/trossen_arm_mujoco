@@ -30,26 +30,26 @@
 Demonstrates mobile base motion and dual-arm pick-and-place using the Mobile AI robot.
 
 Usage:
-    python trossen_arm_mujoco/scripts/mobile_ai_pick_place.py
+    uv run python3 scripts/mobile_ai_pick_place.py
 """
 
 from __future__ import annotations
 
+import os
 import sys
 import time
 
 import mujoco
 import mujoco.viewer
 import numpy as np
-from scipy.spatial.transform import Rotation
 
-from trossen_arm_mujoco.src.controller import Controller, RobotType
+from trossen_arm_mujoco.controller import Controller, RobotType
 
 # Default configuration constants
-DEFAULT_CUBE_POSITION = np.array([1.0, 0.3, 0.825])
+DEFAULT_CUBE_POSITION = np.array([1.0, 0.3, 0.845])
 DEFAULT_CUBE_ORIENTATION = np.array([1.0, 0.0, 0.0, 0.0])
-DEFAULT_INTERMEDIATE_POSITION = np.array([1.0, 0.0, 0.825])
-DEFAULT_TARGET_POSITION = np.array([1.0, -0.3, 0.825])
+DEFAULT_INTERMEDIATE_POSITION = np.array([1.0, 0.0, 0.845])
+DEFAULT_TARGET_POSITION = np.array([1.0, -0.3, 0.845])
 
 # Home positions for arms
 LEFT_ARM_HOME_POSITION = np.array([1.0, 0.3, 1.1])
@@ -70,7 +70,8 @@ APPROACH_OFFSET = np.array([0.0, 0.0, 0.0])
 DOWNWARD_ORIENTATION = np.array([0.70710678, 0.0, 0.70710678, 0.0])
 
 # Scene configuration
-SCENE_XML_PATH = "trossen_arm_mujoco/assets/mobile_ai/scene_mobile_ai_pick_place.xml"
+ASSETS_DIR = os.path.join(os.path.dirname(__file__), "..", "assets")
+SCENE_XML_PATH = os.path.join(ASSETS_DIR, "mobile_ai", "scene_mobile_ai_pick_place.xml")
 
 # Robot controller configuration
 LEFT_ARM_JOINT_NAMES = [f"follower_left_joint_{i}" for i in range(6)]
@@ -394,10 +395,7 @@ class MobileAIPickPlace:
         assert self.data is not None
         assert self.cube_body_id is not None
         cube_pos = self.data.xpos[self.cube_body_id].copy()
-        cube_xmat = self.data.xmat[self.cube_body_id].reshape(3, 3)
-        rotation = Rotation.from_matrix(cube_xmat)
-        quat_xyzw = rotation.as_quat()
-        cube_quat = np.array([quat_xyzw[3], quat_xyzw[0], quat_xyzw[1], quat_xyzw[2]])
+        cube_quat = self.data.xquat[self.cube_body_id].copy()
         return cube_pos, cube_quat
 
     def make_trajectory(
@@ -422,11 +420,6 @@ class MobileAIPickPlace:
             end_ori = np.array(orientations[i + 1], dtype=np.float64)
             n_steps = dt[i]
 
-            rot_start = Rotation.from_quat(
-                [start_ori[1], start_ori[2], start_ori[3], start_ori[0]]
-            )
-            rot_end = Rotation.from_quat([end_ori[1], end_ori[2], end_ori[3], end_ori[0]])
-
             for step in range(n_steps):
                 alpha = step / n_steps if n_steps > 0 else 0.0
                 interpolated_pos = start_pos + alpha * (end_pos - start_pos)
@@ -435,15 +428,11 @@ class MobileAIPickPlace:
                     interpolated_ori = start_ori
                 else:
                     # Normalized linear interpolation for quaternions
-                    q = rot_start.as_quat() * (1 - alpha) + rot_end.as_quat() * alpha
+                    q = start_ori * (1 - alpha) + end_ori * alpha
                     norm = np.linalg.norm(q)
                     if norm > 0.0:
                         q = q / norm
-                    rot_interp = Rotation.from_quat(q)
-                    quat_xyzw = rot_interp.as_quat()
-                    interpolated_ori = np.array(
-                        [quat_xyzw[3], quat_xyzw[0], quat_xyzw[1], quat_xyzw[2]]
-                    )
+                    interpolated_ori = q
 
                 trajectory.append((interpolated_pos, interpolated_ori, cumulative_step + step))
 
@@ -527,23 +516,7 @@ class MobileAIPickPlace:
 
 
 def main():
-    """Main execution function."""
-    print("=" * 70)
-    print("Mobile AI Sequential Dual-Arm Pick-and-Place Demo (MuJoCo)")
-    print("=" * 70)
-    print()
-    print("The left arm picks up the cube and places it at intermediate position,")
-    print("then the right arm picks it up and places it at the target.")
-    print()
-    print("Task sequence:")
-    print("  1. Left arm: Pick cube from left side")
-    print("  2. Left arm: Place cube at center")
-    print("  3. Right arm: Pick cube from center")
-    print("  4. Right arm: Place cube at right side")
-    print()
-    print("=" * 70)
-    print()
-
+    print("Running Mobile AI pick-and-place demo. Close the viewer to exit.")
     pick_place = MobileAIPickPlace()
     pick_place.setup_scene()
     pick_place.reset()

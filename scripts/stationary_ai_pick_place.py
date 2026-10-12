@@ -30,28 +30,28 @@
 Demonstrates dual-arm pick-and-place with handoff using the Stationary AI robot.
 
 Usage:
-    python trossen_arm_mujoco/scripts/stationary_ai_pick_place.py
+    uv run python3 scripts/stationary_ai_pick_place.py
 """
 
 from __future__ import annotations
 
+import os
 import sys
 import time
 
 import mujoco
 import mujoco.viewer
 import numpy as np
-from scipy.spatial.transform import Rotation
 
-from trossen_arm_mujoco.src.controller import Controller, RobotType
+from trossen_arm_mujoco.controller import Controller, RobotType
 
 # Default configuration constants
 DEFAULT_CUBE_POSITION = np.array([0.0, 0.25, 0.045])
 DEFAULT_CUBE_ORIENTATION = np.array([1.0, 0.0, 0.0, 0.0])
-DEFAULT_TARGET_POSITION = np.array([0.0, -0.25, 0.025])
+DEFAULT_TARGET_POSITION = np.array([0.0, -0.25, 0.045])
 CENTER_HANDOFF_POSITION = np.array([0.0, 0.0, 0.25])
-LEFT_ARM_HOME_POSITION = np.array([0.0, 0.3, 0.3])
-RIGHT_ARM_HOME_POSITION = np.array([0.0, -0.3, 0.3])
+LEFT_ARM_HOME_POSITION = np.array([0.0, 0.25, 0.2])
+RIGHT_ARM_HOME_POSITION = np.array([0.0, -0.25, 0.2])
 
 # Phase timing (steps) - 15 phases for dual-arm handoff
 DEFAULT_EVENTS_DT = [
@@ -85,7 +85,8 @@ RIGHT_ARM_HANDOFF_ORIENTATION = np.array([0.7071068, 0.0, 0.0, 0.7071068])
 RIGHT_ARM_RECEIVE_ORIENTATION = np.array([0.5, 0.5, 0.5, 0.5])
 
 # Scene configuration
-SCENE_XML_PATH = "trossen_arm_mujoco/assets/stationary_ai/scene_stationary_ai_pick_place.xml"
+ASSETS_DIR = os.path.join(os.path.dirname(__file__), "..", "assets")
+SCENE_XML_PATH = os.path.join(ASSETS_DIR, "stationary_ai", "scene_stationary_ai_pick_place.xml")
 
 # Robot controller configuration
 LEFT_ARM_JOINT_NAMES = [f"follower_left_joint_{i}" for i in range(6)]
@@ -338,10 +339,7 @@ class StationaryAIPickPlace:
         assert self.data is not None
         assert self.cube_body_id is not None
         cube_pos = self.data.xpos[self.cube_body_id].copy()
-        cube_xmat = self.data.xmat[self.cube_body_id].reshape(3, 3)
-        rotation = Rotation.from_matrix(cube_xmat)
-        quat_xyzw = rotation.as_quat()
-        cube_quat = np.array([quat_xyzw[3], quat_xyzw[0], quat_xyzw[1], quat_xyzw[2]])
+        cube_quat = self.data.xquat[self.cube_body_id].copy()
         return cube_pos, cube_quat
 
     def make_trajectory(
@@ -366,11 +364,6 @@ class StationaryAIPickPlace:
             end_ori = np.array(orientations[i + 1], dtype=np.float64)
             n_steps = dt[i]
 
-            rot_start = Rotation.from_quat(
-                [start_ori[1], start_ori[2], start_ori[3], start_ori[0]]
-            )
-            rot_end = Rotation.from_quat([end_ori[1], end_ori[2], end_ori[3], end_ori[0]])
-
             for step in range(n_steps):
                 alpha = step / n_steps if n_steps > 0 else 0.0
                 interpolated_pos = start_pos + alpha * (end_pos - start_pos)
@@ -379,15 +372,11 @@ class StationaryAIPickPlace:
                     interpolated_ori = start_ori
                 else:
                     # Normalized linear interpolation for quaternions
-                    q = rot_start.as_quat() * (1 - alpha) + rot_end.as_quat() * alpha
+                    q = start_ori * (1 - alpha) + end_ori * alpha
                     norm = np.linalg.norm(q)
                     if norm > 0.0:
                         q = q / norm
-                    rot_interp = Rotation.from_quat(q)
-                    quat_xyzw = rot_interp.as_quat()
-                    interpolated_ori = np.array(
-                        [quat_xyzw[3], quat_xyzw[0], quat_xyzw[1], quat_xyzw[2]]
-                    )
+                    interpolated_ori = q
 
                 trajectory.append((interpolated_pos, interpolated_ori, cumulative_step + step))
 
@@ -531,22 +520,7 @@ class StationaryAIPickPlace:
 
 
 def main():
-    """Main execution function."""
-    print("=" * 70)
-    print("Stationary AI Dual-Arm Pick-and-Place Demo (MuJoCo)")
-    print("=" * 70)
-    print()
-    print("The left arm picks up the cube and hands it off to the right arm,")
-    print("which then places it at the target location.")
-    print()
-    print("15-phase sequence:")
-    print("  Phases 0-4: Left arm picks up cube")
-    print("  Phases 5-9: Handoff from left to right arm")
-    print("  Phases 10-14: Right arm places cube")
-    print()
-    print("=" * 70)
-    print()
-
+    print("Running Stationary AI pick-and-place demo. Close the viewer to exit.")
     pick_place = StationaryAIPickPlace()
     pick_place.setup_scene()
     pick_place.reset()

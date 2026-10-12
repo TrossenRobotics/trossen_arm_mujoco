@@ -25,8 +25,3 @@
 # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
-"""Trossen AI Robot control modules."""
-
-from .controller import Controller, RobotType
-
-__all__ = ["Controller", "RobotType"]
