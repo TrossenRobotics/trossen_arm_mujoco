@@ -1,5 +1,9 @@
 <mujoco model="rivet scene">
-  <include file="rivet.xml"/>
+  <option integrator="implicitfast"/>
+
+  <asset>
+    <model name="rivet" file="rivet.xml"/>
+  </asset>
 
   <statistic center="0 0.15 0.7" extent="1.8"/>
 
@@ -20,5 +24,11 @@
   <worldbody>
     <light pos="0 0 1.5" dir="0 0 -1" directional="true"/>
     <geom name="floor" size="0 0 0.05" type="plane" material="groundplane"/>
+    <attach model="rivet" body="base_link" prefix=""/>
   </worldbody>
+  <keyframe>
+    <key name="home"
+      qpos="0 0 0.1285 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0"
+      ctrl="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0"/>
+  </keyframe>
 </mujoco>
