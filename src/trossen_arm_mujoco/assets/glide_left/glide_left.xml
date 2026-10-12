@@ -1,0 +1,107 @@
+<mujoco model="glide_left">
+  <compiler angle="radian" meshdir="../meshes" texturedir="../" autolimits="true"/>
+
+  <option integrator="implicitfast"/>
+
+  <default>
+    <default class="visual">
+      <geom type="mesh" group="2" contype="0" conaffinity="0"/>
+    </default>
+    <!-- TODO(abhismirai42): collision uses the same simplified meshes (convex-hulled by the engine) as a placeholder;
+         replace with hand-tuned primitives-->
+    <default class="collision">
+      <geom type="mesh" group="3" mass="0" density="0"/>
+    </default>
+  </default>
+
+  <asset>
+    <material name="color_1" rgba="0.3725 0.6549 0.2392 1"/>
+    <material name="color_2" rgba="0.8667 0.3216 0.1569 1"/>
+    <material name="color_3" rgba="0.9176 0.9176 0.9176 1"/>
+    <material name="color_8" rgba="0.302 0.302 0.302 1"/>
+
+    <mesh name="base_link" file="glide_left/base_link.obj"/>
+    <mesh name="base_link_color_1" file="glide_left/base_link_color_1.obj"/>
+    <mesh name="base_link_color_3" file="glide_left/base_link_color_3.obj"/>
+    <mesh name="base_link_color_8" file="glide_left/base_link_color_8.obj"/>
+    <mesh name="base_link_color_2" file="glide_left/base_link_color_2.obj"/>
+    <mesh name="link_1" file="glide_left/link_1.obj"/>
+    <mesh name="link_2" file="glide_left/link_2.obj"/>
+    <mesh name="link_3" file="glide_left/link_3.obj"/>
+    <mesh name="link_4" file="glide_left/link_4.obj"/>
+    <mesh name="link_5" file="glide_left/link_5.obj"/>
+    <mesh name="link_6" file="glide_left/link_6.obj"/>
+    <mesh name="trigger" file="glide_left/trigger.obj"/>
+  </asset>
+
+  <worldbody>
+    <body name="base_link" pos="0 0 0">
+      <geom class="visual" mesh="base_link_color_1" material="color_1"/>
+      <geom class="visual" mesh="base_link_color_3" material="color_3"/>
+      <geom class="visual" mesh="base_link_color_8" material="color_8"/>
+      <geom class="visual" mesh="base_link_color_2" material="color_2"/>
+      <geom class="collision" mesh="base_link"/>
+      <inertial pos="0 0 0" mass="0.001" fullinertia="0.0001 0.0001 0.0001 0 0 0"/>
+      <body name="link_1" pos="0 0 0.09554">
+        <joint name="joint_0" pos="0 0 0" axis="0 0 1" range="-3.14159265 3.14159265"/>
+        <geom class="visual" mesh="link_1" material="color_8"/>
+        <geom class="collision" mesh="link_1"/>
+        <inertial pos="0 0 0" mass="0.001" fullinertia="0.0001 0.0001 0.0001 0 0 0"/>
+        <body name="link_2" pos="0.02 0.06 0.0435">
+          <joint name="joint_1" pos="0 0 0" axis="0 1 0" range="0 3.14159265"/>
+          <geom class="visual" mesh="link_2" material="color_8"/>
+          <geom class="collision" mesh="link_2"/>
+          <inertial pos="0 0 0" mass="0.001" fullinertia="0.0001 0.0001 0.0001 0 0 0"/>
+          <body name="link_3" pos="-0.264 0 0">
+            <joint name="joint_2" pos="0 0 0" axis="0 -1 0" range="0 2.35619449"/>
+            <geom class="visual" mesh="link_3" material="color_8"/>
+            <geom class="collision" mesh="link_3"/>
+            <inertial pos="0 0 0" mass="0.001" fullinertia="0.0001 0.0001 0.0001 0 0 0"/>
+            <body name="link_4" pos="0.245 -0.0692419 0.06" quat="0.98384369 0 0.17902957 0">
+              <joint name="joint_3" pos="0 0 0" axis="0 -1 0" range="-1.57079633 1.57079633"/>
+              <geom class="visual" mesh="link_4" material="color_8"/>
+              <geom class="collision" mesh="link_4"/>
+              <inertial pos="0 0 0" mass="0.001" fullinertia="0.0001 0.0001 0.0001 0 0 0"/>
+              <body name="link_5" pos="0 0.00927356 0.0176">
+                <joint name="joint_4" pos="0 0 0" axis="0 0 -1" range="-1.57079633 1.57079633"/>
+                <geom class="visual" mesh="link_5" material="color_8"/>
+                <geom class="collision" mesh="link_5"/>
+                <inertial pos="0 0 0" mass="0.001" fullinertia="0.0001 0.0001 0.0001 0 0 0"/>
+                <body name="link_6" pos="0.0435847 0 -0.0176" quat="0.90223151 -0.43125201 0 0">
+                  <joint name="joint_5" pos="0 0 0" axis="1 0 0" range="-3.14159265 3.14159265"/>
+                  <geom class="visual" mesh="link_6" material="color_8"/>
+                  <geom class="collision" mesh="link_6"/>
+                  <inertial pos="0 0 0" mass="0.001" fullinertia="0.0001 0.0001 0.0001 0 0 0"/>
+                  <body name="trigger" pos="0.114138 -0.012 0.0116">
+                    <joint name="joint_6" pos="0 0 0" axis="0 -1 0" range="0 0.78539816"/>
+                    <geom class="visual" mesh="trigger" material="color_8"/>
+                    <geom class="collision" mesh="trigger"/>
+                    <inertial pos="0 0 0" mass="0.001" fullinertia="0.0001 0.0001 0.0001 0 0 0"/>
+                  </body>
+                </body>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+
+  <!-- TODO(abhismirai42): update mesh collision -->
+  <contact>
+    <exclude body1="base_link" body2="link_1"/>
+    <exclude body1="link_3" body2="link_5"/>
+    <exclude body1="link_4" body2="link_6"/>
+  </contact>
+
+  <actuator>
+    <!-- TODO(abhismirai42): placeholder gains confirm against glide actuator specs -->
+    <position name="joint_0" joint="joint_0" kp="20" kv="1" ctrlrange="-3.14159265 3.14159265" forcerange="-7 7"/>
+    <position name="joint_1" joint="joint_1" kp="20" kv="1" ctrlrange="0 3.14159265" forcerange="-7 7"/>
+    <position name="joint_2" joint="joint_2" kp="20" kv="1" ctrlrange="0 2.35619449" forcerange="-7 7"/>
+    <position name="joint_3" joint="joint_3" kp="10" kv="0.5" ctrlrange="-1.57079633 1.57079633" forcerange="-7 7"/>
+    <position name="joint_4" joint="joint_4" kp="5" kv="0.5" ctrlrange="-1.57079633 1.57079633" forcerange="-7 7"/>
+    <position name="joint_5" joint="joint_5" kp="5" kv="0.5" ctrlrange="-3.14159265 3.14159265" forcerange="-7 7"/>
+    <position name="trigger" joint="joint_6" kp="2" kv="0.1" ctrlrange="0 0.78539816" forcerange="-1.8 1.8"/>
+  </actuator>
+</mujoco>
