@@ -1,7 +1,5 @@
 # Trossen Arm MuJoCo
 
-[![MuJoCo](https://img.shields.io/badge/MuJoCo-3.2.3-orange.svg)](https://mujoco.readthedocs.io/) [![Python](https://img.shields.io/badge/python-3.10+-blue.svg)](https://docs.python.org/3/whatsnew/3.10.html) [![Linux](https://img.shields.io/badge/platform-Ubuntu_22.04-lightgrey.svg)](https://releases.ubuntu.com/22.04/)
-
 ## Overview
 
 This repository provides MuJoCo simulation environments for Trossen AI robotic arms. It includes comprehensive robot models, inverse kinematics-based control, and tools for policy execution, data collection, and visualization.
@@ -16,12 +14,6 @@ This repository provides MuJoCo simulation environments for Trossen AI robotic a
 - Pick-and-place and target following demonstration scripts
 - Motion capture and joint-controlled simulation environments
 - Data collection and visualization tools for imitation learning
-
-### Tested Environment
-
-- Ubuntu 22.04
-- MuJoCo 3.2.3
-- Python 3.10+
 
 ---
 
@@ -47,7 +39,7 @@ All robot models are located in `trossen_arm_mujoco/assets/`:
 
 ```
 trossen_arm_mujoco/assets/
-├── meshes/          # STL files for robot components
+├── meshes/          # STL/OBJ files for robot components
 ├── wxai/
 │   ├── wxai_base.xml              # WidowX AI base model
 │   ├── wxai_follower.xml          # WidowX AI follower arm with camera
@@ -56,42 +48,13 @@ trossen_arm_mujoco/assets/
 │   └── scene_wxai_follow_target.xml # Target following scene
 ├── stationary_ai/
 │   ├── stationary_ai.xml          # Dual-arm stationary platform
-│   ├── stationary_ai_mocap.xml    # Mocap-enabled model with weld constraints
 │   ├── scene.xml                  # Basic visualization scene
-│   ├── scene_stationary_ai_pick_place.xml # Pick-and-place with handoff
-│   ├── scene_joint.xml            # Joint-controlled setup
-│   └── scene_mocap.xml            # Motion capture-controlled setup
+│   └── scene_stationary_ai_pick_place.xml # Pick-and-place with handoff
 └── mobile_ai/
     ├── mobile_ai.xml              # Mobile base + dual-arm
     ├── scene.xml                  # Basic visualization scene
     └── scene_mobile_ai_pick_place.xml # Mobile pick-and-place
 ```
-
-### Asset Details
-
-**WidowX AI** - Single-arm manipulator:
-- Base model (`wxai_base.xml`): 6-DOF arm
-- Follower model (`wxai_follower.xml`): 6-DOF arm with camera
-
-**Stationary AI** - Dual-arm stationary platform:
-- Dual WXAI arms on shared base
-- Supports bimanual coordination and object handoff
-
-**Mobile AI** - Mobile manipulator:
-- Differential drive mobile base
-- Dual WXAI arms
-- Navigation and manipulation capabilities
-
-### Motion Capture vs Joint-Controlled Environments
-
-**Motion Capture** (`stationary_ai/scene_mocap.xml`):
-- Uses predefined mocap bodies that move the robot arms based on scripted end effector movements
-- Useful for defining task trajectories and generating reference motions
-
-**Joint Control** (`stationary_ai/scene_joint.xml`):
-- Uses position controllers for each joint, similar to real-world robot setup
-- Used for replaying recorded trajectories with realistic joint-level control
-- Enables clean simulation visuals without mocap bodies visible in rendered output
 
 All models are derived from URDF descriptions in [TrossenRobotics/trossen_arm_description](https://github.com/TrossenRobotics/trossen_arm_description). See individual `README.md` files in asset folders for detailed URDF→MJCF derivation steps.
 
