@@ -18,4 +18,3 @@ This package contains robot descriptions (MJCF) of the [Trossen Robotics WidowX 
 7. Added gravity compensation (`gravcomp="1"` on bodies, `actuatorgravcomp="true"` on joint actuators) to counteract gravitational forces and improve control stability, mimicking real hardware behavior.
 8. Added equality constraint for gripper mimic joint.
 9. Added position-controlled actuators with PD gains (kp/kv) for all 6 joints + gripper, plus armature and frictionloss for motor dynamics. **Note:** Actuator parameters (PD gains, armature, frictionloss) are tuned for simulation. MuJoCo's actuator model differs from real hardware due to factors like gravity compensation, solver timestep rates, and control loop differences, making manufacturer specifications not directly applicable.
-10. Added keyframe for home position initialization.
