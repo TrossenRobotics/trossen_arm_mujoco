@@ -11,8 +11,10 @@ authors = [
 ]
 requires-python = ">=3.10"
 dependencies = [
+    "h5py>=3.16.0",
     "mujoco>=3.15.0",
     "numpy>=2.2.6",
+    "opencv-python>=5.0.0.93",
 ]
 
 [project.scripts]
