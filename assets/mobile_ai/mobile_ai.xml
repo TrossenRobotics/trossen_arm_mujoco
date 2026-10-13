@@ -4,6 +4,7 @@
   <option integrator="implicitfast" noslip_iterations="1"/>
 
   <default>
+    <site group="4"/>
     <default class="visual">
       <geom type="mesh" group="2" contype="0" conaffinity="0" material="trossen_black"/>
     </default>
