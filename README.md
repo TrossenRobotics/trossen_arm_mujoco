@@ -2,7 +2,7 @@
 
 ## Overview
 
-This repository provides MuJoCo simulation environments for Trossen AI robotic arms. It includes comprehensive robot models, inverse kinematics-based control, and demonstration scripts.
+This repository provides MuJoCo simulation environments for Trossen AI robotic arms. It includes comprehensive robot models, inverse kinematics-based control, and tools for simulation data collection and policy evaluation.
 
 ### What This Repository Offers
 
@@ -12,6 +12,7 @@ This repository provides MuJoCo simulation environments for Trossen AI robotic a
   - Mobile AI (dual-arm mobile manipulator)
 - Differential inverse kinematics controller for Cartesian end-effector control
 - Pick-and-place and target following demonstration scripts
+- Simulation data collection and policy evaluation for imitation learning
 
 ## Index
 
@@ -20,6 +21,7 @@ This repository provides MuJoCo simulation environments for Trossen AI robotic a
 - [Installation](#installation)
 - [MuJoCo IK Demo Scripts](#mujoco-ik-demo-scripts)
 - [Controller API](#controller-api)
+- [Simulation Data Collection and Evaluation](#simulation-data-collection-and-evaluation)
 - [Troubleshooting](#troubleshooting)
 - [Related Links](#related-links)
 
@@ -103,9 +105,9 @@ uv run wxai_follow_target
 ```
 
 **Mouse Controls:**
-- Double-click to select/highlight the target cube
-- Ctrl + Left-click to rotate the view
-- Ctrl + Right-click to move the target cube
+- Double-click the target cube to select it
+- Ctrl + Right-click drag to move the cube
+- Ctrl + Left-click drag to rotate the cube
 
 The robot will track the target cube position in real-time.
 
@@ -130,7 +132,8 @@ robot = Controller(
     model=mujoco_model,
     data=mujoco_data,
     robot_type=RobotType.WXAI,  # or RobotType.STATIONARY_AI, RobotType.MOBILE_AI
-    arm_joint_names=["joint_1", "joint_2", ...],
+    ee_site_name="ee_site",
+    arm_joint_names=["joint_0", "joint_1", ...],
     gripper_joint_names=["left_carriage_joint"],
     ik_scale=1.0,
     ik_damping=0.03,
@@ -154,15 +157,75 @@ robot.close_gripper()
 - `ik_damping`: Damping factor for singularity avoidance (default: 0.03)
 - `position_only`: When True, only controls position, orientation remains free
 
-## Troubleshooting
+## Simulation Data Collection and Evaluation
 
-If you encounter into Mesa Loader or `mujoco.FatalError: gladLoadGL error` errors:
+Record scripted demonstrations and evaluate trained policies on the same simulated task, following the Simulation Transfer Cube setup of [ACT/ALOHA](https://arxiv.org/abs/2304.13705) (Sec. V). Episodes use the ACT/ALOHA HDF5 format.
+
+**Task (Stationary AI transfer cube):** the left arm picks a cube from a random position, hands it over to the right arm, and the right arm places it on the target.
+
+The shared environment ([`transfer_cube_env.py`](./src/trossen_arm_mujoco/transfer_cube_env.py)) runs at 50 Hz:
+
+- **Action:** 14 absolute joint targets, 7 per arm (6 joints + gripper), left arm first
+- **Observation:** `qpos` and `qvel` of the same 14 joints, plus 480x640 images from `cam_high`, `cam_low`, `follower_left_camera`, `follower_right_camera`
+- **Reward:** 1 touch, 2 lift, 3 handover, 4 place (success)
+
+### 1. Record Demonstrations
+
+Runs the Stationary AI pick-and-place demo as a scripted policy and saves only successful episodes:
 
 ```bash
-export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6
+uv run python3 scripts/stationary_ai_transfer_cube_record.py --num_episodes 50
 ```
 
----
+Episodes are saved to `data/stationary_ai_transfer_cube/episode_N.hdf5` in the repository:
+
+```
+/action                          (T, 14)
+/observations/qpos               (T, 14)
+/observations/qvel               (T, 14)
+/observations/images/<cam_name>  (T, 480, 640, 3)
+```
+
+Options: `--root_dir`, `--data_dir`, `--episode_len` (default 1200), `--seed`, `--inject_noise`, `--onscreen_render`, `--cam_names`.
+
+### 2. Convert an Episode to Video
+
+```bash
+uv run python3 scripts/episode_to_video.py data/stationary_ai_transfer_cube/episode_0.hdf5
+```
+
+The video, with all cameras side by side, is saved next to the episode as `episode_0.mp4`.
+
+### 3. Evaluate a Policy
+
+Runs a policy on random cube positions and reports the success rate of each subtask:
+
+```bash
+uv run python3 scripts/stationary_ai_transfer_cube_eval.py --policy scripted --num_trials 50
+```
+
+To evaluate your own policy (e.g. a trained ACT model), add it to `make_policy()` in the script. A policy needs `reset()` and `__call__(observation)` returning the 14 joint targets.
+
+Options: `--num_trials`, `--episode_len`, `--seed`, `--onscreen_render`, `--cam_names` (pass `--cam_names` with no names to skip rendering).
+
+## Troubleshooting
+
+### Slow Recording
+
+Recording should take about 30 s per episode. If it is 10-50x slower, MuJoCo is rendering on the CPU. Check with:
+
+```bash
+uv run python3 -c 'import mujoco; from OpenGL import GL; r = mujoco.Renderer(mujoco.MjModel.from_xml_string("<mujoco/>")); print(GL.glGetString(GL.GL_RENDERER).decode())'
+```
+
+If it prints `llvmpipe` on a laptop with an NVIDIA GPU, render on the NVIDIA GPU:
+
+```bash
+export __NV_PRIME_RENDER_OFFLOAD=1
+export __GLX_VENDOR_LIBRARY_NAME=nvidia
+```
+
+On a headless server, use `export MUJOCO_GL=egl`.
 
 ## Related Links
 
