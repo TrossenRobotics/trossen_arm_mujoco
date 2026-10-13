@@ -12,10 +12,7 @@ This repository provides MuJoCo simulation environments for Trossen AI robotic a
   - Mobile AI (dual-arm mobile manipulator)
 - Differential inverse kinematics controller for Cartesian end-effector control
 - Pick-and-place and target following demonstration scripts
-- Motion capture and joint-controlled simulation environments
 - Data collection and visualization tools for imitation learning
-
----
 
 ## Index
 
@@ -31,74 +28,55 @@ This repository provides MuJoCo simulation environments for Trossen AI robotic a
 - [Troubleshooting](#troubleshooting)
 - [Related Links](#related-links)
 
----
-
 ## Robot Assets
 
-All robot models are located in `trossen_arm_mujoco/assets/`:
+All robot models are located in `assets/`:
 
 ```
-trossen_arm_mujoco/assets/
-├── meshes/          # STL/OBJ files for robot components
+assets/
+├── meshes/                                  # STL/OBJ files for robot components
 ├── wxai/
-│   ├── wxai_base.xml              # WidowX AI base model
-│   ├── wxai_follower.xml          # WidowX AI follower arm with camera
-│   ├── scene.xml                  # Basic visualization scene
-│   ├── scene_wxai_pick_place.xml  # Pick-and-place scene
-│   └── scene_wxai_follow_target.xml # Target following scene
+│   ├── wxai_base.xml                        # WidowX AI base model
+│   ├── wxai_follower.xml                    # WidowX AI follower arm with camera
+│   ├── scene.xml                            # Basic visualization scene
+│   ├── scene_wxai_pick_place.xml            # Pick-and-place scene
+│   └── scene_wxai_follow_target.xml         # Target following scene
 ├── stationary_ai/
-│   ├── stationary_ai.xml          # Dual-arm stationary platform
-│   ├── scene.xml                  # Basic visualization scene
-│   └── scene_stationary_ai_pick_place.xml # Pick-and-place with handoff
+│   ├── stationary_ai.xml                    # Dual-arm stationary platform
+│   ├── scene.xml                            # Basic visualization scene
+│   └── scene_stationary_ai_pick_place.xml   # Pick-and-place with handoff
 └── mobile_ai/
-    ├── mobile_ai.xml              # Mobile base + dual-arm
-    ├── scene.xml                  # Basic visualization scene
-    └── scene_mobile_ai_pick_place.xml # Mobile pick-and-place
+    ├── mobile_ai.xml                        # Mobile base + dual-arm
+    ├── scene.xml                            # Basic visualization scene
+    └── scene_mobile_ai_pick_place.xml       # Mobile pick-and-place
 ```
 
 All models are derived from URDF descriptions in [TrossenRobotics/trossen_arm_description](https://github.com/TrossenRobotics/trossen_arm_description). See individual `README.md` files in asset folders for detailed URDF→MJCF derivation steps.
 
----
-
 ## Installation
 
-### Clone Repository
+This project uses [uv](https://docs.astral.sh/uv/) to manage Python and dependencies.
 
-First, clone this repository:
+Clone Repository
 
 ```bash
 git clone https://github.com/TrossenRobotics/trossen_arm_mujoco.git
 cd trossen_arm_mujoco
 ```
 
-### Create Conda Environment
-
-It is recommended to create a Conda environment before installing dependencies:
+Install Dependencies
 
 ```bash
-conda create --name trossen_mujoco_env python=3.10
-conda activate trossen_mujoco_env
+uv sync
 ```
 
-### Install Package
-
-Install the package and required dependencies using:
+Verify Installation
 
 ```bash
-pip install -e .
-```
-
-### Verify Installation
-
-To verify the installation, run:
-
-```bash
-python3 trossen_arm_mujoco/scripts/wxai_pick_place.py
+uv run python3 scripts/wxai_pick_place.py
 ```
 
 If the simulation window appears with the robot performing pick-and-place, the setup was successful.
-
----
 
 ## MuJoCo IK Demo Scripts
 
@@ -108,17 +86,17 @@ These scripts demonstrate inverse kinematics-based control for manipulation task
 
 **WidowX AI** - Single arm pick-and-place:
 ```bash
-python3 trossen_arm_mujoco/scripts/wxai_pick_place.py
+uv run python3 scripts/wxai_pick_place.py
 ```
 
 **Stationary AI** - Dual-arm pick-and-place with handoff:
 ```bash
-python3 trossen_arm_mujoco/scripts/stationary_ai_pick_place.py
+uv run python3 scripts/stationary_ai_pick_place.py
 ```
 
 **Mobile AI** - Mobile base navigation + dual-arm manipulation:
 ```bash
-python3 trossen_arm_mujoco/scripts/mobile_ai_pick_place.py
+uv run python3 scripts/mobile_ai_pick_place.py
 ```
 
 ### Target Following Demo
@@ -126,7 +104,7 @@ python3 trossen_arm_mujoco/scripts/mobile_ai_pick_place.py
 Real-time end-effector tracking using differential IK:
 
 ```bash
-python3 trossen_arm_mujoco/scripts/wxai_follow_target.py
+uv run python3 scripts/wxai_follow_target.py
 ```
 
 **Mouse Controls:**
@@ -136,11 +114,9 @@ python3 trossen_arm_mujoco/scripts/wxai_follow_target.py
 
 The robot will track the target cube position in real-time.
 
----
-
 ## Controller API
 
-The differential inverse kinematics controller (`Controller` in [`controller.py`](./trossen_arm_mujoco/src/controller.py)) provides Cartesian end-effector control for all Trossen AI robots.
+The differential inverse kinematics controller (`Controller` in [`controller.py`](./src/trossen_arm_mujoco/controller.py)) provides Cartesian end-effector control for all Trossen AI robots.
 
 ### Key Features
 
@@ -152,7 +128,7 @@ The differential inverse kinematics controller (`Controller` in [`controller.py`
 ### Basic Usage
 
 ```python
-from trossen_arm_mujoco.src.controller import Controller, RobotType
+from trossen_arm_mujoco.controller import Controller, RobotType
 
 # Initialize controller
 robot = Controller(
@@ -182,8 +158,6 @@ robot.close_gripper()
 - `ik_scale`: Scaling factor for IK velocity (default: 1.0)
 - `ik_damping`: Damping factor for singularity avoidance (default: 0.03)
 - `position_only`: When True, only controls position, orientation remains free
-
----
 
 ## Data Collection
 
