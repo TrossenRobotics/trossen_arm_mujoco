@@ -46,10 +46,10 @@ import os
 import mujoco
 import numpy as np
 
+from trossen_arm_mujoco import ASSETS_DIR
 from trossen_arm_mujoco.controller import GRIPPER_OPEN_POSITION
 
 # Scene configuration
-ASSETS_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "assets")
 SCENE_XML_PATH = os.path.join(ASSETS_DIR, "stationary_ai", "scene_stationary_ai_pick_place.xml")
 
 # Control configuration

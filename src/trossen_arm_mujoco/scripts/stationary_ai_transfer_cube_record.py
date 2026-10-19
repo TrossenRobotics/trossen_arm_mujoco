@@ -30,10 +30,10 @@
 Records scripted policy demonstrations of the transfer cube task as HDF5 episodes.
 
 Usage:
-    uv run python3 scripts/stationary_ai_transfer_cube_record.py --num_episodes 50
+    uv run stationary_ai_transfer_cube_record --num_episodes 50
 
 Options:
-    --root_dir DIR       Root folder for datasets (default: data/ in this repository)
+    --root_dir DIR       Root folder for datasets (default: data/ in the current directory)
     --data_dir NAME      Dataset folder inside root_dir (default: stationary_ai_transfer_cube)
     --num_episodes N     Number of successful episodes to save (default: 50)
     --episode_len N      Steps per episode at 50 Hz (default: 1200, i.e. 24 s)
@@ -58,7 +58,7 @@ import h5py
 import mujoco
 import mujoco.viewer
 import numpy as np
-from stationary_ai_pick_place import DEFAULT_EVENTS_DT, StationaryAIPickPlace
+from trossen_arm_mujoco.scripts.stationary_ai_pick_place import DEFAULT_EVENTS_DT, StationaryAIPickPlace
 
 from trossen_arm_mujoco.transfer_cube_env import (
     IMAGE_HEIGHT,
@@ -69,7 +69,7 @@ from trossen_arm_mujoco.transfer_cube_env import (
 )
 
 # Recording configuration
-ROOT_DIR = os.path.normpath(os.path.join(os.path.dirname(__file__), "..", "data"))
+ROOT_DIR = "data"
 DEFAULT_DATA_DIR = "stationary_ai_transfer_cube"
 DEFAULT_EPISODE_LEN = 1200  # 24 s at 50 Hz
 # Demo phases run TIME_SCALE times slower than in the interactive demo, for realistic arm speeds

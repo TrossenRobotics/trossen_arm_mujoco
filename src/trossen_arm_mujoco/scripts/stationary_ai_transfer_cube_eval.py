@@ -33,7 +33,7 @@ A policy is any object with reset() and __call__(observation) -> 14 joint target
 To evaluate your own policy (e.g. a trained ACT model), add it to make_policy().
 
 Usage:
-    uv run python3 scripts/stationary_ai_transfer_cube_eval.py --policy scripted --num_trials 50
+    uv run stationary_ai_transfer_cube_eval --policy scripted --num_trials 50
 
 Options:
     --policy NAME          Policy to evaluate (default: scripted)
@@ -56,7 +56,7 @@ import sys
 import mujoco
 import mujoco.viewer
 import numpy as np
-from stationary_ai_transfer_cube_record import DEFAULT_EPISODE_LEN, ScriptedPolicy
+from trossen_arm_mujoco.scripts.stationary_ai_transfer_cube_record import DEFAULT_EPISODE_LEN, ScriptedPolicy
 
 from trossen_arm_mujoco.transfer_cube_env import MAX_REWARD, TransferCubeEnv
 

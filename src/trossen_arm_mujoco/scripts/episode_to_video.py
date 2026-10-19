@@ -30,7 +30,7 @@
 Converts one recorded episode to an MP4 with all cameras side by side.
 
 Usage:
-    uv run python3 scripts/episode_to_video.py data/stationary_ai_transfer_cube/episode_0.hdf5
+    uv run episode_to_video data/stationary_ai_transfer_cube/episode_0.hdf5
 
 Options:
     --fps N  Video frame rate (default: 50, the recording rate)
