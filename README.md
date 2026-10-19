@@ -25,10 +25,10 @@ This repository provides MuJoCo simulation environments for Trossen AI robotic a
 
 ## Robot Assets
 
-All robot models are located in `assets/`:
+All robot models are located in `src/trossen_arm_mujoco/assets/`:
 
 ```
-assets/
+src/trossen_arm_mujoco/assets/
 ├── meshes/                                  # STL/OBJ files for robot components
 ├── wxai/
 │   ├── wxai_base.xml                        # WidowX AI base model
@@ -68,7 +68,7 @@ uv sync
 Verify Installation
 
 ```bash
-uv run scripts/wxai_pick_place.py
+uv run wxai_pick_place
 ```
 
 If the simulation window appears with the robot performing pick-and-place, the setup was successful.
@@ -81,17 +81,17 @@ These scripts demonstrate inverse kinematics-based control for manipulation task
 
 **WidowX AI** - Single arm pick-and-place:
 ```bash
-uv run scripts/wxai_pick_place.py
+uv run wxai_pick_place
 ```
 
 **Stationary AI** - Dual-arm pick-and-place with handoff:
 ```bash
-uv run scripts/stationary_ai_pick_place.py
+uv run stationary_ai_pick_place
 ```
 
 **Mobile AI** - Mobile base navigation + dual-arm manipulation:
 ```bash
-uv run scripts/mobile_ai_pick_place.py
+uv run mobile_ai_pick_place
 ```
 
 ### Target Following Demo
@@ -99,7 +99,7 @@ uv run scripts/mobile_ai_pick_place.py
 Real-time end-effector tracking using differential IK:
 
 ```bash
-uv run scripts/wxai_follow_target.py
+uv run wxai_follow_target
 ```
 
 **Mouse Controls:**
