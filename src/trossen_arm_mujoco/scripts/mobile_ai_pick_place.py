@@ -30,7 +30,7 @@
 Demonstrates mobile base motion and dual-arm pick-and-place using the Mobile AI robot.
 
 Usage:
-    uv run scripts/mobile_ai_pick_place.py
+    uv run mobile_ai_pick_place
 """
 
 from __future__ import annotations
@@ -43,6 +43,7 @@ import mujoco
 import mujoco.viewer
 import numpy as np
 
+from trossen_arm_mujoco import ASSETS_DIR
 from trossen_arm_mujoco.controller import Controller, RobotType
 
 # Default configuration constants
@@ -70,7 +71,6 @@ APPROACH_OFFSET = np.array([0.0, 0.0, 0.0])
 DOWNWARD_ORIENTATION = np.array([0.70710678, 0.0, 0.70710678, 0.0])
 
 # Scene configuration
-ASSETS_DIR = os.path.join(os.path.dirname(__file__), "..", "assets")
 SCENE_XML_PATH = os.path.join(ASSETS_DIR, "mobile_ai", "scene_mobile_ai_pick_place.xml")
 
 # Robot controller configuration

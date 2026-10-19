@@ -30,7 +30,7 @@
 Demonstrates continuous end effector tracking of a movable target cube.
 
 Usage:
-    uv run scripts/wxai_follow_target.py
+    uv run wxai_follow_target
 
 Controls:
     - Double-click the target cube to select it
@@ -47,6 +47,7 @@ import mujoco
 import mujoco.viewer
 import numpy as np
 
+from trossen_arm_mujoco import ASSETS_DIR
 from trossen_arm_mujoco.controller import Controller, RobotType
 
 # Default target configuration
@@ -54,7 +55,6 @@ DEFAULT_TARGET_POSITION = np.array([0.3, 0.0, 0.2])
 DEFAULT_TARGET_ORIENTATION = np.array([1.0, 0.0, 0.0, 0.0])
 
 # Scene configuration
-ASSETS_DIR = os.path.join(os.path.dirname(__file__), "..", "assets")
 SCENE_XML_PATH = os.path.join(ASSETS_DIR, "wxai", "scene_wxai_follow_target.xml")
 
 # Robot controller configuration

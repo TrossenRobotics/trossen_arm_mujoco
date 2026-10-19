@@ -30,7 +30,7 @@
 Demonstrates dual-arm pick-and-place with handoff using the Stationary AI robot.
 
 Usage:
-    uv run scripts/stationary_ai_pick_place.py
+    uv run stationary_ai_pick_place
 """
 
 from __future__ import annotations
@@ -43,6 +43,7 @@ import mujoco
 import mujoco.viewer
 import numpy as np
 
+from trossen_arm_mujoco import ASSETS_DIR
 from trossen_arm_mujoco.controller import Controller, RobotType
 
 # Default configuration constants
@@ -85,7 +86,6 @@ RIGHT_ARM_HANDOFF_ORIENTATION = np.array([0.7071068, 0.0, 0.0, 0.7071068])
 RIGHT_ARM_RECEIVE_ORIENTATION = np.array([0.5, 0.5, 0.5, 0.5])
 
 # Scene configuration
-ASSETS_DIR = os.path.join(os.path.dirname(__file__), "..", "assets")
 SCENE_XML_PATH = os.path.join(ASSETS_DIR, "stationary_ai", "scene_stationary_ai_pick_place.xml")
 
 # Robot controller configuration
