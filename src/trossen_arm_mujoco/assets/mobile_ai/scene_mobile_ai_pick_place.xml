@@ -39,7 +39,7 @@
     </body>
 
     <!-- Cube to pick (on left side of table) -->
-    <body name="cube" pos="1.0 0.3 0.825">
+    <body name="cube" pos="1.0 0.3 0.845">
       <freejoint/>
       <geom name="cube_geom" type="box" size="0.025 0.025 0.025" rgba="0 0 1 0.8" mass="0.0001"/>
       <site name="cube_center" pos="0 0 0" size="0.005" rgba="1 0 0 0"/>

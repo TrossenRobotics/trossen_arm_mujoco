@@ -30,25 +30,32 @@
 Demonstrates continuous end effector tracking of a movable target cube.
 
 Usage:
-    python trossen_arm_mujoco/scripts/wxai_follow_target.py
+    uv run wxai_follow_target
+
+Controls:
+    - Double-click the target cube to select it
+    - Ctrl + Right-click drag to move the cube
+    - Ctrl + Left-click drag to rotate the cube
 """
 
 from __future__ import annotations
 
+import os
 import sys
 
 import mujoco
 import mujoco.viewer
 import numpy as np
 
-from trossen_arm_mujoco.src.controller import Controller, RobotType
+from trossen_arm_mujoco import ASSETS_DIR
+from trossen_arm_mujoco.controller import Controller, RobotType
 
 # Default target configuration
 DEFAULT_TARGET_POSITION = np.array([0.3, 0.0, 0.2])
 DEFAULT_TARGET_ORIENTATION = np.array([1.0, 0.0, 0.0, 0.0])
 
 # Scene configuration
-SCENE_XML_PATH = "trossen_arm_mujoco/assets/wxai/scene_wxai_follow_target.xml"
+SCENE_XML_PATH = os.path.join(ASSETS_DIR, "wxai", "scene_wxai_follow_target.xml")
 
 # Robot controller configuration
 ARM_JOINT_NAMES = [f"joint_{i}" for i in range(6)]
@@ -111,9 +118,7 @@ class WXAIFollowTarget:
             self.model, mujoco.mjtObj.mjOBJ_BODY, "target_cube"
         )
 
-        # Get mocap body ID - mocap bodies are indexed separately from regular bodies
-        # In MuJoCo, mocap_pos and mocap_quat are indexed by mocap body index (0-based)
-        # Our target_cube is the only mocap body, so it's at index 0
+        # mocap_pos/mocap_quat are indexed by mocap id, not body id; target_cube is the only mocap body
         self.target_mocap_id = 0
 
         assert self.data is not None
@@ -178,22 +183,7 @@ class WXAIFollowTarget:
 
 
 def main():
-    """Main execution function matching IsaacSim structure."""
-    print("=" * 70)
-    print("WidowX AI Follow Target Demo (MuJoCo)")
-    print("=" * 70)
-    print()
-    print("The robot will continuously track the blue target cube.")
-    print("You can manually move the cube in the viewer to test tracking.")
-    print()
-    print("Controls:")
-    print("  - Double-click the target cube to select it")
-    print("  - Ctrl + Right-click drag to move the cube")
-    print()
-    print()
-    print("=" * 70)
-    print()
-
+    print("Running WidowX AI follow-target demo. Close the viewer to exit.")
     # Create and setup the follow target task
     follow_target = WXAIFollowTarget()
     follow_target.setup_scene()

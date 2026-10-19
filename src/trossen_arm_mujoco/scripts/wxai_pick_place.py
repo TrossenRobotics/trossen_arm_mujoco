@@ -30,26 +30,27 @@
 Demonstrates pick-and-place manipulation using the WidowX AI robot.
 
 Usage:
-    python trossen_arm_mujoco/scripts/wxai_pick_place.py
+    uv run wxai_pick_place
 """
 
 from __future__ import annotations
 
+import os
 import sys
 
 import mujoco
 import mujoco.viewer
 import numpy as np
-from scipy.spatial.transform import Rotation
 
-from trossen_arm_mujoco.src.controller import Controller, RobotType
+from trossen_arm_mujoco import ASSETS_DIR
+from trossen_arm_mujoco.controller import Controller, RobotType
 
 # Default configuration constants
 DEFAULT_CUBE_SIZE = np.array([0.05, 0.05, 0.05])
 DEFAULT_CUBE_POSITION = np.array([0.35, -0.15, 0.025])
 DEFAULT_CUBE_ORIENTATION = np.array([1.0, 0.0, 0.0, 0.0])
 DEFAULT_TARGET_POSITION = np.array([0.35, 0.15, 0.025])
-DEFAULT_HOME_POSITION = np.array([0.2, 0.0, 0.3])
+DEFAULT_HOME_POSITION = np.array([0.25, 0.0, 0.175])
 DEFAULT_EVENTS_DT = [1200, 800, 200, 800, 1200, 800, 200, 800, 1200]
 
 # Trajectory parameters
@@ -58,7 +59,7 @@ APPROACH_OFFSET = np.array([0.0, 0.0, 0.0])
 DOWNWARD_ORIENTATION = np.array([0.70710678, 0.0, 0.70710678, 0.0])
 
 # Scene configuration
-SCENE_XML_PATH = "trossen_arm_mujoco/assets/wxai/scene_wxai_pick_place.xml"
+SCENE_XML_PATH = os.path.join(ASSETS_DIR, "wxai", "scene_wxai_pick_place.xml")
 
 # Robot controller configuration
 ARM_JOINT_NAMES = [f"joint_{i}" for i in range(6)]
@@ -276,13 +277,8 @@ class WXAIPickPlace:
         # Get cube position
         cube_pos = self.data.xpos[self.cube_body_id].copy()
 
-        # Get cube orientation (convert rotation matrix to quaternion)
-        cube_xmat = self.data.xmat[self.cube_body_id].reshape(3, 3)
-        rotation = Rotation.from_matrix(cube_xmat)
-        quat_xyzw = rotation.as_quat()  # scipy format: [x, y, z, w]
-        cube_quat = np.array(
-            [quat_xyzw[3], quat_xyzw[0], quat_xyzw[1], quat_xyzw[2]]
-        )  # [w, x, y, z]
+        # Get cube orientation [w, x, y, z]
+        cube_quat = self.data.xquat[self.cube_body_id].copy()
 
         return cube_pos, cube_quat
 
@@ -315,34 +311,20 @@ class WXAIPickPlace:
             end_ori = np.array(orientations[i + 1], dtype=np.float64)
             n_steps = dt[i]
 
-            # Convert quaternions to Rotation objects for SLERP
-            rot_start = Rotation.from_quat(
-                [start_ori[1], start_ori[2], start_ori[3], start_ori[0]]
-            )  # [x,y,z,w]
-            rot_end = Rotation.from_quat(
-                [end_ori[1], end_ori[2], end_ori[3], end_ori[0]]
-            )  # [x,y,z,w]
-
-            # Linear interpolation for position, SLERP for orientation
+            # Linear interpolation for position, normalized linear interpolation for orientation
             for step in range(n_steps):
                 alpha = step / n_steps if n_steps > 0 else 0.0
                 interpolated_pos = start_pos + alpha * (end_pos - start_pos)
 
-                # SLERP for smooth orientation interpolation
                 if alpha == 0.0:
                     interpolated_ori = start_ori
                 else:
                     # Normalized linear interpolation for quaternions
-                    q = rot_start.as_quat() * (1 - alpha) + rot_end.as_quat() * alpha
+                    q = start_ori * (1 - alpha) + end_ori * alpha
                     norm = np.linalg.norm(q)
                     if norm > 0.0:
                         q = q / norm
-                    rot_interp = Rotation.from_quat(q)
-                    # Convert back to [w,x,y,z]
-                    quat_xyzw = rot_interp.as_quat()
-                    interpolated_ori = np.array(
-                        [quat_xyzw[3], quat_xyzw[0], quat_xyzw[1], quat_xyzw[2]]
-                    )
+                    interpolated_ori = q
 
                 trajectory.append((interpolated_pos, interpolated_ori, cumulative_step + step))
 
@@ -398,28 +380,7 @@ class WXAIPickPlace:
 
 
 def main():
-    """Main execution function matching IsaacSim structure."""
-    print("=" * 70)
-    print("WidowX AI Pick-and-Place Demo (MuJoCo)")
-    print("=" * 70)
-    print()
-    print("The robot will pick up the blue cube and place it at the target location.")
-    print()
-    print("Task sequence:")
-    print("  0. Move to pre-pick position above cube")
-    print("  1. Rotate to downward orientation at pre-pick")
-    print("  2. Descend to pick approach height")
-    print("  3. Close gripper")
-    print("  4. Lift cube with clearance")
-    print("  5. Move to pre-place position above target")
-    print("  6. Descend to place approach height")
-    print("  7. Open gripper")
-    print("  8. Retreat with clearance")
-    print("  9. Return to home position")
-    print()
-    print("=" * 70)
-    print()
-
+    print("Running WidowX AI pick-and-place demo. Close the viewer to exit.")
     # Create and setup the pick-and-place task
     pick_place = WXAIPickPlace()
     pick_place.setup_scene()

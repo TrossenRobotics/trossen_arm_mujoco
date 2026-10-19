@@ -36,7 +36,6 @@ from typing import Tuple
 
 import mujoco
 import numpy as np
-from scipy.spatial.transform import Rotation
 
 
 class RobotType(Enum):
@@ -140,7 +139,7 @@ class Controller:
                 dof_addr = model.jnt_dofadr[joint_id]
                 self.arm_dof_indices.append(dof_addr)
 
-                # Get actuator ID for this joint (assumes actuator name matches joint name)
+                # Get actuator ID for this joint
                 try:
                     actuator_id = mujoco.mj_name2id(
                         model, mujoco.mjtObj.mjOBJ_ACTUATOR, joint_name
@@ -167,11 +166,11 @@ class Controller:
                 self.gripper_qpos_indices.append(qpos_adr)
 
                 # Get actuator ID - gripper actuator name varies by robot type
-                # WXAI: "left_gripper"
+                # WXAI: "gripper"
                 # Stationary AI: "follower_left_gripper" or "follower_right_gripper"
                 # Mobile AI: "follower_left_gripper" or "follower_right_gripper"
                 if robot_type == RobotType.WXAI:
-                    gripper_actuator_name = "left_gripper"
+                    gripper_actuator_name = "gripper"
                 elif robot_type == RobotType.STATIONARY_AI:
                     # Pattern: follower_left_left_carriage_joint -> follower_left_gripper
                     if "follower_left" in joint_name:
@@ -218,12 +217,9 @@ class Controller:
         # Get site position
         position = self.data.site(self.ee_site_id).xpos.copy()
 
-        # Get site orientation (rotation matrix)
-        xmat = self.data.site(self.ee_site_id).xmat.reshape(3, 3)
-
-        # Convert rotation matrix to quaternion [w, x, y, z]
-        rotation = Rotation.from_matrix(xmat)
-        orientation = rotation.as_quat(scalar_first=True)
+        # Convert site rotation matrix to quaternion [w, x, y, z]
+        orientation = np.empty(4)
+        mujoco.mju_mat2Quat(orientation, self.data.site(self.ee_site_id).xmat)
 
         return position, orientation
 
@@ -293,14 +289,15 @@ class Controller:
         if target_orientation is not None and not position_only:
             # Orientation error using quaternion difference
             # e = 2 * (q_target * q_current^-1).xyz * sign(q_diff.w)
-            q_target = target_orientation  # [w, x, y, z]
+            q_target = np.asarray(target_orientation, dtype=np.float64)  # [w, x, y, z]
             q_current = current_orientation
 
             # Quaternion conjugate (inverse for unit quaternions)
             q_current_conj = np.array([q_current[0], -q_current[1], -q_current[2], -q_current[3]])
 
             # Quaternion multiplication: q_target * q_current_conj
-            q_diff = self._quat_multiply(q_target, q_current_conj)
+            q_diff = np.empty(4)
+            mujoco.mju_mulQuat(q_diff, q_target, q_current_conj)
 
             # Orientation error
             orientation_error = 2 * q_diff[1:4] * np.sign(q_diff[0])
@@ -378,20 +375,3 @@ class Controller:
         error = np.linalg.norm(target_position - current_position)
 
         return error
-
-    def _quat_multiply(self, q1: np.ndarray, q2: np.ndarray) -> np.ndarray:
-        """Multiply two quaternions [w, x, y, z].
-
-        :param q1: First quaternion [w, x, y, z]
-        :param q2: Second quaternion [w, x, y, z]
-        :return: Product quaternion [w, x, y, z]
-        """
-        w1, x1, y1, z1 = q1
-        w2, x2, y2, z2 = q2
-
-        w = w1 * w2 - x1 * x2 - y1 * y2 - z1 * z2
-        x = w1 * x2 + x1 * w2 + y1 * z2 - z1 * y2
-        y = w1 * y2 - x1 * z2 + y1 * w2 + z1 * x2
-        z = w1 * z2 + x1 * y2 - y1 * x2 + z1 * w2
-
-        return np.array([w, x, y, z])

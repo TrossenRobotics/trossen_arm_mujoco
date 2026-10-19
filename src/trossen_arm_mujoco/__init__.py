@@ -26,47 +26,7 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-from importlib.resources import files
 import os
 
-import numpy as np
-
-ROOT_DIR = os.path.expanduser("~/.trossen/mujoco/data/")
-
-### Simulated task configurations
-
-SIM_TASK_CONFIGS = {
-    "sim_transfer_cube": {
-        "num_episodes": 1,
-        "episode_len": 600,
-        "onscreen_render": False,
-        "inject_noise": False,
-        "cam_names": ["cam_high", "cam_low", "cam_left_wrist", "cam_right_wrist"],
-    }
-}
-
-### Simulation envs fixed constants
-DT = 0.02
-START_ARM_POSE = [
-    0.0,
-    np.pi / 12,
-    np.pi / 12,
-    0.0,
-    0.0,
-    0.0,
-    0.044,
-    0.044,
-    0.0,
-    np.pi / 12,
-    np.pi / 12,
-    0.0,
-    0.0,
-    0.0,
-    0.044,
-    0.044,
-]
-
-# Get the path to the assets directory
-ASSETS_DIR = str(files("trossen_arm_mujoco").joinpath("assets"))
-
-BOX_POSE = [None]
+# Robot models and scenes
+ASSETS_DIR = os.path.join(os.path.dirname(__file__), "assets")
