@@ -30,7 +30,7 @@
 Demonstrates mobile base motion and dual-arm pick-and-place using the Mobile AI robot.
 
 Usage:
-    uv run python3 scripts/mobile_ai_pick_place.py
+    uv run scripts/mobile_ai_pick_place.py
 """
 
 from __future__ import annotations

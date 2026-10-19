@@ -30,7 +30,7 @@
 Demonstrates continuous end effector tracking of a movable target cube.
 
 Usage:
-    uv run python3 scripts/wxai_follow_target.py
+    uv run scripts/wxai_follow_target.py
 
 Controls:
     - Double-click the target cube to select it

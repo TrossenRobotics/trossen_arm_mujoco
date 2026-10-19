@@ -30,7 +30,7 @@
 Demonstrates dual-arm pick-and-place with handoff using the Stationary AI robot.
 
 Usage:
-    uv run python3 scripts/stationary_ai_pick_place.py
+    uv run scripts/stationary_ai_pick_place.py
 """
 
 from __future__ import annotations

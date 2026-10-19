@@ -30,7 +30,7 @@
 Demonstrates pick-and-place manipulation using the WidowX AI robot.
 
 Usage:
-    uv run python3 scripts/wxai_pick_place.py
+    uv run scripts/wxai_pick_place.py
 """
 
 from __future__ import annotations
