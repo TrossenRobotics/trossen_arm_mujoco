@@ -22,6 +22,9 @@ wxai_pick_place = "trossen_arm_mujoco.scripts.wxai_pick_place:main"
 wxai_follow_target = "trossen_arm_mujoco.scripts.wxai_follow_target:main"
 stationary_ai_pick_place = "trossen_arm_mujoco.scripts.stationary_ai_pick_place:main"
 mobile_ai_pick_place = "trossen_arm_mujoco.scripts.mobile_ai_pick_place:main"
+stationary_ai_transfer_cube_record = "trossen_arm_mujoco.scripts.stationary_ai_transfer_cube_record:main"
+stationary_ai_transfer_cube_eval = "trossen_arm_mujoco.scripts.stationary_ai_transfer_cube_eval:main"
+episode_to_video = "trossen_arm_mujoco.scripts.episode_to_video:main"
 
 [build-system]
 requires = ["uv_build>=0.12.23,<0.13.0"]

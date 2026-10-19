@@ -174,10 +174,10 @@ The shared environment ([`transfer_cube_env.py`](./src/trossen_arm_mujoco/transf
 Runs the Stationary AI pick-and-place demo as a scripted policy and saves only successful episodes:
 
 ```bash
-uv run python3 scripts/stationary_ai_transfer_cube_record.py --num_episodes 50
+uv run stationary_ai_transfer_cube_record --num_episodes 50
 ```
 
-Episodes are saved to `data/stationary_ai_transfer_cube/episode_N.hdf5` in the repository:
+Episodes are saved to `data/stationary_ai_transfer_cube/episode_N.hdf5` in the current directory:
 
 ```
 /action                          (T, 14)
@@ -191,7 +191,7 @@ Options: `--root_dir`, `--data_dir`, `--episode_len` (default 1200), `--seed`, `
 ### 2. Convert an Episode to Video
 
 ```bash
-uv run python3 scripts/episode_to_video.py data/stationary_ai_transfer_cube/episode_0.hdf5
+uv run episode_to_video data/stationary_ai_transfer_cube/episode_0.hdf5
 ```
 
 The video, with all cameras side by side, is saved next to the episode as `episode_0.mp4`.
@@ -201,7 +201,7 @@ The video, with all cameras side by side, is saved next to the episode as `episo
 Runs a policy on random cube positions and reports the success rate of each subtask:
 
 ```bash
-uv run python3 scripts/stationary_ai_transfer_cube_eval.py --policy scripted --num_trials 50
+uv run stationary_ai_transfer_cube_eval --policy scripted --num_trials 50
 ```
 
 To evaluate your own policy (e.g. a trained ACT model), add it to `make_policy()` in the script. A policy needs `reset()` and `__call__(observation)` returning the 14 joint targets.
