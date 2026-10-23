@@ -138,39 +138,43 @@ def record_episode(
     observation = env.reset()
     policy.reset()
 
-    with h5py.File(path, "w") as root:
-        root.attrs["sim"] = True
-        qpos = root.create_dataset("observations/qpos", (episode_len, 14), dtype="float32")
-        qvel = root.create_dataset("observations/qvel", (episode_len, 14), dtype="float32")
-        action = root.create_dataset("action", (episode_len, 14), dtype="float32")
-        images = {
-            name: root.create_dataset(
-                f"observations/images/{name}",
-                (episode_len, IMAGE_HEIGHT, IMAGE_WIDTH, 3),
-                dtype="uint8",
-                chunks=(1, IMAGE_HEIGHT, IMAGE_WIDTH, 3),
-                compression="gzip",
-                compression_opts=1,
-            )
-            for name in env.camera_names
-        }
+    success = False
+    try:
+        with h5py.File(path, "w") as root:
+            root.attrs["sim"] = True
+            qpos = root.create_dataset("observations/qpos", (episode_len, 14), dtype="float32")
+            qvel = root.create_dataset("observations/qvel", (episode_len, 14), dtype="float32")
+            action = root.create_dataset("action", (episode_len, 14), dtype="float32")
+            images = {
+                name: root.create_dataset(
+                    f"observations/images/{name}",
+                    (episode_len, IMAGE_HEIGHT, IMAGE_WIDTH, 3),
+                    dtype="uint8",
+                    chunks=(1, IMAGE_HEIGHT, IMAGE_WIDTH, 3),
+                    compression="gzip",
+                    compression_opts=1,
+                )
+                for name in env.camera_names
+            }
 
-        for t in range(episode_len):
-            # Record observation and the action taken from it
-            qpos[t] = observation["qpos"]
-            qvel[t] = observation["qvel"]
-            for name, image in observation["images"].items():
-                images[name][t] = image
-            action[t] = policy(observation)
+            for t in range(episode_len):
+                # Record observation and the action taken from it
+                qpos[t] = observation["qpos"]
+                qvel[t] = observation["qvel"]
+                for name, image in observation["images"].items():
+                    images[name][t] = image
+                action[t] = policy(observation)
 
-            observation, reward = env.step(action[t])
-            if viewer is not None:
-                viewer.sync()
+                observation, reward = env.step(action[t])
+                if viewer is not None:
+                    viewer.sync()
 
-    success = reward == MAX_REWARD
-    if not success:
-        os.remove(path)
-    return success
+        success = reward == MAX_REWARD
+        return success
+    finally:
+        # Delete the file of a failed or interrupted run
+        if not success and os.path.exists(path):
+            os.remove(path)
 
 
 def main():
@@ -201,6 +205,10 @@ def main():
     runs = 0
     while saved < args.num_episodes and runs < 2 * args.num_episodes:
         path = os.path.join(data_dir, f"episode_{saved}.hdf5")
+
+        if os.path.exists(path):
+            raise FileExistsError(f"{path} already exists. Use a new --data_dir to record a new dataset.")
+
         success = record_episode(env, policy, args.episode_len, path, viewer)
         runs += 1
         if success:
