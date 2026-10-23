@@ -157,10 +157,16 @@ class StationaryAIPickPlace:
         self.trajectory_index = 0
         self.waypoint_step_count = 0
 
-    def setup_scene(self) -> None:
-        """Initialize simulation scene with robot, cube, and environment."""
-        self.model = mujoco.MjModel.from_xml_path(SCENE_XML_PATH)
-        self.data = mujoco.MjData(self.model)
+    def setup_scene(
+        self, model: mujoco.MjModel | None = None, data: mujoco.MjData | None = None
+    ) -> None:
+        """Initialize simulation scene with robot, cube, and environment.
+
+        :param model: Existing model of the same scene (loaded from SCENE_XML_PATH if None).
+        :param data: Existing data for the model (created if None).
+        """
+        self.model = model if model is not None else mujoco.MjModel.from_xml_path(SCENE_XML_PATH)
+        self.data = data if data is not None else mujoco.MjData(self.model)
 
         # Initialize left arm controller
         self.left_robot = Controller(
@@ -362,6 +368,9 @@ class StationaryAIPickPlace:
             end_pos = np.array(key_frames[i + 1], dtype=np.float64)
             start_ori = np.array(orientations[i], dtype=np.float64)
             end_ori = np.array(orientations[i + 1], dtype=np.float64)
+            # q and -q are the same rotation; flip to interpolate along the shorter path
+            if np.dot(start_ori, end_ori) < 0.0:
+                end_ori = -end_ori
             n_steps = dt[i]
 
             for step in range(n_steps):
@@ -417,14 +426,14 @@ class StationaryAIPickPlace:
         assert self.left_robot is not None
         assert self.right_robot is not None
         # Left arm key positions
-        left_ee_pos, _ = self.left_robot.get_ee_pose()
+        left_ee_pos, left_ee_ori = self.left_robot.get_ee_pose()
         left_prepick = cube_pos + np.array([0.0, 0.0, self.clearance_height])
         left_pick = cube_pos + self.approach_offset
         left_handoff = self.handoff_position + np.array([0.0, self.handoff_offset, 0.0])
         left_retreat = self.left_home
 
         # Right arm key positions
-        right_ee_pos, _ = self.right_robot.get_ee_pose()
+        right_ee_pos, right_ee_ori = self.right_robot.get_ee_pose()
         right_wait = np.array([0.0, -0.20, 0.25])
         right_pre_handoff = self.handoff_position + np.array([0.0, -0.12, 0.0])
         right_handoff = self.handoff_position + np.array([0.0, -self.handoff_offset, 0.0])
@@ -453,7 +462,7 @@ class StationaryAIPickPlace:
         ]
 
         left_orientations = [
-            LEFT_ARM_DOWNWARD_ORIENTATION,  # Start
+            left_ee_ori,  # Start: current orientation
             LEFT_ARM_DOWNWARD_ORIENTATION,  # 0
             LEFT_ARM_DOWNWARD_ORIENTATION,  # 1
             LEFT_ARM_DOWNWARD_ORIENTATION,  # 2
@@ -492,7 +501,7 @@ class StationaryAIPickPlace:
         ]
 
         right_orientations = [
-            RIGHT_ARM_DOWNWARD_ORIENTATION,  # Start
+            right_ee_ori,  # Start: current orientation
             RIGHT_ARM_HANDOFF_ORIENTATION,  # 0 - rotate to handoff
             RIGHT_ARM_HANDOFF_ORIENTATION,  # 1
             RIGHT_ARM_HANDOFF_ORIENTATION,  # 2
