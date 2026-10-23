@@ -90,6 +90,11 @@ class TransferCubeEnv:
             mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_ACTUATOR, name)
             for name in ["follower_left_gripper", "follower_right_gripper"]
         ]
+        # Mimic finger of each gripper
+        self.mimic_finger_qpos_indices = [
+            self.model.jnt_qposadr[mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_JOINT, name)]
+            for name in ["follower_left_right_carriage_joint", "follower_right_right_carriage_joint"]
+        ]
 
         # Cube and contact bodies for the reward
         self.cube_body_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_BODY, "cube")
@@ -119,6 +124,8 @@ class TransferCubeEnv:
         self.data.qpos[self.cube_qpos_addr + 3 : self.cube_qpos_addr + 7] = [1.0, 0.0, 0.0, 0.0]
         self.data.ctrl[self.gripper_actuator_ids] = GRIPPER_OPEN_POSITION
         self.data.qpos[self.qpos_indices] = self.data.ctrl
+        # mj_forward does not enforce the mimic constraint, so open the mimic fingers
+        self.data.qpos[self.mimic_finger_qpos_indices] = GRIPPER_OPEN_POSITION
         mujoco.mj_forward(self.model, self.data)
 
         return self.get_observation()
