@@ -58,45 +58,45 @@
       <geom class="visual" mesh="base_link_color_0" material="color_0"/>
       <geom class="visual" mesh="base_link_color_2" material="color_2"/>
       <geom class="collision" mesh="base_link"/>
-      <inertial pos="-0.00615208 0.00004245 0.05031879" mass="1.01890997" fullinertia="0.00159523 0.00194612 0.00171486 0.00000435 0.00001353 -0.00000116"/>
+      <inertial pos="-0.00671439 0.00015929 0.04936050" mass="1.05999025" fullinertia="0.00169813 0.00208830 0.00185425 0.00000821 -0.00007146 -0.00000414"/>
       <body name="link_1" pos="0 0 0.096">
         <joint name="joint_0" pos="0 0 0" axis="0 0 1" range="-2.87979327 2.87979327"/>
         <geom class="visual" mesh="link_1" material="color_0"/>
         <geom class="collision" mesh="link_1"/>
-        <inertial pos="0.00380039 0 0.0172804" mass="0.137839" fullinertia="0.000183111 0.000077663 0.000195525 0.0 -0.0000132383 0.0"/>
+        <inertial pos="0.00265807 -0.00223121 0.01713183" mass="0.24434760" fullinertia="0.00030654 0.00015923 0.00031679 0.00001055 -0.00003439 0.00001202"/>
         <body name="link_2" pos="0.02 0 0.044">
           <joint name="joint_1" pos="0 0 0" axis="0 1 0" range="0 3.57792497"/>
           <geom class="visual" mesh="link_2_color_0" material="color_0"/>
           <geom class="visual" mesh="link_2_color_5" material="color_5"/>
           <geom class="collision" mesh="link_2"/>
-          <inertial pos="-0.131697 0 0.0000805119" mass="0.899971" fullinertia="0.000450486 0.00911893 0.00918148 0.0 -0.00000807059 0.0"/>
+          <inertial pos="-0.13201452 -0.00047895 0.00007208" mass="1.28563686" fullinertia="0.00076836 0.01793702 0.01805880 0.00000135 -0.00000528 -0.00000123"/>
           <body name="link_3" pos="-0.264 0 0">
             <joint name="joint_2" pos="0 0 0" axis="0 -1 0" range="0 3.14159265"/>
             <geom class="visual" mesh="link_3_color_0" material="color_0"/>
             <geom class="visual" mesh="link_3_color_6" material="color_6"/>
             <geom class="visual" mesh="link_3_color_5" material="color_5"/>
             <geom class="collision" mesh="link_3"/>
-            <inertial pos="0.15078963 -0.00011014 0.055404" mass="0.95073232" fullinertia="0.00082328 0.01003685 0.01001162 0.00000511 -0.00066824 -0.00000307"/>
+            <inertial pos="0.14856512 -0.00093837 0.05470195" mass="0.94523715" fullinertia="0.00084253 0.01013070 0.01007403 -0.00003556 -0.00075363 -0.00002509"/>
             <body name="link_4" pos="0.245 0 0.06">
               <joint name="joint_3" pos="0 0 0" axis="0 -1 0" range="-1.57079633 1.57079633"/>
               <geom class="visual" mesh="link_4" material="color_0"/>
               <geom class="collision" mesh="link_4"/>
-              <inertial pos="0.05224276 -0.00099433 0.05517984" mass="0.44927258" fullinertia="0.00053844 0.0006614 0.00055157 -0.00002118 -0.00024825 -0.00002265"/>
+              <inertial pos="0.05026711 -0.00029826 0.05475366" mass="0.45161249" fullinertia="0.00058366 0.00071884 0.00057217 -0.00000429 -0.00027871 -0.00000537"/>
               <body name="link_5" pos="0.065 0 0.048">
                 <joint name="joint_4" pos="0 0 0" axis="0 0 -1" range="-1.57079633 1.57079633"/>
                 <geom class="visual" mesh="link_5" material="color_0"/>
                 <geom class="collision" mesh="link_5"/>
-                <inertial pos="-0.00579062 0 -0.02720844" mass="0.07121851" fullinertia="0.00004021 0.00003792 0.00001254 0 -0.00000666 0"/>
+                <inertial pos="-0.00539755 -0.00000007 -0.02459526" mass="0.04891458" fullinertia="0.0000265430 0.0000248750 0.0000101230 0.0000000000 -0.0000044943 0.0000000000"/>
                 <body name="link_6" pos="-0.009 0 -0.048">
                   <joint name="joint_5" pos="0 0 0" axis="1 0 0" range="-2.00712864 2.00712864"/>
                   <geom class="visual" mesh="link_6" material="color_0"/>
                   <geom class="collision" mesh="link_6"/>
-                  <inertial pos="0.06129266 -0.00002029 -0.00026366" mass="0.84380465" fullinertia="0.00046982 0.00127174 0.00130342 -0.00000111 -0.00001431 -0.00000064"/>
+                  <inertial pos="0.06477211 -0.00005660 -0.00026172" mass="0.79969124" fullinertia="0.00045275 0.00122431 0.00124214 -0.00000048 -0.00000703 -0.00000034"/>
                   <site name="ee_site" pos="0.218 0 0" size="0.003"/>
                   <body name="camera_mount" pos="0.102 0 0">
                     <geom class="visual" mesh="camera_mount" material="color_0"/>
                     <geom class="collision" mesh="camera_mount"/>
-                    <inertial pos="-0.01095 0 0.03905" mass="0.0496" fullinertia="0.0000188 0.0000105 0.0000123 0 0 0"/>
+                    <inertial pos="-0.00817605 -0.00042266 0.04038287" mass="0.02632005" fullinertia="0.0000101629 0.0000067858 0.0000067649 0.0000000518 0.0000002760 0.0000003826"/>
                   </body>
                   <body name="wrist_camera_link" pos="0.091112 0 0.057797" quat="0.9762960 0 0.2164395 0">
                     <body name="wrist_camera_center" pos="0 0 0.01525">
@@ -111,24 +111,24 @@
                     <joint name="right_carriage_joint" pos="0 0 0" axis="-1 0 0" type="slide" range="0 0.045"/>
                     <geom class="visual" mesh="carriage_right" material="color_0"/>
                     <geom class="collision" mesh="carriage_right"/>
-                    <inertial pos="0.01255019 0.00449652 0.00963255" mass="0.06140653" fullinertia="0.0000091193 0.0000310840 0.0000224261 -0.0000005807 -0.0000082661 -0.0000004457"/>
+                    <inertial pos="0.03198817 0.01024525 0.01710190" mass="0.05823866" fullinertia="0.0000076862 0.0000307237 0.0000263411 -0.0000040815 -0.0000070993 -0.0000014148"/>
                     <body name="gripper_right" pos="0 0 0" quat="0.7071068 0.7071068 0 0">
                       <geom class="visual" mesh="gripper_right_color_0" material="color_0"/>
                       <geom class="visual" mesh="gripper_right_color_5" material="color_5"/>
                       <geom class="collision" mesh="gripper_right"/>
-                      <inertial pos="0.00275423 0.00000726 0.0205991" mass="0.03751074" fullinertia="0.00002087 0.00002044 0.00000456 0 -0.00000338 0"/>
+                      <inertial pos="0.00101084 -0.00003183 0.02641115" mass="0.04941995" fullinertia="0.0000309841 0.0000323622 0.0000056007 -0.0000000016 -0.0000056184 -0.0000000687"/>
                     </body>
                   </body>
                   <body name="carriage_left" pos="0.1265 0.0225 0" quat="0 0.7071068 -0.7071068 0">
                     <joint name="left_carriage_joint" pos="0 0 0" axis="-1 0 0" type="slide" range="0 0.045"/>
                     <geom class="visual" mesh="carriage_left" material="color_0"/>
                     <geom class="collision" mesh="carriage_left"/>
-                    <inertial pos="0.01255019 0.00449652 0.00963255" mass="0.06140653" fullinertia="0.0000091193 0.0000310840 0.0000224261 -0.0000005807 -0.0000082661 -0.0000004457"/>
+                    <inertial pos="0.03198817 0.01024525 0.01710190" mass="0.05823866" fullinertia="0.0000076862 0.0000307237 0.0000263411 -0.0000040815 -0.0000070993 -0.0000014148"/>
                     <body name="gripper_left" pos="0 0 0" quat="0.7071068 0.7071068 0 0">
                       <geom class="visual" mesh="gripper_left_color_0" material="color_0"/>
                       <geom class="visual" mesh="gripper_left_color_5" material="color_5"/>
                       <geom class="collision" mesh="gripper_left"/>
-                      <inertial pos="0.00275423 0.00000726 0.0205991" mass="0.03751074" fullinertia="0.00002087 0.00002044 0.00000456 0 -0.00000338 0"/>
+                      <inertial pos="0.00101084 -0.00003183 0.02641115" mass="0.04941995" fullinertia="0.0000309841 0.0000323622 0.0000056007 -0.0000000016 -0.0000056184 -0.0000000687"/>
                     </body>
                   </body>
                 </body>
