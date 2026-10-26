@@ -10,6 +10,7 @@ This repository provides MuJoCo simulation environments for Trossen AI robotic a
   - WidowX AI (single arm manipulator)
   - WidowX Pro (6-DOF arm, 4 kg payload)
   - WidowX Core (6-DOF arm, 2 kg payload)
+  - WidowX Heavy (6-DOF arm, 6 kg payload)
   - Glide (passive teleoperation device, left and right)
   - Workbench (dual WidowX Pro tabletop system)
   - Rivet (mobile system: dual WidowX Pro on a lift, swerve base)
@@ -48,6 +49,9 @@ src/trossen_arm_mujoco/assets/
 │   └── scene.xml                            # Basic visualization scene
 ├── wxcore/
 │   ├── wxcore.xml                           # WidowX Core arm
+│   └── scene.xml                            # Basic visualization scene
+├── wxheavy/
+│   ├── wxheavy.xml                          # WidowX Heavy arm
 │   └── scene.xml                            # Basic visualization scene
 ├── glide_left/
 │   ├── glide_left.xml                       # Glide teleoperation device, left
