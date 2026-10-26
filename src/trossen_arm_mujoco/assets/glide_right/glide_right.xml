@@ -1,5 +1,5 @@
 <mujoco model="glide_right">
-  <compiler angle="radian" meshdir="../meshes" texturedir="../" autolimits="true"/>
+  <compiler angle="radian" meshdir="../meshes" autolimits="true"/>
 
   <option integrator="implicitfast"/>
 
