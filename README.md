@@ -8,6 +8,7 @@ This repository provides MuJoCo simulation environments for Trossen AI robotic a
 
 - MuJoCo XML models for Trossen AI robots:
   - WidowX AI (single arm manipulator)
+  - WidowX Pro (6-DOF arm, 4 kg payload)
   - Stationary AI (dual-arm stationary platform)
   - Mobile AI (dual-arm mobile manipulator)
 - Differential inverse kinematics controller for Cartesian end-effector control
@@ -38,6 +39,9 @@ src/trossen_arm_mujoco/assets/
 │   ├── scene.xml                            # Basic visualization scene
 │   ├── scene_wxai_pick_place.xml            # Pick-and-place scene
 │   └── scene_wxai_follow_target.xml         # Target following scene
+├── wxpro/
+│   ├── wxpro.xml                            # WidowX Pro arm
+│   └── scene.xml                            # Basic visualization scene
 ├── stationary_ai/
 │   ├── stationary_ai.xml                    # Dual-arm stationary platform
 │   ├── scene.xml                            # Basic visualization scene
