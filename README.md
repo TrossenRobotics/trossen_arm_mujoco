@@ -10,6 +10,7 @@ This repository provides MuJoCo simulation environments for Trossen AI robotic a
   - WidowX AI (single arm manipulator)
   - WidowX Pro (6-DOF arm, 4 kg payload)
   - Workbench (dual WidowX Pro tabletop system)
+  - Rivet (mobile system: dual WidowX Pro on a lift, swerve base)
   - Stationary AI (dual-arm stationary platform)
   - Mobile AI (dual-arm mobile manipulator)
 - Differential inverse kinematics controller for Cartesian end-effector control
@@ -45,6 +46,9 @@ src/trossen_arm_mujoco/assets/
 │   └── scene.xml                            # Basic visualization scene
 ├── workbench/
 │   ├── workbench.xml                        # Dual WidowX Pro tabletop system
+│   └── scene.xml                            # Basic visualization scene
+├── rivet/
+│   ├── rivet.xml                            # Dual WidowX Pro on a lift + swerve base
 │   └── scene.xml                            # Basic visualization scene
 ├── stationary_ai/
 │   ├── stationary_ai.xml                    # Dual-arm stationary platform
