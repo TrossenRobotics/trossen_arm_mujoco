@@ -9,6 +9,7 @@ This repository provides MuJoCo simulation environments for Trossen AI robotic a
 - MuJoCo XML models for Trossen AI robots:
   - WidowX AI (single arm manipulator)
   - WidowX Pro (6-DOF arm, 4 kg payload)
+  - WidowX Core (6-DOF arm, 2 kg payload)
   - Workbench (dual WidowX Pro tabletop system)
   - Rivet (mobile system: dual WidowX Pro on a lift, swerve base)
   - Stationary AI (dual-arm stationary platform)
@@ -43,6 +44,9 @@ src/trossen_arm_mujoco/assets/
 │   └── scene_wxai_follow_target.xml         # Target following scene
 ├── wxpro/
 │   ├── wxpro.xml                            # WidowX Pro arm
+│   └── scene.xml                            # Basic visualization scene
+├── wxcore/
+│   ├── wxcore.xml                           # WidowX Core arm
 │   └── scene.xml                            # Basic visualization scene
 ├── workbench/
 │   ├── workbench.xml                        # Dual WidowX Pro tabletop system

@@ -1,9 +1,10 @@
 <mujoco model="wxcore">
-  <compiler angle="radian" meshdir="../meshes" texturedir="../" autolimits="true"/>
+  <compiler angle="radian" meshdir="../meshes" autolimits="true"/>
 
   <option integrator="implicitfast"/>
 
   <default>
+    <site group="4"/>
     <default class="visual">
       <geom type="mesh" group="2" contype="0" conaffinity="0"/>
     </default>
