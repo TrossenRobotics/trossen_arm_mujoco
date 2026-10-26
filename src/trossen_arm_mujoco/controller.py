@@ -28,7 +28,7 @@
 """Trossen AI Robot IK Controller.
 
 Provides inverse kinematics control using damped least squares differential IK
-for WidowX AI, Stationary AI, and Mobile AI robots.
+for WidowX AI, WidowX Pro, Stationary AI, and Mobile AI robots.
 """
 
 from enum import Enum
@@ -42,6 +42,7 @@ class RobotType(Enum):
     """Robot type identifiers."""
 
     WXAI = "wxai"
+    WXPRO = "wxpro"
     STATIONARY_AI = "stationary_ai"
     MOBILE_AI = "mobile_ai"
 
@@ -77,7 +78,7 @@ class Controller:
 
         :param model: MuJoCo model
         :param data: MuJoCo data
-        :param robot_type: Type of robot (WXAI, STATIONARY_AI, or MOBILE_AI)
+        :param robot_type: Type of robot (WXAI, WXPRO, STATIONARY_AI, or MOBILE_AI)
         :param ee_site_name: Name of end effector site in the model
         :param arm_joint_names: List of arm joint names for IK. If None, uses defaults.
         :param gripper_joint_names: List of gripper joint names. If None, uses defaults.
@@ -103,7 +104,7 @@ class Controller:
 
         # Set default joint names based on robot type
         if arm_joint_names is None:
-            if robot_type == RobotType.WXAI:
+            if robot_type == RobotType.WXAI or robot_type == RobotType.WXPRO:
                 arm_joint_names = [f"joint_{i}" for i in range(6)]
             elif robot_type == RobotType.STATIONARY_AI:
                 # For dual arm, this will be set per arm
@@ -113,7 +114,7 @@ class Controller:
                 arm_joint_names = []
 
         if gripper_joint_names is None:
-            if robot_type == RobotType.WXAI:
+            if robot_type == RobotType.WXAI or robot_type == RobotType.WXPRO:
                 gripper_joint_names = ["left_carriage_joint"]
             elif robot_type == RobotType.STATIONARY_AI:
                 gripper_joint_names = []
@@ -166,10 +167,10 @@ class Controller:
                 self.gripper_qpos_indices.append(qpos_adr)
 
                 # Get actuator ID - gripper actuator name varies by robot type
-                # WXAI: "gripper"
+                # WXAI, WXPRO: "gripper"
                 # Stationary AI: "follower_left_gripper" or "follower_right_gripper"
                 # Mobile AI: "follower_left_gripper" or "follower_right_gripper"
-                if robot_type == RobotType.WXAI:
+                if robot_type == RobotType.WXAI or robot_type == RobotType.WXPRO:
                     gripper_actuator_name = "gripper"
                 elif robot_type == RobotType.STATIONARY_AI:
                     # Pattern: follower_left_left_carriage_joint -> follower_left_gripper
