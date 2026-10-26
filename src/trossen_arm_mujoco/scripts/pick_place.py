@@ -25,18 +25,21 @@
 # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
-"""WidowX AI Pick-and-Place Demonstration.
+"""Pick-and-Place Demonstration.
 
-Demonstrates pick-and-place manipulation using the WidowX AI robot.
+Demonstrates pick-and-place manipulation using the WidowX AI or WidowX Pro robot.
 
 Usage:
-    uv run wxai_pick_place
+    uv run pick_place --robot wxai
+    uv run pick_place --robot wxpro
 """
 
 from __future__ import annotations
 
+import argparse
 import os
 import sys
+import time
 
 import mujoco
 import mujoco.viewer
@@ -58,12 +61,14 @@ CLEARANCE_HEIGHT = 0.15
 APPROACH_OFFSET = np.array([0.0, 0.0, 0.0])
 DOWNWARD_ORIENTATION = np.array([0.70710678, 0.0, 0.70710678, 0.0])
 
-# Scene configuration
-SCENE_XML_PATH = os.path.join(ASSETS_DIR, "wxai", "scene_wxai_pick_place.xml")
+# Supported robots
+ROBOTS = ("wxai", "wxpro")
+DEFAULT_ROBOT = "wxpro"
 
 # Robot controller configuration
 ARM_JOINT_NAMES = [f"joint_{i}" for i in range(6)]
 GRIPPER_JOINT_NAMES = ["left_carriage_joint"]
+FINGER_JOINT_NAMES = ["left_carriage_joint", "right_carriage_joint"]
 DEFAULT_DOF_POSITIONS = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.044])
 
 # IK configuration
@@ -73,11 +78,12 @@ POSITION_THRESHOLD = 0.04
 MAX_STEPS_PER_WAYPOINT = 100
 
 
-class WXAIPickPlace:
+class PickPlace:
     """Pick-and-place task with trajectory-based motion control."""
 
     def __init__(
         self,
+        robot: str = DEFAULT_ROBOT,
         events_dt: list[int] | None = None,
         cube_initial_position: np.ndarray | None = None,
         cube_initial_orientation: np.ndarray | None = None,
@@ -85,11 +91,17 @@ class WXAIPickPlace:
     ):
         """Initialize pick-and-place task.
 
+        :param robot: Robot name, one of ROBOTS.
         :param events_dt: List of time deltas for events in the task sequence.
         :param cube_initial_position: Initial position [x, y, z] of the cube in meters.
         :param cube_initial_orientation: Initial orientation quaternion [w, x, y, z] of the cube.
         :param target_position: Target position [x, y, z] for placing the cube in meters.
         """
+        if robot not in ROBOTS:
+            raise ValueError(f"Unknown robot '{robot}', expected one of {ROBOTS}")
+        self.robot_name = robot
+        self.scene_xml_path = os.path.join(ASSETS_DIR, robot, f"scene_{robot}_pick_place.xml")
+
         self.cube_initial_position = (
             cube_initial_position
             if cube_initial_position is not None
@@ -121,14 +133,14 @@ class WXAIPickPlace:
     def setup_scene(self) -> None:
         """Initialize simulation scene with robot, cube, and environment."""
         # Load MuJoCo model
-        self.model = mujoco.MjModel.from_xml_path(SCENE_XML_PATH)
+        self.model = mujoco.MjModel.from_xml_path(self.scene_xml_path)
         self.data = mujoco.MjData(self.model)
 
         # Initialize robot controller
         self.robot = Controller(
             model=self.model,
             data=self.data,
-            robot_type=RobotType.WXAI,
+            robot_type=RobotType(self.robot_name),
             arm_joint_names=ARM_JOINT_NAMES,
             gripper_joint_names=GRIPPER_JOINT_NAMES,
             ik_scale=IK_SCALE,
@@ -217,6 +229,9 @@ class WXAIPickPlace:
             self.data.qpos[qpos_addr] = DEFAULT_DOF_POSITIONS[i]
 
         # Reset gripper to open
+        for joint_name in FINGER_JOINT_NAMES:
+            joint_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_JOINT, joint_name)
+            self.data.qpos[self.model.jnt_qposadr[joint_id]] = DEFAULT_DOF_POSITIONS[6]
         self.robot.open_gripper()
 
         self.trajectory = None
@@ -357,7 +372,7 @@ class WXAIPickPlace:
         """
         cube_pos, _ = self.get_cube_pose()
         assert self.robot is not None
-        current_ee_pos, _ = self.robot.get_ee_pose()
+        current_ee_pos, current_ee_ori = self.robot.get_ee_pose()
 
         key_frames = [
             current_ee_pos,
@@ -372,17 +387,26 @@ class WXAIPickPlace:
             self.home_position,
         ]
 
+        # Start from the current orientation and turn downward during the first segment
         goal_orientation = DOWNWARD_ORIENTATION
-        orientations = [goal_orientation for _ in key_frames]
+        if np.dot(current_ee_ori, goal_orientation) < 0.0:
+            current_ee_ori = -current_ee_ori
+        orientations = [current_ee_ori] + [goal_orientation for _ in key_frames[1:]]
 
         self.trajectory = self.make_trajectory(key_frames, orientations, self.events_dt)
         self.trajectory_index = 0
 
 
 def main():
-    print("Running WidowX AI pick-and-place demo. Close the viewer to exit.")
+    parser = argparse.ArgumentParser(description="Scripted pick-and-place of a cube.")
+    parser.add_argument(
+        "--robot", type=str, choices=ROBOTS, default=DEFAULT_ROBOT, help="Robot to run."
+    )
+    args = parser.parse_args()
+
+    print(f"Running {args.robot} pick-and-place demo. Close the viewer to exit.")
     # Create and setup the pick-and-place task
-    pick_place = WXAIPickPlace()
+    pick_place = PickPlace(robot=args.robot)
     pick_place.setup_scene()
 
     # Reset to initial state
@@ -391,8 +415,6 @@ def main():
     task_completed = False
 
     # Launch viewer and run simulation with real-time synchronization
-    import time
-
     with mujoco.viewer.launch_passive(pick_place.model, pick_place.data) as viewer:
         # Set viewer to full screen
         viewer.cam.lookat[:] = [0.3, 0.0, 0.15]
@@ -422,7 +444,7 @@ def main():
             # Sync viewer
             viewer.sync()
 
-            # Real-time synchronization: sleep to match wall clock time
+            # Real-time synchronization
             elapsed = time.time() - step_start
             if elapsed < dt:
                 time.sleep(dt - elapsed)

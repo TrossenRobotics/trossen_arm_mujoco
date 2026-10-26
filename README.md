@@ -46,7 +46,9 @@ src/trossen_arm_mujoco/assets/
 │   └── scene_wxai_follow_target.xml         # Target following scene
 ├── wxpro/
 │   ├── wxpro.xml                            # WidowX Pro arm
-│   └── scene.xml                            # Basic visualization scene
+│   ├── scene.xml                            # Basic visualization scene
+│   ├── scene_wxpro_pick_place.xml           # Pick-and-place scene
+│   └── scene_wxpro_follow_target.xml        # Target following scene
 ├── wxcore/
 │   ├── wxcore.xml                           # WidowX Core arm
 │   └── scene.xml                            # Basic visualization scene
@@ -97,7 +99,7 @@ uv sync
 Verify Installation
 
 ```bash
-uv run wxai_pick_place
+uv run pick_place
 ```
 
 If the simulation window appears with the robot performing pick-and-place, the setup was successful.
@@ -108,9 +110,10 @@ These scripts demonstrate inverse kinematics-based control for manipulation task
 
 ### Pick and Place Demonstrations
 
-**WidowX AI** - Single arm pick-and-place:
+**WidowX AI / WidowX Pro** - Single arm pick-and-place (`--robot` defaults to `wxpro`):
 ```bash
-uv run wxai_pick_place
+uv run pick_place --robot wxai
+uv run pick_place --robot wxpro
 ```
 
 **Stationary AI** - Dual-arm pick-and-place with handoff:
@@ -125,10 +128,11 @@ uv run mobile_ai_pick_place
 
 ### Target Following Demo
 
-Real-time end-effector tracking using differential IK:
+Real-time end-effector tracking using differential IK (`--robot` defaults to `wxpro`):
 
 ```bash
-uv run wxai_follow_target
+uv run follow_target --robot wxai
+uv run follow_target --robot wxpro
 ```
 
 **Mouse Controls:**

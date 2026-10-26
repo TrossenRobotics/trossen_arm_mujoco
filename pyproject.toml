@@ -18,8 +18,8 @@ dependencies = [
 ]
 
 [project.scripts]
-wxai_pick_place = "trossen_arm_mujoco.scripts.wxai_pick_place:main"
-wxai_follow_target = "trossen_arm_mujoco.scripts.wxai_follow_target:main"
+pick_place = "trossen_arm_mujoco.scripts.pick_place:main"
+follow_target = "trossen_arm_mujoco.scripts.follow_target:main"
 stationary_ai_pick_place = "trossen_arm_mujoco.scripts.stationary_ai_pick_place:main"
 mobile_ai_pick_place = "trossen_arm_mujoco.scripts.mobile_ai_pick_place:main"
 stationary_ai_transfer_cube_record = "trossen_arm_mujoco.scripts.stationary_ai_transfer_cube_record:main"

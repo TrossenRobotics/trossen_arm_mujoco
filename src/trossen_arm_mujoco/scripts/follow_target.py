@@ -25,12 +25,14 @@
 # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
-"""WidowX AI Follow Target Demonstration.
+"""Follow Target Demonstration.
 
-Demonstrates continuous end effector tracking of a movable target cube.
+Demonstrates continuous end effector tracking of a movable target cube with the
+WidowX AI or WidowX Pro robot.
 
 Usage:
-    uv run wxai_follow_target
+    uv run follow_target --robot wxai
+    uv run follow_target --robot wxpro
 
 Controls:
     - Double-click the target cube to select it
@@ -40,8 +42,10 @@ Controls:
 
 from __future__ import annotations
 
+import argparse
 import os
 import sys
+import time
 
 import mujoco
 import mujoco.viewer
@@ -51,15 +55,17 @@ from trossen_arm_mujoco import ASSETS_DIR
 from trossen_arm_mujoco.controller import Controller, RobotType
 
 # Default target configuration
-DEFAULT_TARGET_POSITION = np.array([0.3, 0.0, 0.2])
+DEFAULT_TARGET_POSITION = np.array([0.35, 0.0, 0.3])
 DEFAULT_TARGET_ORIENTATION = np.array([1.0, 0.0, 0.0, 0.0])
 
-# Scene configuration
-SCENE_XML_PATH = os.path.join(ASSETS_DIR, "wxai", "scene_wxai_follow_target.xml")
+# Supported robots
+ROBOTS = ("wxai", "wxpro")
+DEFAULT_ROBOT = "wxpro"
 
 # Robot controller configuration
 ARM_JOINT_NAMES = [f"joint_{i}" for i in range(6)]
 GRIPPER_JOINT_NAMES = ["left_carriage_joint"]
+FINGER_JOINT_NAMES = ["left_carriage_joint", "right_carriage_joint"]
 DEFAULT_DOF_POSITIONS = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.044])
 
 # IK configuration
@@ -67,7 +73,7 @@ IK_SCALE = 1.0
 IK_DAMPING = 0.03
 
 
-class WXAIFollowTarget:
+class FollowTarget:
     """Real-time target tracking demonstration.
 
     Continuously tracks a movable target cube's pose, commanding the robot's
@@ -76,10 +82,21 @@ class WXAIFollowTarget:
 
     def __init__(
         self,
+        robot: str = DEFAULT_ROBOT,
         target_initial_position: np.ndarray | None = None,
         target_initial_orientation: np.ndarray | None = None,
     ):
-        """Initialize target tracking task."""
+        """Initialize target tracking task.
+
+        :param robot: Robot name, one of ROBOTS.
+        :param target_initial_position: Initial position [x, y, z] of the target in meters.
+        :param target_initial_orientation: Initial orientation quaternion [w, x, y, z] of the target.
+        """
+        if robot not in ROBOTS:
+            raise ValueError(f"Unknown robot '{robot}', expected one of {ROBOTS}")
+        self.robot_name = robot
+        self.scene_xml_path = os.path.join(ASSETS_DIR, robot, f"scene_{robot}_follow_target.xml")
+
         self.target_initial_position = (
             target_initial_position
             if target_initial_position is not None
@@ -99,14 +116,14 @@ class WXAIFollowTarget:
     def setup_scene(self) -> None:
         """Initialize simulation scene with robot, target cube, and environment."""
         # Load MuJoCo model
-        self.model = mujoco.MjModel.from_xml_path(SCENE_XML_PATH)
+        self.model = mujoco.MjModel.from_xml_path(self.scene_xml_path)
         self.data = mujoco.MjData(self.model)
 
         # Initialize robot controller
         self.robot = Controller(
             model=self.model,
             data=self.data,
-            robot_type=RobotType.WXAI,
+            robot_type=RobotType(self.robot_name),
             arm_joint_names=ARM_JOINT_NAMES,
             gripper_joint_names=GRIPPER_JOINT_NAMES,
             ik_scale=IK_SCALE,
@@ -161,10 +178,11 @@ class WXAIFollowTarget:
             self.data.qpos[qpos_addr] = DEFAULT_DOF_POSITIONS[i]
 
         # Reset gripper
-        for joint_name in GRIPPER_JOINT_NAMES:
+        for joint_name in FINGER_JOINT_NAMES:
             joint_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_JOINT, joint_name)
             qpos_addr = self.model.jnt_qposadr[joint_id]
             self.data.qpos[qpos_addr] = DEFAULT_DOF_POSITIONS[6]
+        self.robot.set_gripper_position(DEFAULT_DOF_POSITIONS[6])
 
         # Reset target to initial or specified pose
         reset_position = (
@@ -183,9 +201,17 @@ class WXAIFollowTarget:
 
 
 def main():
-    print("Running WidowX AI follow-target demo. Close the viewer to exit.")
+    parser = argparse.ArgumentParser(
+        description="Follow a movable target cube with the end effector."
+    )
+    parser.add_argument(
+        "--robot", type=str, choices=ROBOTS, default=DEFAULT_ROBOT, help="Robot to run."
+    )
+    args = parser.parse_args()
+
+    print(f"Running {args.robot} follow-target demo. Close the viewer to exit.")
     # Create and setup the follow target task
-    follow_target = WXAIFollowTarget()
+    follow_target = FollowTarget(robot=args.robot)
     follow_target.setup_scene()
 
     # Reset to initial state
@@ -199,7 +225,11 @@ def main():
         viewer.cam.azimuth = 135
         viewer.cam.elevation = -20
 
+        dt = follow_target.model.opt.timestep
+
         while viewer.is_running():
+            step_start = time.time()
+
             # Execute tracking step
             follow_target.forward()
 
@@ -208,6 +238,11 @@ def main():
 
             # Sync viewer
             viewer.sync()
+
+            # Real-time synchronization
+            elapsed = time.time() - step_start
+            if elapsed < dt:
+                time.sleep(dt - elapsed)
 
     print("\nFollow target demo completed")
 
