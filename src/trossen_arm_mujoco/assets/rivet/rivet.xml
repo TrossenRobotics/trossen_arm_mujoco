@@ -38,15 +38,16 @@
       <inertial pos="-0.0332838 0.00387668 0.198466" mass="73.7606"
         fullinertia="5.76624 6.32878 2.94862 0.0 -0.51839 0.00555349"/>
 
-      <body name="lift_link" pos="0.165 0.0 0.181">
-        <joint name="lift" type="slide" pos="0 0 0" axis="0 0 1" range="0.0 0.858"/>
+      <body name="lift_link" pos="0.165 0.0 0.181" gravcomp="1">
+        <!-- TODO(abhismirai42): verify the estimated armature on the lift -->
+        <joint name="lift" type="slide" pos="0 0 0" axis="0 0 1" range="0.0 0.858" armature="58.4" actuatorgravcomp="true"/>
         <geom class="visual" mesh="lift_link" material="color_8"/>
         <geom class="collision" mesh="lift_link"/>
         <inertial pos="0.0543177 0 0.0192157" mass="2.69782"
           fullinertia="0.102184 0.0103103 0.0952441 0.0 -0.000235492 0.0"/>
 
         <body name="cam_high_camera_link" pos="0.0906 0 0.3267" quat="0.9762960 0 0.2164395 0">
-          <body name="cam_high_camera_center" pos="0 0 0.016">
+          <body name="cam_high_camera_center" pos="0 0 0.016" gravcomp="1">
             <geom class="visual" mesh="zedxm" material="zed_camera" pos="0 0 -0.016"/>
             <geom class="collision" mesh="zedxm" pos="0 0 -0.016"/>
             <inertial pos="0 0 0" mass="0.15" diaginertia="0.00012325 2.99125e-05 0.0001275625"/>
@@ -123,17 +124,22 @@
     <exclude body1="lift_link" body2="follower_left_link_1"/>
     <exclude body1="lift_link" body2="follower_right_link_2"/>
     <exclude body1="lift_link" body2="follower_left_link_2"/>
+
+    <exclude body1="base_link" body2="follower_right_link_1"/>
+    <exclude body1="base_link" body2="follower_left_link_1"/>
+    <exclude body1="base_link" body2="follower_right_link_3"/>
+    <exclude body1="base_link" body2="follower_left_link_3"/>
   </contact>
 
   <actuator>
-    <!-- TODO(abhismirai42): placeholder gains/limits; no real lift-actuator or drive-motor specs available yet -->
-    <position name="lift" joint="lift" kp="2000" kv="200" ctrlrange="0.0 0.858" forcerange="-500 500"/>
-    <position name="b_pivot" joint="b_pivot" kp="50" kv="5" ctrlrange="-3.14159265 3.14159265" forcerange="-10 10"/>
-    <position name="fr_pivot" joint="fr_pivot" kp="50" kv="5" ctrlrange="-3.14159265 3.14159265" forcerange="-10 10"/>
-    <position name="fl_pivot" joint="fl_pivot" kp="50" kv="5" ctrlrange="-3.14159265 3.14159265" forcerange="-10 10"/>
-    <velocity name="b_drive" joint="b_drive" kv="1000" ctrlrange="-18.691589 18.691589" forcerange="-4 4"/>
-    <velocity name="fr_drive" joint="fr_drive" kv="1000" ctrlrange="-18.691589 18.691589" forcerange="-4 4"/>
-    <velocity name="fl_drive" joint="fl_drive" kv="1000" ctrlrange="-18.691589 18.691589" forcerange="-4 4"/>
+    <!-- TODO(abhismirai42): verify the estimated gains on the lift, pivot and drive motors -->
+    <position name="lift" joint="lift" kp="29400" kv="3670" ctrlrange="0.0 0.858" forcerange="-2845 2845"/>
+    <position name="b_pivot" joint="b_pivot" kp="40" kv="2" forcerange="-10 10"/>
+    <position name="fr_pivot" joint="fr_pivot" kp="40" kv="2" forcerange="-10 10"/>
+    <position name="fl_pivot" joint="fl_pivot" kp="40" kv="2" forcerange="-10 10"/>
+    <velocity name="b_drive" joint="b_drive" kv="1" ctrlrange="-41 41" forcerange="-6 6"/>
+    <velocity name="fr_drive" joint="fr_drive" kv="1" ctrlrange="-41 41" forcerange="-6 6"/>
+    <velocity name="fl_drive" joint="fl_drive" kv="1" ctrlrange="-41 41" forcerange="-6 6"/>
   </actuator>
 
 </mujoco>
