@@ -66,7 +66,8 @@ src/trossen_arm_mujoco/assets/
 │   └── scene.xml                            # Basic visualization scene
 ├── rivet/
 │   ├── rivet.xml                            # Dual WidowX Pro on a lift + swerve base
-│   └── scene.xml                            # Basic visualization scene
+│   ├── scene.xml                            # Basic visualization scene
+│   └── scene_rivet_pick_place.xml           # Mobile pick-and-place
 ├── stationary_ai/
 │   ├── stationary_ai.xml                    # Dual-arm stationary platform
 │   ├── scene.xml                            # Basic visualization scene
@@ -124,6 +125,11 @@ uv run stationary_ai_pick_place
 **Mobile AI** - Mobile base navigation + dual-arm manipulation:
 ```bash
 uv run mobile_ai_pick_place
+```
+
+**Rivet** - Swerve base driving, lift, and dual-arm manipulation:
+```bash
+uv run rivet_pick_place
 ```
 
 ### Target Following Demo
