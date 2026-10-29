@@ -535,7 +535,7 @@ class RivetPickPlace:
 
         Right arm picks from intermediate position and places at target.
         """
-        pick_pos = self.intermediate_position
+        pick_pos, _ = self.get_cube_pose()
         place_pos = self.target_position
         assert self.right_robot is not None
         right_ee_pos, right_ee_ori = self.right_robot.get_ee_pose()

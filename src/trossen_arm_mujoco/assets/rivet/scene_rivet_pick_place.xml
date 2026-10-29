@@ -1,5 +1,5 @@
 <mujoco model="rivet_pick_place_scene">
-  <option integrator="implicitfast" noslip_iterations="1"/>
+  <option integrator="implicitfast" noslip_iterations="1" cone="elliptic" impratio="10"/>
 
   <statistic center="0.6 0 0.6" extent="1.8"/>
 
@@ -38,7 +38,7 @@
     <!-- Cube to pick (on left side of table) -->
     <body name="cube" pos="1.0 0.3 0.845">
       <freejoint/>
-      <geom name="cube_geom" type="box" size="0.025 0.025 0.025" rgba="0 0 1 0.8" mass="0.0001"/>
+      <geom name="cube_geom" type="box" size="0.025 0.025 0.025" rgba="0 0 1 0.8" mass="0.05" condim="4"/>
       <site name="cube_center" pos="0 0 0" size="0.005" rgba="1 0 0 0"/>
     </body>
 
