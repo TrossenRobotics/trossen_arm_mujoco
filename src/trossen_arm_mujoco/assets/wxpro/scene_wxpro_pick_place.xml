@@ -1,6 +1,8 @@
 <mujoco model="wxpro pick place scene">
   <include file="wxpro.xml"/>
 
+  <option noslip_iterations="1" cone="elliptic" impratio="10"/>
+
   <statistic center="0 0 0.1" extent="0.6"/>
 
   <visual>
@@ -23,7 +25,7 @@
     <!-- Pick-and-place cube: dynamic rigid body with blue color -->
     <body name="cube" pos="0.35 -0.15 0.025">
       <freejoint/>
-      <geom name="cube_collision" type="box" size="0.025 0.025 0.025" rgba="0 0 1 0.8" mass="0.001"/>
+      <geom name="cube_collision" type="box" size="0.025 0.025 0.025" rgba="0 0 1 0.8" mass="0.05" condim="4"/>
       <site name="cube_site" pos="0 0 0" size="0.005" rgba="1 0 0 0"/>
     </body>
   </worldbody>

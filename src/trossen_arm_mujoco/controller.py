@@ -49,7 +49,7 @@ class RobotType(Enum):
 
 # Gripper position limits in meters
 GRIPPER_OPEN_POSITION = 0.044
-GRIPPER_CLOSED_POSITION = 0.022
+GRIPPER_CLOSED_POSITION = 0.015
 
 # Default IK parameters
 DEFAULT_IK_SCALE = 0.5
